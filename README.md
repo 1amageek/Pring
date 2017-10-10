@@ -60,29 +60,27 @@ class MyObject: Object {
 |---|---|
 |Array|It is Array type.|
 |Set|It is Set type.In Firestore it is expressed as `{"value": true}`.|
-|bool|It is a boolean value.|
-|file|It is File type. You can save large data files.|
-|url|It is URL type. It is saved as string in Firestore.|
-|int|It is Int type.|
-|float|It is Float type. In iOS, it will be a 64 bit Double type.|
-|date|It is Date type.|
-|geoPoint|It is GeoPoint type.|
-|dictionary|It is a Dictionary type. Save the structural data.|
-|relation|It is Relation type. Relation type. Holds the count stored in SubCollection.|
-|string|It is String type.|
-|null|It is Null type.|
+|Bool|It is a boolean value.|
+|File|It is File type. You can save large data files.|
+|URL|It is URL type. It is saved as string in Firestore.|
+|Int|It is Int type.|
+|Float|It is Float type. In iOS, it will be a 64 bit Double type.|
+|Date|It is Date type.|
+|GeoPoint|It is GeoPoint type.|
+|Dictionary|It is a Dictionary type. Save the structural data.|
+|Relation|It is Relation type. Relation type. Holds the count stored in SubCollection.|
+|String|It is String type.|
+|Null|It is Null type.|
 
 ### Save and Update
 
 #### Save
-
 ``` swift
 let object: MyObject = MyObject()
 object.save()
 ```
 
 #### Retrieve
-
 ``` swift
 TestDocument.get(document!.id, block: { (document, error) in
     // do something
@@ -90,7 +88,6 @@ TestDocument.get(document!.id, block: { (document, error) in
 ```
 
 #### Update
-
 ``` swift
 TestDocument.get(document!.id, block: { (document, error) in
     document.string = "newString" // Please do not call save function. It will be saved automatically.
