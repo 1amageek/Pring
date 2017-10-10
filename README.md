@@ -82,19 +82,19 @@ object.save()
 
 #### Retrieve
 ``` swift
-TestDocument.get(document!.id, block: { (document, error) in
+MyObject.get(document!.id, block: { (document, error) in
     // do something
 })
 ```
 
 #### Update
 ``` swift
-TestDocument.get(document!.id, block: { (document, error) in
+MyObject.get(document!.id, block: { (document, error) in
     document.string = "newString" // Please do not call save function. It will be saved automatically.
 })
 ```
 
 #### Delete
 ``` swift
-TestDocument.delete(id: document!.id)
+MyObject.delete(id: document!.id)
 ```
