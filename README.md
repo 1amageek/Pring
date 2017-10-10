@@ -18,6 +18,11 @@ Firestore model framework.
 - [Firebase firestore](https://firebase.google.com/docs/database/ios/start)
 - [Firebase storage](https://firebase.google.com/docs/storage/ios/start)
 
+## Installation ⚙
+I'm sorry. Please do not use this library yet.
+We plan to finish the implementation by October 19th.
+
+
 ## Feature 🎊
 
 ☑️ You can define Firestore's Document scheme.<br>
