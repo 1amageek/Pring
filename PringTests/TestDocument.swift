@@ -9,6 +9,7 @@
 import Foundation
 import FirebaseFirestore
 import UIKit
+import Pring
 
 @objcMembers
 class TestDocument: Object {
@@ -16,7 +17,7 @@ class TestDocument: Object {
     var set: Set<String>                    = ["set"]
     var bool: Bool                          = true
     var binary: Data                        = "data".data(using: .utf8)!
-    var file: File                          = File(data: UIImageJPEGRepresentation(UIImage(named: "")!, 1))
+//    var file: File                          = File(data: UIImagePNGRepresentation(UIImage(named: "Pring.png")!)!)
     var url: URL                            = URL(string: "https://firebase.google.com/")!
     var int: Int                            = Int.max
     var float: Double                       = Double.infinity

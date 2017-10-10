@@ -13,3 +13,8 @@ target 'Pring' do
     # Pods for testing
   end
 end
+
+target 'Sample' do
+  use_frameworks!
+
+end

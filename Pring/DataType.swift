@@ -32,7 +32,7 @@ public enum DataType {
 
      | key | Firestore | Local |
     */
-    init(key: String, value: Any) {
+    public init(key: String, value: Any) {
         switch value.self {
         case is Bool:
             if let value: Bool = value as? Bool {
@@ -131,7 +131,7 @@ public enum DataType {
     /**
      Decode to local data type
      */
-    init(key: String, value: Any, data: [String: Any]) {
+    public init(key: String, value: Any, data: [String: Any]) {
         let mirror: Mirror = Mirror(reflecting: value)
         let subjectType: Any.Type = mirror.subjectType
         if subjectType == Bool.self || subjectType == Bool?.self {

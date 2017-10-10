@@ -38,7 +38,7 @@ class PringTests: XCTestCase {
         XCTContext.runActivity(named: "Create") { (activity) in
             let expectation: XCTestExpectation = XCTestExpectation(description: "create document")
             let document: TestDocument = TestDocument()
-            self.documentID = document.id
+
             document.save { (ref, error) in
 
                 TestDocument.get(ref!.documentID, block: { (document, error) in

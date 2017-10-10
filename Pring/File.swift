@@ -117,7 +117,7 @@ public final class File: NSObject {
     public var metadata: StorageMetadata?
 
     /// Parent to hold the location where you want to save
-    public var parent: Object?
+    public weak var parent: Object?
 
     /// Property name to save
     public var key: String?
@@ -212,14 +212,15 @@ public final class File: NSObject {
         }
 
         if let data: Data = self.data {
-            self.uploadTask = self.ref?.putData(data, metadata: metadata) { (metadata, error) in
+            self.uploadTask = self.ref?.putData(data, metadata: metadata) { [weak self] (metadata, error) in
+                guard let `self` = self else { return }
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
                 if let parent: Object = self.parent, parent.isListening {
-                    parent.updateValue(key, child: nil, value: self.value)
+                    parent.update(key: key, value: self.value)
                     completion?(metadata, error as Error?)
                 } else {
                     completion?(metadata, error as Error?)
@@ -227,14 +228,15 @@ public final class File: NSObject {
             }
             return self.uploadTask
         } else if let url: URL = self.url {
-            self.uploadTask = self.ref?.putFile(from: url, metadata: metadata, completion: { (metadata, error) in
+            self.uploadTask = self.ref?.putFile(from: url, metadata: metadata, completion: { [weak self] (metadata, error) in
+                guard let `self` = self else { return }
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
                 if let parent: Object = self.parent, parent.isListening {
-                    parent.updateValue(key, child: nil, value: self.value)
+                    parent.update(key: key, value: self.value)
                     completion?(metadata, error as Error?)
                 } else {
                     completion?(metadata, error as Error?)

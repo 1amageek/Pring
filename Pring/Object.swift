@@ -207,21 +207,12 @@ open class Object: NSObject, Document {
     }
 
     // MARK: - Save
-
-    /**
-     Save the new Object to Firebase.
-     */
-    @discardableResult
-    public func save() -> [String: StorageUploadTask] {
-        return self.save(nil)
-    }
-
     /**
      Save the new Object to Firebase. Save will fail in the off-line.
      - parameter completion: If successful reference will return. An error will return if it fails.
      */
     @discardableResult
-    public func save(_ block: ((DocumentReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
+    public func save(_ block: ((DocumentReference?, Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
         if isListening {
             fatalError("[Pring.Document] *** error: \(type(of: self)) has already been saved.")
         }
@@ -241,39 +232,87 @@ open class Object: NSObject, Document {
     }
 
     private func _save(_ block: ((DocumentReference?, Error?) -> Void)?) {
-        self.pack().commit { (error) in
-            self.reference.getDocument(completion: { (snapshot, error) in
-                self.snapshot = snapshot
+        self.pack().commit { [weak self] (error) in
+            self?.reference.getDocument(completion: { (snapshot, error) in
+                self?.snapshot = snapshot
                 block?(snapshot?.reference, error)
             })
         }
     }
 
-    internal func updateValue<Root: Object, Value: Any>(_ keyPath: KeyPath<Root, Value>) {
+    // MARK: - KVO
 
+    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+
+        guard let keyPath: String = keyPath else {
+            super.observeValue(forKeyPath: nil, of: object, change: change, context: context)
+            return
+        }
+
+        guard let object: NSObject = object as? NSObject else {
+            super.observeValue(forKeyPath: keyPath, of: nil, change: change, context: context)
+            return
+        }
+
+        let keys: [String] = Mirror(reflecting: self).children.flatMap({ return $0.label })
+        if keys.contains(keyPath) {
+
+            if let value: Any = object.value(forKey: keyPath) as Any? {
+                switch DataType(key: keyPath, value: value) {
+                case .array         (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .set           (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .bool          (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .binary        (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .file          (let key, _, _):
+                    if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
+                        guard let new: File = change[.newKey] as? File else {
+                            if let old: File = change[.oldKey] as? File {
+                                old.parent = self
+                                old.key = key
+                                old.remove()
+                            }
+                            return
+                        }
+                        if let old: File = change[.oldKey] as? File {
+                            if old.name != new.name {
+                                new.parent = self
+                                new.key = key
+                                old.parent = self
+                                old.key = key
+                            }
+                        } else {
+                            new.parent = self
+                            new.key = key
+                        }
+                    }
+                case .url           (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .int           (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .float         (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .date          (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .geoPoint      (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .dictionary    (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .relation      (_, _, _):   break
+                case .string        (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .null: break
+                }
+            }
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
     }
 
     /**
      Update the data on Firebase.
      When this function is called, updatedAt of Object is updated at the same time.
 
-     - parameter keyPath: Target key path
-     - parameter child: Target child
-     - parameter value: Save to value. If you enter nil, the data will be deleted.
+     - parameter key: Document field name
+     - parameter value: Save to value. If you enter nil
      */
-    internal func updateValue(_ keyPath: String, child: String?, value: Any?) {
-
-//        let batch: WriteBatch = Firestore.firestore().batch()
-//        batch.updateData([(\Object.updatedAt)._kvcKeyPathString!: FieldValue.serverTimestamp()], forDocument: self.documentRef)
-//        batch.updateData(<#T##fields: [AnyHashable : Any]##[AnyHashable : Any]#>, forDocument: <#T##DocumentReference#>)
-
-//        let reference: DocumentReference = self.documentRef
-//        let timestamp: FIRFieldValue = FieldValue.serverTimestamp()
-//        let updateValue: Any = value.map { $0 } ?? NSNull()
-//        let path = child.map { "\(keyPath)/\($0)" } ?? keyPath
-//        reference.updateChildValues([path: updateValue, Const.updatedAtKey: timestamp], withCompletionBlock: {_,_ in
-//            // Nothing
-//        })
+    internal func update(key: String, value: Any) {
+        self.reference.updateData([
+            key : value,
+            (\Object.updatedAt)._kvcKeyPathString!: FieldValue.serverTimestamp()
+            ])
     }
 
     /**
@@ -400,6 +439,7 @@ open class Object: NSObject, Document {
     // MARK: Deinit
 
     deinit {
+        print("deinit", self)
         if self.isListening {
             Mirror(reflecting: self).children.forEach { (key, value) in
                 if let key: String = key {

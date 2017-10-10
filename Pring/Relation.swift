@@ -138,7 +138,7 @@ public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayL
                         return nil
                     }
                     let oldCount = document.data()["count"] as? Int ?? 0
-                    transaction.updateData(["population": oldCount + 1], forDocument: parentRef)
+                    transaction.updateData(["count": oldCount + 1], forDocument: parentRef)
                     return nil
                 }, completion: { (object, error) in
                     if let error: Error = error {
@@ -187,7 +187,7 @@ public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayL
                         return nil
                     }
 
-                    transaction.updateData(["population": oldCount - 1], forDocument: parentRef)
+                    transaction.updateData(["count": oldCount - 1], forDocument: parentRef)
                     return nil
                 }, completion: { (object, error) in
                     if let error: Error = error {
