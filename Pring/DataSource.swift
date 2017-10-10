@@ -72,7 +72,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
     /// Options
     private(set) var options: Options
 
-    private let fetchQueue: DispatchQueue = DispatchQueue(label: "salada.datasource.fetch.queue")
+    private let fetchQueue: DispatchQueue = DispatchQueue(label: "Pring.datasource.fetch.queue")
 
     private var listenr: FIRListenerRegistration?
 
@@ -133,7 +133,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
     /// Monitor changes in the DataSource.
     public func observe() {
         guard let block: (CollectionChange) -> Void = self.changedBlock else {
-            fatalError("[Salada.DataSource] *** error: You need to define Changeblock to start observe.")
+            fatalError("[Pring.DataSource] *** error: You need to define Changeblock to start observe.")
         }
         var isFirst: Bool = true
         let options: QueryListenOptions = QueryListenOptions()
@@ -158,7 +158,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
 
     private func operate(with snapshot: QuerySnapshot?, error: Error?) {
         guard let block: (CollectionChange) -> Void = self.changedBlock else {
-            fatalError("[Salada.DataSource] *** error: You need to define Changeblock to start observe.")
+            fatalError("[Pring.DataSource] *** error: You need to define Changeblock to start observe.")
         }
         guard let snapshot: QuerySnapshot = snapshot else {
             block(CollectionChange(change: nil, error: error))

@@ -42,7 +42,7 @@ open class Object: NSObject, Document {
     }
 
     /// It is Qeueu of File upload.
-    public let uploadQueue: DispatchQueue = DispatchQueue(label: "salada.upload.queue")
+    public let uploadQueue: DispatchQueue = DispatchQueue(label: "Pring.upload.queue")
 
     public var id: String
 
@@ -223,7 +223,7 @@ open class Object: NSObject, Document {
     @discardableResult
     public func save(_ block: ((DocumentReference?, Error?) -> Void)?) -> [String: StorageUploadTask] {
         if isListening {
-            fatalError("[Salada.Document] *** error: \(type(of: self)) has already been saved.")
+            fatalError("[Pring.Document] *** error: \(type(of: self)) has already been saved.")
         }
         let ref: DocumentReference = self.reference
         if self.hasFiles {

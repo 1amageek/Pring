@@ -1,6 +1,6 @@
  //
 //  TestDocument.swift
-//  Salada2Tests
+//  Pring2Tests
 //
 //  Created by 1amageek on 2017/10/06.
 //  Copyright © 2017年 Stamp Inc. All rights reserved.
@@ -8,6 +8,7 @@
 
 import Foundation
 import FirebaseFirestore
+import UIKit
 
 @objcMembers
 class TestDocument: Object {
@@ -15,7 +16,7 @@ class TestDocument: Object {
     var set: Set<String>                    = ["set"]
     var bool: Bool                          = true
     var binary: Data                        = "data".data(using: .utf8)!
-//    var file: File                      =
+    var file: File                          = File(data: UIImageJPEGRepresentation(UIImage(named: "")!, 1))
     var url: URL                            = URL(string: "https://firebase.google.com/")!
     var int: Int                            = Int.max
     var float: Double                       = Double.infinity

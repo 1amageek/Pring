@@ -287,7 +287,7 @@ public final class File: NSObject {
     // MARK: -
 
     override public var description: String {
-        return "Salada.File"
+        return "Pring.File"
     }
 
 }

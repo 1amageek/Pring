@@ -1,6 +1,6 @@
 //
 //  Disposer.swift
-//  Salada
+//  Pring
 //
 //  Created by suguru-kishimoto on 2017/08/21.
 //  Copyright © 2017年 Stamp. All rights reserved.

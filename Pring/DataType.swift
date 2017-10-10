@@ -122,7 +122,7 @@ public enum DataType {
             }
         default:
             self = .null
-            //print("[Salada.Base] This property(\(key) is null", value, String(describing: type(of: value)))
+            //print("[Pring.Base] This property(\(key) is null", value, String(describing: type(of: value)))
             return
         }
         self = .null

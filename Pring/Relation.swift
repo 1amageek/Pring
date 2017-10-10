@@ -1,6 +1,6 @@
 //
 //  Relation.swift
-//  Salada
+//  Pring
 //
 //  Created by 1amageek on 2017/09/04.
 //  Copyright © 2017年 Stamp. All rights reserved.
@@ -29,10 +29,10 @@ public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayL
     /// It is a Path stored in Firebase.
     public var path: String {
         guard let parent: Document = self.parent else {
-            fatalError("[Salada.Relation] It is necessary to set parent.")
+            fatalError("[Pring.Relation] It is necessary to set parent.")
         }
         guard let key: String = self.key else {
-            fatalError("[Salada.Relation] It is necessary to set key.")
+            fatalError("[Pring.Relation] It is necessary to set key.")
         }
         return "\(parent.path)/\(key)"
     }
