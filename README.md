@@ -20,11 +20,11 @@ Firestore model framework.
 
 ## Feature 🎊
 
-☑️ You can define Firestore's Document scheme.
-☑️ Of course type safety.
-☑️ It seamlessly works with Firestore and Storage.
-☑️ You can easily associate subcollections.
-☑️ Support GeoPoint.
+☑️ You can define Firestore's Document scheme.<br>
+☑️ Of course type safety.<br>
+☑️ It seamlessly works with Firestore and Storage.<br>
+☑️ You can easily associate subcollections.<br>
+☑️ Support GeoPoint.<br>
 
 ## Usage
 
