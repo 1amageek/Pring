@@ -39,10 +39,11 @@ class ViewController: UIViewController {
                 db.getDocument(completion: { (snapshot, error) in
                     print("TEST 0", snapshot?.data()["test"])
                     (0..<5).forEach({ index in
-                        let batch = db.firestore.batch()
-                        batch.updateData(["test": FieldValue.serverTimestamp(), "key": "\(index)"], forDocument: db)
-                        batch.commit(completion: { _ in
-                        })
+                        db.updateData(["test": FieldValue.serverTimestamp(), "key": "\(index)"], completion: nil)
+//                        let batch = db.firestore.batch()
+//                        batch.updateData(["test": FieldValue.serverTimestamp(), "key": "\(index)"], forDocument: db)
+//                        batch.commit(completion: { _ in
+//                        })
                     })
                     db.getDocument(completion: { (snapshot, error) in
                         print("TEST 1", snapshot?.data()["test"])

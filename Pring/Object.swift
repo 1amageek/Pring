@@ -172,6 +172,10 @@ open class Object: NSObject, Document {
         mirror.children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
+                    if let rawValue: Any = self.encode(key, value: value) {
+                        document[key] = rawValue
+                        return
+                    }
                     switch DataType(key: key, value: value) {
                     case .array         (let key, let rawValue, _):   document[key] = rawValue
                     case .set           (let key, let rawValue, _):   document[key] = rawValue
