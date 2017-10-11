@@ -46,7 +46,7 @@ public extension Document {
 
     public static func get(_ id: String, block: @escaping (Self?, Error?) -> Void) {
         self.reference.document(id).getDocument { (snapshot, error) in
-            guard let snapshot: DocumentSnapshot = snapshot else {
+            guard let snapshot: DocumentSnapshot = snapshot, snapshot.exists else {
                 block(nil, error)
                 return
             }
