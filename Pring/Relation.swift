@@ -28,7 +28,7 @@ public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayL
 
     /// It is a Path stored in Firebase.
     public var path: String {
-        guard let parent: Document = self.parent else {
+        guard let parent: Object = self.parent else {
             fatalError("[Pring.Relation] It is necessary to set parent.")
         }
         guard let key: String = self.key else {

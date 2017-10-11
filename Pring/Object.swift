@@ -40,7 +40,7 @@ open class Object: NSObject, Document {
     /// It is Qeueu of File upload.
     public let uploadQueue: DispatchQueue = DispatchQueue(label: "Pring.upload.queue")
 
-    public var id: String
+    @objc public var id: String
 
     @objc public var createdAt: Date
 
@@ -412,7 +412,7 @@ open class Object: NSObject, Document {
     override open var description: String {
 
         let base: String =
-            "  key: \(self.id)\n" +
+            "  id: \(self.id)\n" +
             "  createdAt: \(self.createdAt)\n" +
             "  updatedAt: \(self.updatedAt)\n"
 
@@ -450,6 +450,15 @@ open class Object: NSObject, Document {
     }
 }
 
+extension Object {
+    open override var hashValue: Int {
+        return self.id.hash
+    }
+    public static func == (lhs: Object, rhs: Object) -> Bool {
+        return lhs.id == rhs.id && type(of: lhs).version == type(of: rhs).version
+    }
+}
+
 public struct DocumentError: Error {
     enum ErrorKind {
         case invalidId
@@ -462,7 +471,7 @@ public struct DocumentError: Error {
     let description: String
 }
 
-extension Sequence where Iterator.Element: Document {
+extension Sequence where Iterator.Element: Object {
     /// Return an `Array` containing the sorted elements of `source`
     /// using criteria stored in a NSSortDescriptors array.
 

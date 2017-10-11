@@ -108,7 +108,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
         self.reference = reference
         self.options = options
         self.changedBlock = block
-        self.on(block)
+        self.on(block).observe()
     }
 
     /// Initializing the DataSource
@@ -131,7 +131,8 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
     }
 
     /// Monitor changes in the DataSource.
-    public func observe() {
+    @discardableResult
+    public func observe() -> Self {
         guard let block: (CollectionChange) -> Void = self.changedBlock else {
             fatalError("[Pring.DataSource] *** error: You need to define Changeblock to start observe.")
         }
@@ -154,6 +155,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                 isFirst = false
             }
         })
+        return self
     }
 
     private func operate(with snapshot: QuerySnapshot?, error: Error?) {

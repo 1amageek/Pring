@@ -12,7 +12,7 @@ import FirebaseStorage
 /**
  Firestore's Document Protocol
  */
-public protocol Document: NSObjectProtocol {
+public protocol Document: NSObjectProtocol, Hashable {
 
     static var version: Int { get }
 
