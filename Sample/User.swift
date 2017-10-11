@@ -6,12 +6,12 @@
 //  Copyright © 2017年 Stamp Inc. All rights reserved.
 //
 
-import Pring
+import Foundation
 
 @objcMembers
 class User: Object {
 
-    var name: String?
-    var thumbnailImage: File?
-    var followers: Relation<User> = []
+    dynamic var name: String?
+//    var thumbnailImage: File?
+//    var followers: Relation<User> = []
 }

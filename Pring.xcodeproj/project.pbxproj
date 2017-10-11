@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		124F92111F8DD6D000BEC128 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124F92101F8DD6D000BEC128 /* Test.swift */; };
 		12AF82FE1F8CAEDE00561159 /* Pring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AF82F41F8CAEDE00561159 /* Pring.framework */; };
 		12AF83031F8CAEDE00561159 /* PringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83021F8CAEDE00561159 /* PringTests.swift */; };
 		12AF83051F8CAEDE00561159 /* Pring.h in Headers */ = {isa = PBXBuildFile; fileRef = 12AF82F71F8CAEDE00561159 /* Pring.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -54,6 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		124F92101F8DD6D000BEC128 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		12AF82F41F8CAEDE00561159 /* Pring.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pring.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12AF82F71F8CAEDE00561159 /* Pring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Pring.h; sourceTree = "<group>"; };
 		12AF82F81F8CAEDE00561159 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 				12AF83301F8CD2F400561159 /* AppDelegate.swift */,
 				12AF83321F8CD2F400561159 /* ViewController.swift */,
 				12AF83501F8CD4A400561159 /* User.swift */,
+				124F92101F8DD6D000BEC128 /* Test.swift */,
 				12AF83341F8CD2F400561159 /* Main.storyboard */,
 				12AF83371F8CD2F400561159 /* Assets.xcassets */,
 				12AF83391F8CD2F400561159 /* LaunchScreen.storyboard */,
@@ -567,6 +570,7 @@
 				12AF83311F8CD2F400561159 /* AppDelegate.swift in Sources */,
 				12AF83691F8CE82500561159 /* ReferenceCollection.swift in Sources */,
 				12AF83631F8CE82500561159 /* DataSource.swift in Sources */,
+				124F92111F8DD6D000BEC128 /* Test.swift in Sources */,
 				12AF83681F8CE82500561159 /* Object.swift in Sources */,
 				12AF83651F8CE82500561159 /* Disposer.swift in Sources */,
 				12AF83671F8CE82500561159 /* File.swift in Sources */,

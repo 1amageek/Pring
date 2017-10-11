@@ -57,18 +57,58 @@ class PringTests: XCTestCase {
                     XCTAssertEqual(document?.dictionary.values.first as! String, "value")
                     XCTAssertEqual(document?.string, "string")
 
-                    XCTContext.runActivity(named: "Delete") { (activity) in
-                        TestDocument.delete(id: document!.id) { error in
+                    XCTContext.runActivity(named: "Update") { (activity) in
+
+                        document?.array = ["update"]
+                        document?.set = ["update"]
+                        document?.bool = false
+                        document?.binary = "update".data(using: .utf8)!
+                        document?.url = URL(string: "https://firebase.google.com/update")!
+                        document?.int = 0
+                        document?.float = 0
+                        document?.date = Date(timeIntervalSince1970: 1000)
+                        document?.geoPoint = GeoPoint(latitude: 1, longitude: 1)
+                        document?.array = ["update"]
+                        document?.dictionary = ["key": "update"]
+                        document?.string = "update"
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                             TestDocument.get(document!.id, block: { (document, error) in
-                                XCTAssertNil(document)
+                                XCTAssertNotNil(document)
+
+//                                XCTAssertEqual(document?.array.first, "update")
+//                                XCTAssertEqual(document?.set.first, "update")
+//                                XCTAssertEqual(document?.bool, false)
+//                                XCTAssertEqual(String(data: document!.binary, encoding: .utf8), "update")
+//                                XCTAssertEqual(document?.url.absoluteString, "https://firebase.google.com/update")
+//                                XCTAssertEqual(document?.int, 0)
+//                                XCTAssertEqual(document?.float, 0)
+//                                XCTAssertEqual(document?.date, Date(timeIntervalSince1970: 1000))
+//                                XCTAssertEqual(document?.geoPoint, GeoPoint(latitude: 0, longitude: 0))
+//                                XCTAssertEqual(document?.dictionary.keys.first, "key")
+//                                XCTAssertEqual(document?.dictionary.values.first as! String, "update")
+                                XCTAssertEqual(document?.string, "update")
                                 expectation.fulfill()
                             })
-                        }
+                        })
                     }
+
+//                    XCTContext.runActivity(named: "Delete") { (activity) in
+//                        TestDocument.delete(id: document!.id) { error in
+//                            TestDocument.get(document!.id, block: { (document, error) in
+//                                XCTAssertNil(document)
+//                                expectation.fulfill()
+//                            })
+//                        }
+//                    }
                 })
             }
             self.wait(for: [expectation], timeout: 10)
         }
+    }
+
+    func testDataType() {
+
     }
     
     func testPerformanceExample() {

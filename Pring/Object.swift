@@ -35,11 +35,7 @@ open class Object: NSObject, Document {
         return self.reference.path
     }
 
-    private var _reference: DocumentReference
-
-    public var reference: DocumentReference {
-        return _reference
-    }
+    public private(set) var reference: DocumentReference
 
     /// It is Qeueu of File upload.
     public let uploadQueue: DispatchQueue = DispatchQueue(label: "Pring.upload.queue")
@@ -83,8 +79,8 @@ open class Object: NSObject, Document {
     public override init() {
         self.createdAt = Date()
         self.updatedAt = Date()
-        self._reference = type(of: self).reference.document()
-        self.id = self._reference.documentID
+        self.reference = type(of: self).reference.document()
+        self.id = self.reference.documentID
         super.init()
         self._init()
     }
@@ -93,7 +89,7 @@ open class Object: NSObject, Document {
     public convenience required init(id: String) {
         self.init()
         self.id = id
-        self._reference = type(of: self).reference.document(id)
+        self.reference = type(of: self).reference.document(id)
     }
 
     /// Initialize Object from snapshot.
@@ -110,13 +106,13 @@ open class Object: NSObject, Document {
         didSet {
             if let snapshot: DocumentSnapshot = snapshot {
 
-                self._reference = snapshot.reference
+                self.reference = snapshot.reference
                 self.id = snapshot.documentID
 
                 let data: [String: Any] = snapshot.data()
 
-                self.createdAt = snapshot[(\Object.createdAt)._kvcKeyPathString!] as! Date
-                self.updatedAt = snapshot[(\Object.updatedAt)._kvcKeyPathString!] as! Date
+                self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as! Date
+                self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as! Date
 
                 Mirror(reflecting: self).children.forEach { (key, value) in
                     if let key: String = key {
@@ -232,9 +228,9 @@ open class Object: NSObject, Document {
     }
 
     private func _save(_ block: ((DocumentReference?, Error?) -> Void)?) {
-        self.pack().commit { [weak self] (error) in
-            self?.reference.getDocument(completion: { (snapshot, error) in
-                self?.snapshot = snapshot
+        self.pack().commit { (error) in
+            self.reference.getDocument(completion: { (snapshot, error) in
+                self.snapshot = snapshot
                 block?(snapshot?.reference, error)
             })
         }
@@ -344,7 +340,6 @@ open class Object: NSObject, Document {
      - returns: Returns the StorageUploadTask set in the property.
      */
     private func saveFiles(_ block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
-
         let group: DispatchGroup = DispatchGroup()
         var uploadTasks: [String: StorageUploadTask] = [:]
 
@@ -439,7 +434,6 @@ open class Object: NSObject, Document {
     // MARK: Deinit
 
     deinit {
-        print("deinit", self)
         if self.isListening {
             Mirror(reflecting: self).children.forEach { (key, value) in
                 if let key: String = key {
