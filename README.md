@@ -98,3 +98,34 @@ MyObject.get(document!.id, block: { (document, error) in
 ``` swift
 MyObject.delete(id: document!.id)
 ```
+
+
+### DataSource
+
+DataSource is a class for easy handling of data retrieval from Collection.
+``` swift
+override func viewDidLoad() {
+    super.viewDidLoad()
+
+    self.dataSource = DataSource(reference: User.reference, block: { [weak self](changes) in
+        guard let tableView: UITableView = self?.tableView else { return }
+
+        switch changes {
+        case .initial:
+            tableView.reloadData()
+        case .update(let deletions, let insertions, let modifications):
+            tableView.beginUpdates()
+            tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+            tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+            tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
+            tableView.endUpdates()
+        case .error(let error):
+            print(error)
+        }
+    })
+}
+
+func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return self.dataSource?.count ?? 0
+}
+```
