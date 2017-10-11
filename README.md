@@ -40,19 +40,19 @@ The definition of the schema inherits from Object.
 ``` swift
 @objcMembers
 class MyObject: Object {
-    var array: [String]                     = ["array"]
-    var set: Set<String>                    = ["set"]
-    var bool: Bool                          = true
-    var binary: Data                        = "data".data(using: .utf8)!
+    dynamic var array: [String]                     = ["array"]
+    dynamic var set: Set<String>                    = ["set"]
+    dynamic var bool: Bool                          = true
+    dynamic var binary: Data                        = "data".data(using: .utf8)!
     var file: File                          = File(data: UIImageJPEGRepresentation(UIImage(named: "")!, 1))
-    var url: URL                            = URL(string: "https://firebase.google.com/")!
-    var int: Int                            = Int.max
-    var float: Double                       = Double.infinity
-    var date: Date                          = Date(timeIntervalSince1970: 100)
-    var geoPoint: GeoPoint                  = GeoPoint(latitude: 0, longitude: 0)
-    var dictionary: [AnyHashable: Any]      = ["key": "value"]
+    dynamic var url: URL                            = URL(string: "https://firebase.google.com/")!
+    dynamic var int: Int                            = Int.max
+    dynamic var float: Double                       = Double.infinity
+    dynamic var date: Date                          = Date(timeIntervalSince1970: 100)
+    dynamic var geoPoint: GeoPoint                  = GeoPoint(latitude: 0, longitude: 0)
+    dynamic var dictionary: [AnyHashable: Any]      = ["key": "value"]
     var relation: Relation<TestDocument>    = []
-    var string: String                      = "string"
+    dynamic var string: String                      = "string"
 }
 ```
 
