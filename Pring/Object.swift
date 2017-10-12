@@ -44,7 +44,14 @@ open class Object: NSObject, Document {
 
     @objc public var createdAt: Date
 
-    @objc public var updatedAt: Date
+    @objc public var updatedAt: Date {
+        didSet {
+            _updatedAt = updatedAt
+        }
+    }
+
+    ///  https://github.com/firebase/firebase-ios-sdk/issues/364
+    @objc private var _updatedAt: Date
 
     public private(set) var isListening: Bool = false
 
@@ -79,6 +86,7 @@ open class Object: NSObject, Document {
     public override init() {
         self.createdAt = Date()
         self.updatedAt = Date()
+        self._updatedAt = Date()
         self.reference = type(of: self).reference.document()
         self.id = self.reference.documentID
         super.init()
@@ -112,7 +120,7 @@ open class Object: NSObject, Document {
                 let data: [String: Any] = snapshot.data()
 
                 self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as! Date
-                self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as! Date
+                self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as? Date ?? _updatedAt
 
                 Mirror(reflecting: self).children.forEach { (key, value) in
                     if let key: String = key {
