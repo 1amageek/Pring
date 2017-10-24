@@ -115,7 +115,7 @@ DataSource is a class for easy handling of data retrieval from Collection.
 override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.dataSource = DataSource(reference: User.reference, block: { [weak self](changes) in
+    self.dataSource = DataSource(reference: User.reference) { [weak self] (changes) in
         guard let tableView: UITableView = self?.tableView else { return }
 
         switch changes {
@@ -130,7 +130,7 @@ override func viewDidLoad() {
         case .error(let error):
             print(error)
         }
-    })
+    }
 }
 
 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
