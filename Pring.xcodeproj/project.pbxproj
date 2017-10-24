@@ -56,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		124F92101F8DD6D000BEC128 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
+		12649F021F9F6567004C6130 /* Pring.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pring.podspec; sourceTree = "<group>"; };
 		12AF82F41F8CAEDE00561159 /* Pring.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pring.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12AF82F71F8CAEDE00561159 /* Pring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Pring.h; sourceTree = "<group>"; };
 		12AF82F81F8CAEDE00561159 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -124,6 +125,7 @@
 		12AF82EA1F8CAEDE00561159 = {
 			isa = PBXGroup;
 			children = (
+				12649F021F9F6567004C6130 /* Pring.podspec */,
 				12AF82F61F8CAEDE00561159 /* Pring */,
 				12AF83011F8CAEDE00561159 /* PringTests */,
 				12AF832F1F8CD2F400561159 /* Sample */,

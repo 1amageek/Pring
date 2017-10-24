@@ -214,40 +214,6 @@ open class Object: NSObject, Document {
         return value
     }
 
-    // MARK: - Save
-    /**
-     Save the new Object to Firebase. Save will fail in the off-line.
-     - parameter completion: If successful reference will return. An error will return if it fails.
-     */
-    @discardableResult
-    public func save(_ block: ((DocumentReference?, Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
-        if isListening {
-            fatalError("[Pring.Document] *** error: \(type(of: self)) has already been saved.")
-        }
-        let ref: DocumentReference = self.reference
-        if self.hasFiles {
-            return self.saveFiles { (error) in
-                if let error = error {
-                    block?(ref, error)
-                    return
-                }
-                self._save(block)
-            }
-        } else {
-            _save(block)
-            return [:]
-        }
-    }
-
-    private func _save(_ block: ((DocumentReference?, Error?) -> Void)?) {
-        self.pack().commit { (error) in
-            self.reference.getDocument(completion: { (snapshot, error) in
-                self.snapshot = snapshot
-                block?(snapshot?.reference, error)
-            })
-        }
-    }
-
     // MARK: - KVO
 
     override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -309,6 +275,8 @@ open class Object: NSObject, Document {
         }
     }
 
+    internal var updateBatch: WriteBatch?
+
     /**
      Update the data on Firebase.
      When this function is called, updatedAt of Object is updated at the same time.
@@ -317,15 +285,15 @@ open class Object: NSObject, Document {
      - parameter value: Save to value. If you enter nil
      */
     internal func update(key: String, value: Any) {
-        self.reference.updateData([
-            key : value,
-            (\Object.updatedAt)._kvcKeyPathString!: FieldValue.serverTimestamp()
-            ])
+        let batch: WriteBatch = self.updateBatch ?? Firestore.firestore().batch()
+        batch.setData([key: value], forDocument: self.reference)
+        batch.setData([(\Object.updatedAt)._kvcKeyPathString!: FieldValue.serverTimestamp()], forDocument: self.reference)
+        self.updateBatch = batch
     }
 
     /**
 
-    */
+     */
     @discardableResult
     public func pack(_ batch: WriteBatch? = nil) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
@@ -337,6 +305,59 @@ open class Object: NSObject, Document {
             }
         }
         return batch
+    }
+
+    // MARK: SAVE
+
+    /**
+     Save the new Object to Firebase. Save will fail in the off-line.
+     - parameter completion: If successful reference will return. An error will return if it fails.
+     */
+    @discardableResult
+    public func save(_ block: ((DocumentReference?, Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
+        if isListening {
+            fatalError("[Pring.Document] *** error: \(type(of: self)) has already been saved.")
+        }
+        let ref: DocumentReference = self.reference
+        if self.hasFiles {
+            return self.saveFiles { (error) in
+                if let error = error {
+                    block?(ref, error)
+                    return
+                }
+                self._save(block)
+            }
+        } else {
+            _save(block)
+            return [:]
+        }
+    }
+
+    private func _save(_ block: ((DocumentReference?, Error?) -> Void)?) {
+        self.pack().commit { (error) in
+            self.reference.getDocument(completion: { (snapshot, error) in
+                self.snapshot = snapshot
+                block?(snapshot?.reference, error)
+            })
+        }
+    }
+
+    // MARK: UPDATE
+
+    public func update(_ block: @escaping (Error?) -> Void) {
+        self.updateBatch?.commit(completion: { (error) in
+            block(error)
+        })
+    }
+
+    // MARK: DELETE
+
+    public class func delete(id: String, block: ((Error?) -> Void)? = nil) {
+        self.reference.document(id).delete(completion: block)
+    }
+
+    public func delete(_ block: ((Error?) -> Void)? = nil) {
+        self.reference.delete(completion: block)
     }
 
     // MARK: - File
@@ -403,16 +424,6 @@ open class Object: NSObject, Document {
             }
         }
         return uploadTasks
-    }
-
-    // MARK: - delete
-
-    public class func delete(id: String, block: ((Error?) -> Void)? = nil) {
-        self.reference.document(id).delete(completion: block)
-    }
-
-    public func delete(_ block: ((Error?) -> Void)? = nil) {
-        self.reference.delete(completion: block)
     }
 
     // MARK: -
