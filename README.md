@@ -17,7 +17,7 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 ## Requirements ❗️
 - iOS 10 or later
 - Swift 4.0 or later
-- [Firebase firestore](https://firebase.google.com/docs/database/ios/start)
+- [Firebase firestore](https://firebase.google.com/docs/firestore/quickstart)
 - [Firebase storage](https://firebase.google.com/docs/storage/ios/start)
 - [Cocoapods](https://github.com/CocoaPods/CocoaPods/milestone/32) 1.4 ❗️  ` gem install cocoapods --pre `
 
