@@ -7,20 +7,25 @@
 
 </div>
 
-# Pring
+# Pring <β>
 Firestore model framework.
 
 <b> ⚠️ This code still contains bugs.</b>
+
+Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 
 ## Requirements ❗️
 - iOS 10 or later
 - Swift 4.0 or later
 - [Firebase firestore](https://firebase.google.com/docs/database/ios/start)
 - [Firebase storage](https://firebase.google.com/docs/storage/ios/start)
+- [Cocoapods](https://github.com/CocoaPods/CocoaPods/milestone/32) 1.4 ❗️
 
 ## Installation ⚙
-I'm sorry. Please do not use this library yet.
-We plan to finish the implementation by October 19th.
+#### [CocoaPods](https://github.com/cocoapods/cocoapods)
+
+- Insert `pod 'Pring' ` to your Podfile.
+- Run `pod install`.
 
 
 ## Feature 🎊
@@ -44,14 +49,14 @@ class MyObject: Object {
     dynamic var set: Set<String>                    = ["set"]
     dynamic var bool: Bool                          = true
     dynamic var binary: Data                        = "data".data(using: .utf8)!
-    var file: File                          = File(data: UIImageJPEGRepresentation(UIImage(named: "")!, 1))
+    var file: File                          　　　　　　　　　　　　　　　　= File(data: UIImageJPEGRepresentation(UIImage(named: "")!, 1))
     dynamic var url: URL                            = URL(string: "https://firebase.google.com/")!
     dynamic var int: Int                            = Int.max
     dynamic var float: Double                       = Double.infinity
     dynamic var date: Date                          = Date(timeIntervalSince1970: 100)
     dynamic var geoPoint: GeoPoint                  = GeoPoint(latitude: 0, longitude: 0)
     dynamic var dictionary: [AnyHashable: Any]      = ["key": "value"]
-    var relation: Relation<TestDocument>    = []
+    var relation: Relation<TestDocument>   　　　　　　　　　　　　　　　　 = []
     dynamic var string: String                      = "string"
 }
 ```
@@ -90,7 +95,10 @@ MyObject.get(document!.id, block: { (document, error) in
 #### Update
 ``` swift
 MyObject.get(document!.id, block: { (document, error) in
-    document.string = "newString" // Please do not call save function. It will be saved automatically.
+    document.string = "newString"
+    document.update { error in
+       // update
+    }
 })
 ```
 
