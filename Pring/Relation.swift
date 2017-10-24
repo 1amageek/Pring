@@ -84,7 +84,7 @@ public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayL
         self.init(elements)
     }
 
-    private var countListener: FIRListenerRegistration?
+    private var countListener: ListenerRegistration?
 
     public func setValue(_ value: Any?, forKey key: String) {
         self.key = key

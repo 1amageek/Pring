@@ -55,7 +55,7 @@ public extension Document {
         }
     }
 
-    public static func listen(_ id: String, block: @escaping (Self?, Error?) -> Void) -> FIRListenerRegistration {
+    public static func listen(_ id: String, block: @escaping (Self?, Error?) -> Void) -> ListenerRegistration {
         let options: DocumentListenOptions = DocumentListenOptions()
         return self.reference.document(id).addSnapshotListener(options: options) { (snapshot, error) in
             guard let snapshot: DocumentSnapshot = snapshot else {

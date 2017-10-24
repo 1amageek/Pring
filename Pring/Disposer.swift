@@ -20,10 +20,10 @@ public protocol ReferenceObservationDisposable {
 public final class Disposer<T: Document>: ReferenceObservationDisposable {
     public enum ObserveType {
         case none
-        case array(FIRListenerRegistration)
-        case value(FIRListenerRegistration)
+        case array(ListenerRegistration)
+        case value(ListenerRegistration)
 
-        public var listener: FIRListenerRegistration? {
+        public var listener: ListenerRegistration? {
             switch self {
             case .array(let listener):
                 return listener

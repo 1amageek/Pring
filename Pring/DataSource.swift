@@ -74,7 +74,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
 
     private let fetchQueue: DispatchQueue = DispatchQueue(label: "Pring.datasource.fetch.queue")
 
-    private var listenr: FIRListenerRegistration?
+    private var listenr: ListenerRegistration?
 
     private var nextReference: Query?
 
