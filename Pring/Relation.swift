@@ -17,9 +17,9 @@ public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayL
 
     public typealias ArrayLiteralElement = T
 
-    private var _self: DataSource<T>
+    internal var _self: DataSource<T>
 
-    private var _count: Int = 0
+    internal var _count: Int = 0
 
     /// Contains the Object holding the property.
     public weak var parent: Object?

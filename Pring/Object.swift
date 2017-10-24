@@ -11,7 +11,7 @@ import FirebaseStorage
 
 open class Object: NSObject, Document {
 
-    open static var version: Int {
+    open static var modelVersion: Int {
         return 1
     }
 
@@ -20,11 +20,11 @@ open class Object: NSObject, Document {
     }
 
     open static var path: String {
-        return "version/\(self.version)/\(self.modelName)"
+        return "version/\(self.modelVersion)/\(self.modelName)"
     }
 
     open static var reference: CollectionReference {
-        return Firestore.firestore().collection("version").document("\(self.version)").collection(self.modelName)
+        return Firestore.firestore().collection("version").document("\(self.modelVersion)").collection(self.modelName)
     }
 
     open static var storageRef: StorageReference {
@@ -474,7 +474,7 @@ extension Object {
         return self.id.hash
     }
     public static func == (lhs: Object, rhs: Object) -> Bool {
-        return lhs.id == rhs.id && type(of: lhs).version == type(of: rhs).version
+        return lhs.id == rhs.id && type(of: lhs).modelVersion == type(of: rhs).modelVersion
     }
 }
 

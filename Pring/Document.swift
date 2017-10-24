@@ -14,7 +14,7 @@ import FirebaseStorage
  */
 public protocol Document: NSObjectProtocol, Hashable {
 
-    static var version: Int { get }
+    static var modelVersion: Int { get }
 
     static var modelName: String { get }
 
