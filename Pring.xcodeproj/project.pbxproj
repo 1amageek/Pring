@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		123546C61FA1A939006DBDD6 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF830E1F8CAEEC00561159 /* DataSource.swift */; };
+		123546C71FA1A939006DBDD6 /* DataType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83101F8CAEEC00561159 /* DataType.swift */; };
+		123546C81FA1A939006DBDD6 /* Disposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF830F1F8CAEEC00561159 /* Disposer.swift */; };
+		123546C91FA1A939006DBDD6 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83111F8CAEEC00561159 /* Document.swift */; };
+		123546CA1FA1A939006DBDD6 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83121F8CAEEC00561159 /* File.swift */; };
+		123546CB1FA1A939006DBDD6 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83131F8CAEEC00561159 /* Object.swift */; };
+		123546CC1FA1A939006DBDD6 /* ReferenceCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83161F8CAEED00561159 /* ReferenceCollection.swift */; };
+		123546CD1FA1A939006DBDD6 /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83141F8CAEEC00561159 /* Relation.swift */; };
 		124F92111F8DD6D000BEC128 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124F92101F8DD6D000BEC128 /* Test.swift */; };
 		12AF82FE1F8CAEDE00561159 /* Pring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AF82F41F8CAEDE00561159 /* Pring.framework */; };
 		12AF83031F8CAEDE00561159 /* PringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83021F8CAEDE00561159 /* PringTests.swift */; };
@@ -558,7 +566,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				123546CC1FA1A939006DBDD6 /* ReferenceCollection.swift in Sources */,
+				123546CD1FA1A939006DBDD6 /* Relation.swift in Sources */,
+				123546C61FA1A939006DBDD6 /* DataSource.swift in Sources */,
+				123546C71FA1A939006DBDD6 /* DataType.swift in Sources */,
+				123546CA1FA1A939006DBDD6 /* File.swift in Sources */,
+				123546C91FA1A939006DBDD6 /* Document.swift in Sources */,
 				12AF83211F8CAF6E00561159 /* TestDocument.swift in Sources */,
+				123546C81FA1A939006DBDD6 /* Disposer.swift in Sources */,
+				123546CB1FA1A939006DBDD6 /* Object.swift in Sources */,
 				12AF83031F8CAEDE00561159 /* PringTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

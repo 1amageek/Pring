@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Pring
+//@testable import Pring
 import FirebaseFirestore
 import FirebaseStorage
 import FirebaseCore
@@ -72,24 +72,28 @@ class PringTests: XCTestCase {
                         document?.dictionary = ["key": "update"]
                         document?.string = "update"
 
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                        document?.update({ (error) in
                             TestDocument.get(document!.id, block: { (document, error) in
                                 XCTAssertNotNil(document)
-
-//                                XCTAssertEqual(document?.array.first, "update")
-//                                XCTAssertEqual(document?.set.first, "update")
-//                                XCTAssertEqual(document?.bool, false)
-//                                XCTAssertEqual(String(data: document!.binary, encoding: .utf8), "update")
-//                                XCTAssertEqual(document?.url.absoluteString, "https://firebase.google.com/update")
-//                                XCTAssertEqual(document?.int, 0)
-//                                XCTAssertEqual(document?.float, 0)
-//                                XCTAssertEqual(document?.date, Date(timeIntervalSince1970: 1000))
-//                                XCTAssertEqual(document?.geoPoint, GeoPoint(latitude: 0, longitude: 0))
-//                                XCTAssertEqual(document?.dictionary.keys.first, "key")
-//                                XCTAssertEqual(document?.dictionary.values.first as! String, "update")
+                                print(document)
+                                XCTAssertEqual(document?.array.first, "update")
+                                XCTAssertEqual(document?.set.first, "update")
+                                XCTAssertEqual(document?.bool, false)
+                                XCTAssertEqual(String(data: document!.binary, encoding: .utf8), "update")
+                                XCTAssertEqual(document?.url.absoluteString, "https://firebase.google.com/update")
+                                XCTAssertEqual(document?.int, 0)
+                                XCTAssertEqual(document?.float, 0)
+                                XCTAssertEqual(document?.date, Date(timeIntervalSince1970: 1000))
+                                XCTAssertEqual(document?.geoPoint, GeoPoint(latitude: 0, longitude: 0))
+                                XCTAssertEqual(document?.dictionary.keys.first, "key")
+                                XCTAssertEqual(document?.dictionary.values.first as! String, "update")
                                 XCTAssertEqual(document?.string, "update")
                                 expectation.fulfill()
                             })
+                        })
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+
                         })
                     }
 

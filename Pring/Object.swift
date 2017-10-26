@@ -129,7 +129,7 @@ open class Object: NSObject, Document {
                                 self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                                 return
                             }
-                            switch DataType(key: key, value: value) {
+                            switch DataType(key: key, value: value, data: data) {
                             case .array         (let key, _, let value):                self.setValue(value, forKey: key)
                             case .set           (let key, _, let value):                self.setValue(value, forKey: key)
                             case .bool          (let key, _, let value):                self.setValue(value, forKey: key)
@@ -285,9 +285,11 @@ open class Object: NSObject, Document {
      - parameter value: Save to value. If you enter nil
      */
     internal func update(key: String, value: Any) {
-        let batch: WriteBatch = self.updateBatch ?? Firestore.firestore().batch()
-        batch.setData([key: value], forDocument: self.reference)
-        batch.setData([(\Object.updatedAt)._kvcKeyPathString!: FieldValue.serverTimestamp()], forDocument: self.reference)
+        let batch: WriteBatch = self.updateBatch ?? self.reference.firestore.batch()
+        batch.updateData([
+            key: value,
+            (\Object.updatedAt)._kvcKeyPathString!: FieldValue.serverTimestamp()
+            ], forDocument: self.reference)
         self.updateBatch = batch
     }
 
@@ -344,9 +346,9 @@ open class Object: NSObject, Document {
 
     // MARK: UPDATE
 
-    public func update(_ block: @escaping (Error?) -> Void) {
+    public func update(_ block: ((Error?) -> Void)? = nil) {
         self.updateBatch?.commit(completion: { (error) in
-            block(error)
+            block?(error)
         })
     }
 
