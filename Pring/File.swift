@@ -306,13 +306,15 @@ public final class File: NSObject {
     }
 
     deinit {
-        print("!!!!!!!!")
         self.parent = nil
     }
 
     // MARK: -
 
     override public var description: String {
-        return "Pring.File"
+        let base: String =
+            "  name: \(self.name)\n" +
+            "  url: \(self.url?.absoluteString ?? "")\n"
+        return "File {\n\(base)}"
     }
 }

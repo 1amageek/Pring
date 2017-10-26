@@ -120,7 +120,6 @@ class PringTests: XCTestCase {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test File")
         let document: TestDocument = TestDocument()
         let file0: File = document.file
-        print(file0.name)
         document.save { (ref, error) in
             TestDocument.get(ref!.documentID, block: { (document, error) in
                 XCTAssertNotNil(document)
@@ -137,6 +136,31 @@ class PringTests: XCTestCase {
         }
         self.wait(for: [expectation], timeout: 10)
     }
+
+    func testMemory() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test File")
+        weak var weakDocument: TestDocument?
+
+        do {
+            let document: TestDocument = TestDocument()
+            weakDocument = document
+            document.save({ (ref, error) in
+                TestDocument.get(ref!.documentID, block: { (document, error) in
+                    let file1: File = File(data: UIImagePNGRepresentation(TestDocument.image1())!, mimeType: .png)
+                    document?.file = file1
+                    document?.file.update({ (metadata, error) in
+                        TestDocument.get(ref!.documentID, block: { (document, error) in
+                            expectation.fulfill()
+                        })
+                    })
+                })
+            })
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+        XCTAssertNil(weakDocument)
+    }
+
     
     func testPerformanceExample() {
         // This is an example of a performance test case.

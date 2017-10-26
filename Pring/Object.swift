@@ -450,7 +450,6 @@ open class Object: NSObject, Document {
     // MARK: Deinit
 
     deinit {
-        print(self, "&&&&&&&&&")
         if self.isListening {
             Mirror(reflecting: self).children.forEach { (key, value) in
                 if let key: String = key {
