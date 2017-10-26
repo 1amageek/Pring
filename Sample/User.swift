@@ -11,7 +11,7 @@ import Foundation
 @objcMembers
 class User: Object {
 
-    dynamic var name: String?
+    dynamic var name: String? = "NULL"
 //    var thumbnailImage: File?
 //    var followers: Relation<User> = []
 }

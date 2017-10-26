@@ -23,18 +23,16 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
 
-//        let user: User = User()
+        let user: User = User()
 //        user.name = "A"
-//        user.save { (ref, error) in
-//            print(user)
-//            user.name = "B"
-//            print(user)
-//            user.update { (error) in
-//                User.get(ref!.documentID, block: { (aUser, error) in
-//                    print(aUser)
-//                })
-//            }
-//        }
+        user.save { (ref, error) in
+            user.name = "B"
+            user.update { (error) in
+                User.get(ref!.documentID, block: { (aUser, error) in
+                    print(aUser)
+                })
+            }
+        }
 
 
 //        let ref = Firestore.firestore().collection("test1").document("id")

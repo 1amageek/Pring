@@ -85,6 +85,11 @@ public enum DataType {
                 self = .date(key, value, value)
                 return
             }
+        case is Data:
+            if let value: Data = value as? Data {
+                self = .binary(key, value, value)
+                return
+            }
         case is GeoPoint:
             if let value: GeoPoint = value as? GeoPoint {
                 self = .geoPoint(key, value, value)
@@ -189,6 +194,16 @@ public enum DataType {
         } else if subjectType == Date.self || subjectType == Date?.self {
             if let value: Date = data[key] as? Date {
                 self = .date(key, value, value)
+                return
+            }
+        } else if subjectType == Data.self || subjectType == Data?.self {
+            if let value: Data = data[key] as? Data {
+                self = .binary(key, value, value)
+                return
+            }
+        } else if subjectType == GeoPoint.self || subjectType == GeoPoint?.self {
+            if let value: GeoPoint = data[key] as? GeoPoint {
+                self = .geoPoint(key, value, value)
                 return
             }
         } else if subjectType == [Int].self || subjectType == [Int]?.self {

@@ -117,7 +117,7 @@ public final class File: NSObject {
     public var metadata: StorageMetadata?
 
     /// Parent to hold the location where you want to save
-    public weak var parent: Object?
+    public var parent: Object?
 
     /// Property name to save
     public var key: String?
@@ -153,6 +153,8 @@ public final class File: NSObject {
 
     /// Firebase downloading task
     public fileprivate(set) weak var downloadTask: StorageDownloadTask?
+
+    internal var garbage: StorageReference?
 
     // MARK: - Initialize
 
@@ -212,24 +214,25 @@ public final class File: NSObject {
         }
 
         if let data: Data = self.data {
-            self.uploadTask = self.ref?.putData(data, metadata: metadata) { [weak self] (metadata, error) in
-                guard let `self` = self else { return }
+            self.uploadTask = self.ref?.putData(data, metadata: metadata) { (metadata, error) in
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
+                print(self.name, self.parent, self.parent?.isListening)
                 if let parent: Object = self.parent, parent.isListening {
                     parent.update(key: key, value: self.value)
-                    completion?(metadata, error as Error?)
+                    parent.update { (error) in
+                        completion?(metadata, error)
+                    }
                 } else {
-                    completion?(metadata, error as Error?)
+                    completion?(metadata, error)
                 }
             }
             return self.uploadTask
         } else if let url: URL = self.url {
-            self.uploadTask = self.ref?.putFile(from: url, metadata: metadata, completion: { [weak self] (metadata, error) in
-                guard let `self` = self else { return }
+            self.uploadTask = self.ref?.putFile(from: url, metadata: metadata, completion: { (metadata, error) in
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
@@ -237,9 +240,11 @@ public final class File: NSObject {
                 }
                 if let parent: Object = self.parent, parent.isListening {
                     parent.update(key: key, value: self.value)
-                    completion?(metadata, error as Error?)
+                    parent.update { (error) in
+                        completion?(metadata, error)
+                    }
                 } else {
-                    completion?(metadata, error as Error?)
+                    completion?(metadata, error)
                 }
             })
             return self.uploadTask
@@ -250,19 +255,47 @@ public final class File: NSObject {
         return nil
     }
 
-    public func update(completion: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
+    // MARK: - UPDATE
+
+    @discardableResult
+    public func update(_ block: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
         guard let _: Object = self.parent, let key: String = self.key else {
             let error: DocumentError = DocumentError(kind: .invalidFile, description: "It requires data when you save the file")
-            completion?(nil, error)
+            block?(nil, error)
             return nil
         }
 
-        return self.save(key, completion: completion)
+        return self.save(key, completion: { (metadata, error) in
+            if let error = error {
+                block?(nil, error)
+                return
+            }
+            if let ref: StorageReference = self.garbage {
+                ref.delete(completion: { (error) in
+                    block?(metadata, error)
+                })
+            } else {
+                block?(metadata, error)
+            }
+        })
+    }
+
+    // MARK: - DELETE
+
+    public func delete(_ block: ((Error?) -> Void)? = nil) {
+        self.ref?.delete(completion: { (error) in
+            if let parent: Object = self.parent, let key: String = self.key, parent.isListening {
+                parent.update(key: key, value: FieldValue.delete())
+                parent.update(block)
+            } else {
+                block?(error)
+            }
+        })
     }
 
     // MARK: - Load
 
-    public func dataWithMaxSize(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> StorageDownloadTask? {
+    public func getData(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> StorageDownloadTask? {
         self.downloadTask?.cancel()
         let task: StorageDownloadTask? = self.ref?.getData(maxSize: size, completion: { (data, error) in
             self.downloadTask = nil
@@ -272,17 +305,8 @@ public final class File: NSObject {
         return task
     }
 
-    public func remove() {
-        self.remove(nil)
-    }
-
-    public func remove(_ completion: ((Error?) -> Void)?) {
-        self.ref?.delete(completion: { (error) in
-            completion?(error)
-        })
-    }
-
     deinit {
+        print("!!!!!!!!")
         self.parent = nil
     }
 
@@ -291,5 +315,4 @@ public final class File: NSObject {
     override public var description: String {
         return "Pring.File"
     }
-
 }

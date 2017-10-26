@@ -239,25 +239,16 @@ open class Object: NSObject, Document {
                 case .binary        (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .file          (let key, _, _):
                     if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
-                        guard let new: File = change[.newKey] as? File else {
-                            if let old: File = change[.oldKey] as? File {
-                                old.parent = self
-                                old.key = key
-                                old.remove()
-                            }
-                            return
+                        guard let currentFile: File = change[.newKey] as? File else {
+                            fatalError("[Pring.Document] *** error: The file has been set to nil. If you mean delete, please use File.delete.")
                         }
-                        if let old: File = change[.oldKey] as? File {
-                            if old.name != new.name {
-                                new.parent = self
-                                new.key = key
-                                old.parent = self
-                                old.key = key
-                            }
-                        } else {
-                            new.parent = self
-                            new.key = key
+                        if let previousFile: File = change[.oldKey] as? File {
+                            previousFile.parent = self
+                            previousFile.key = key
+                            currentFile.garbage = previousFile.ref
                         }
+                        currentFile.parent = self
+                        currentFile.key = key
                     }
                 case .url           (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .int           (let key, let updateValue, _):   update(key: key, value: updateValue)
@@ -275,7 +266,7 @@ open class Object: NSObject, Document {
         }
     }
 
-    internal var updateBatch: WriteBatch?
+    internal var updateValue: [AnyHashable: Any] = [:]
 
     /**
      Update the data on Firebase.
@@ -285,12 +276,7 @@ open class Object: NSObject, Document {
      - parameter value: Save to value. If you enter nil
      */
     internal func update(key: String, value: Any) {
-        let batch: WriteBatch = self.updateBatch ?? self.reference.firestore.batch()
-        batch.updateData([
-            key: value,
-            (\Object.updatedAt)._kvcKeyPathString!: FieldValue.serverTimestamp()
-            ], forDocument: self.reference)
-        self.updateBatch = batch
+        updateValue[key] = value
     }
 
     /**
@@ -347,7 +333,11 @@ open class Object: NSObject, Document {
     // MARK: UPDATE
 
     public func update(_ block: ((Error?) -> Void)? = nil) {
-        self.updateBatch?.commit(completion: { (error) in
+        updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+        let batch: WriteBatch = self.reference.firestore.batch()
+        batch.updateData(updateValue, forDocument: self.reference)
+        batch.commit(completion: { (error) in
+            self.updateValue = [:]
             block?(error)
         })
     }
@@ -399,11 +389,12 @@ open class Object: NSObject, Document {
                             uploadTasks.forEach({ (_, task) in
                                 task.cancel()
                             })
+                            group.leave()
                             return
                         }
-                        group.leave()
                     }) {
                         uploadTasks[key] = task
+                        group.leave()
                     }
                 }
             }
@@ -459,6 +450,7 @@ open class Object: NSObject, Document {
     // MARK: Deinit
 
     deinit {
+        print(self, "&&&&&&&&&")
         if self.isListening {
             Mirror(reflecting: self).children.forEach { (key, value) in
                 if let key: String = key {
