@@ -38,9 +38,9 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 
 ## Usage
 
-### Scheme 
+### Model 
 
-The definition of the schema inherits from Object.
+Pring inherits Object class and defines the Model. Pring supports many data types.
 
 ``` swift
 @objcMembers
@@ -49,15 +49,16 @@ class MyObject: Object {
     dynamic var set: Set<String>                    = ["set"]
     dynamic var bool: Bool                          = true
     dynamic var binary: Data                        = "data".data(using: .utf8)!
-    var file: File                          　　　　　　　　　　　　　　　　= File(data: UIImageJPEGRepresentation(UIImage(named: "")!, 1))
+    dynamic var file: File                          = File(data: UIImageJPEGRepresentation(UIImage(named: "")!, 1))
     dynamic var url: URL                            = URL(string: "https://firebase.google.com/")!
     dynamic var int: Int                            = Int.max
     dynamic var float: Double                       = Double.infinity
     dynamic var date: Date                          = Date(timeIntervalSince1970: 100)
     dynamic var geoPoint: GeoPoint                  = GeoPoint(latitude: 0, longitude: 0)
-    dynamic var dictionary: [AnyHashable: Any]      = ["key": "value"]
-    var relation: Relation<TestDocument>   　　　　　　　　　　　　　　　　 = []
+    dynamic var dictionary: [AnyHashable: Any]      = ["key": "value"]    
     dynamic var string: String                      = "string"
+    
+    let relation: Relation<TestDocument>   　　　　　　　　　　　　　　　　 = []
 }
 ```
 
@@ -77,15 +78,22 @@ class MyObject: Object {
 |String|It is String type.|
 |Null|It is Null type.|
 
-### Save and Update
+
+### ⚙️ Manage data
 
 #### Save
+Document can be saved only once.
+
 ``` swift
 let object: MyObject = MyObject()
-object.save()
+object.save { (ref, error) in
+   // completion
+}
 ```
 
 #### Retrieve
+Retrieve document with ID.
+
 ``` swift
 MyObject.get(document!.id, block: { (document, error) in
     // do something
@@ -93,6 +101,9 @@ MyObject.get(document!.id, block: { (document, error) in
 ```
 
 #### Update
+Document has an update method.
+Be careful as it is different from [Salada](https://github.com/1amageek/Salada).
+
 ``` swift
 MyObject.get(document!.id, block: { (document, error) in
     document.string = "newString"
@@ -103,10 +114,50 @@ MyObject.get(document!.id, block: { (document, error) in
 ```
 
 #### Delete
+Delete document with ID.
+
 ``` swift
 MyObject.delete(id: document!.id)
 ```
 
+### 📄 File
+**Pring** has a File class because it seamlessly works with Firebase Storage.
+File is saved with Document Save at the same time.
+
+``` swift
+let object: MyObject = MyObject()
+object.thumbnailImage = File(data: PNG_DATA, mimeType: .png)
+let tasks: [String: StorageUploadTask] = object.save { (ref, error) in
+
+}
+```
+
+`save` method returns the StorageUploadTask that is set with the key.
+For details on how to use StorageUploadTask, refer to [Firebase docs](https://firebase.google.com/docs/storage/ios/upload-files?authuser=0).
+
+``` swift
+let task: StorageUploadTask = tasks["thumbnailImage"]
+```
+
+If the Document is already saved, please use update method.
+`update` method also returns StorageUploadTask.
+Running update method automatically deletes old files.
+
+``` swift
+let newFile: File = File(data: PNG_DATA, mimeType: .png)
+object.thumbnailImage = newFile
+let task: StorageUploadTask = object.thumbnailImage.update { (metadata, error) in
+
+}
+```
+
+Delete it with `delete` method.
+
+``` swift
+object.thumbnailImage.delete { (error) in
+
+}
+```
 
 ### DataSource
 
