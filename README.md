@@ -17,9 +17,9 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 ## Requirements ❗️
 - iOS 10 or later
 - Swift 4.0 or later
-- [Firebase firestore](https://firebase.google.com/docs/database/ios/start)
+- [Firebase firestore](https://firebase.google.com/docs/firestore/quickstart)
 - [Firebase storage](https://firebase.google.com/docs/storage/ios/start)
-- [Cocoapods](https://github.com/CocoaPods/CocoaPods/milestone/32) 1.4 ❗️
+- [Cocoapods](https://github.com/CocoaPods/CocoaPods/milestone/32) 1.4 ❗️  ` gem install cocoapods --pre `
 
 ## Installation ⚙
 #### [CocoaPods](https://github.com/cocoapods/cocoapods)
@@ -115,7 +115,7 @@ DataSource is a class for easy handling of data retrieval from Collection.
 override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.dataSource = DataSource(reference: User.reference, block: { [weak self](changes) in
+    self.dataSource = DataSource(reference: User.reference) { [weak self] (changes) in
         guard let tableView: UITableView = self?.tableView else { return }
 
         switch changes {
@@ -130,7 +130,7 @@ override func viewDidLoad() {
         case .error(let error):
             print(error)
         }
-    })
+    }
 }
 
 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
