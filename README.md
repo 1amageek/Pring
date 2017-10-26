@@ -122,6 +122,8 @@ MyObject.delete(id: document!.id)
 
 ### 📄 File
 **Pring** has a File class because it seamlessly works with Firebase Storage.
+
+#### Save
 File is saved with Document Save at the same time.
 
 ``` swift
@@ -139,6 +141,16 @@ For details on how to use StorageUploadTask, refer to [Firebase docs](https://fi
 let task: StorageUploadTask = tasks["thumbnailImage"]
 ```
 
+#### Get data
+Get data with size.
+
+``` swift
+let task: StorageDownloadTask = object.thumbnail.getData(100000, block: { (data, error) in
+    // do something
+})
+```
+
+#### Update
 If the Document is already saved, please use update method.
 `update` method also returns StorageUploadTask.
 Running update method automatically deletes old files.
@@ -151,6 +163,7 @@ let task: StorageUploadTask = object.thumbnailImage.update { (metadata, error) i
 }
 ```
 
+#### Delete
 Delete it with `delete` method.
 
 ``` swift
