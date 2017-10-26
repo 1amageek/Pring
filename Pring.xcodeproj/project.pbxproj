@@ -15,6 +15,7 @@
 		123546CB1FA1A939006DBDD6 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83131F8CAEEC00561159 /* Object.swift */; };
 		123546CC1FA1A939006DBDD6 /* ReferenceCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83161F8CAEED00561159 /* ReferenceCollection.swift */; };
 		123546CD1FA1A939006DBDD6 /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83141F8CAEEC00561159 /* Relation.swift */; };
+		123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */; };
 		124F92111F8DD6D000BEC128 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124F92101F8DD6D000BEC128 /* Test.swift */; };
 		12AF82FE1F8CAEDE00561159 /* Pring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AF82F41F8CAEDE00561159 /* Pring.framework */; };
 		12AF83031F8CAEDE00561159 /* PringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83021F8CAEDE00561159 /* PringTests.swift */; };
@@ -63,6 +64,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestOptionalDocument.swift; sourceTree = "<group>"; };
 		124F92101F8DD6D000BEC128 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		12649F021F9F6567004C6130 /* Pring.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pring.podspec; sourceTree = "<group>"; };
 		12AF82F41F8CAEDE00561159 /* Pring.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pring.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -176,6 +178,7 @@
 				12AF83221F8CD0B100561159 /* GoogleService-Info.plist */,
 				12AF83021F8CAEDE00561159 /* PringTests.swift */,
 				12AF83201F8CAF6E00561159 /* TestDocument.swift */,
+				123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */,
 				12AF83261F8CD1ED00561159 /* Pring.png */,
 				12AF83041F8CAEDE00561159 /* Info.plist */,
 			);
@@ -570,6 +573,7 @@
 				123546CD1FA1A939006DBDD6 /* Relation.swift in Sources */,
 				123546C61FA1A939006DBDD6 /* DataSource.swift in Sources */,
 				123546C71FA1A939006DBDD6 /* DataType.swift in Sources */,
+				123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */,
 				123546CA1FA1A939006DBDD6 /* File.swift in Sources */,
 				123546C91FA1A939006DBDD6 /* Document.swift in Sources */,
 				12AF83211F8CAF6E00561159 /* TestDocument.swift in Sources */,

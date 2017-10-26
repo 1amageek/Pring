@@ -117,7 +117,7 @@ public final class File: NSObject {
     public var metadata: StorageMetadata?
 
     /// Parent to hold the location where you want to save
-    public var parent: Object?
+    public weak var parent: Object?
 
     /// Property name to save
     public var key: String?
@@ -214,14 +214,14 @@ public final class File: NSObject {
         }
 
         if let data: Data = self.data {
+            let parent: Object? = self.parent
             self.uploadTask = self.ref?.putData(data, metadata: metadata) { (metadata, error) in
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
-                print(self.name, self.parent, self.parent?.isListening)
-                if let parent: Object = self.parent, parent.isListening {
+                if let parent: Object = parent, parent.isListening {
                     parent.update(key: key, value: self.value)
                     parent.update { (error) in
                         completion?(metadata, error)
@@ -232,13 +232,14 @@ public final class File: NSObject {
             }
             return self.uploadTask
         } else if let url: URL = self.url {
+            let parent: Object? = self.parent
             self.uploadTask = self.ref?.putFile(from: url, metadata: metadata, completion: { (metadata, error) in
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
-                if let parent: Object = self.parent, parent.isListening {
+                if let parent: Object = parent, parent.isListening {
                     parent.update(key: key, value: self.value)
                     parent.update { (error) in
                         completion?(metadata, error)
@@ -286,14 +287,17 @@ public final class File: NSObject {
         self.ref?.delete(completion: { (error) in
             if let parent: Object = self.parent, let key: String = self.key, parent.isListening {
                 parent.update(key: key, value: FieldValue.delete())
-                parent.update(block)
+                parent.update { error in
+                    parent[key] = nil
+                    block?(error)
+                }
             } else {
                 block?(error)
             }
         })
     }
 
-    // MARK: - Load
+    // MARK: - RETRIEVE
 
     public func getData(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> StorageDownloadTask? {
         self.downloadTask?.cancel()
@@ -314,7 +318,9 @@ public final class File: NSObject {
     override public var description: String {
         let base: String =
             "  name: \(self.name)\n" +
-            "  url: \(self.url?.absoluteString ?? "")\n"
+            "  url: \(self.url?.absoluteString ?? "")\n" +
+            "  hasParent: \(self.parent != nil ? "true" : "false")\n" +
+            "  key: \(self.key ?? "")\n"
         return "File {\n\(base)}"
     }
 }

@@ -137,6 +137,23 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testFileDelete() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test File delte")
+        let document: TestOptionalDocument = TestOptionalDocument()
+        let file: File = File(data: UIImagePNGRepresentation(TestDocument.image1())!, mimeType: .png)
+        document.file = file
+        document.save { (ref, error) in
+            TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
+                document?.file?.delete({ (error) in
+                    XCTAssertNotNil(document)
+                    XCTAssertNil(document?.file)
+                    expectation.fulfill()
+                })
+            })
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testMemory() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test File")
         weak var weakDocument: TestDocument?
@@ -162,11 +179,11 @@ class PringTests: XCTestCase {
     }
 
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+//    func testPerformanceExample() {
+//        // This is an example of a performance test case.
+//        self.measure {
+//            // Put the code you want to measure the time of here.
+//        }
+//    }
     
 }

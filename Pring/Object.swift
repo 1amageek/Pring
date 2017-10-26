@@ -134,7 +134,7 @@ open class Object: NSObject, Document {
                             case .set           (let key, _, let value):                self.setValue(value, forKey: key)
                             case .bool          (let key, _, let value):                self.setValue(value, forKey: key)
                             case .binary        (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .file          (let key, _, let value):                self.setValue(value, forKey: key)
+                            case .file          (let key, _, let value):                self.setValue(value, forKey: key); value.parent = self; value.key = key
                             case .url           (let key, _, let value):                self.setValue(value, forKey: key)
                             case .int           (let key, _, let value):                self.setValue(value, forKey: key)
                             case .float         (let key, _, let value):                self.setValue(value, forKey: key)
@@ -432,7 +432,7 @@ open class Object: NSObject, Document {
             guard let label: String = children.0 else {
                 return result
             }
-            return result + "  \(label): \(children.1)\n"
+            return result + "  \(label): \(String(describing: children.1))\n"
         }
         let _self: String = String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!
         return "\(_self) {\n\(values)}"
