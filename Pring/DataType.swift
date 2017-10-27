@@ -139,42 +139,43 @@ public enum DataType {
     public init(key: String, value: Any, data: [String: Any]) {
         let mirror: Mirror = Mirror(reflecting: value)
         let subjectType: Any.Type = mirror.subjectType
-        if subjectType == Bool.self || subjectType == Bool?.self {
+        DataType.verify(value: value)
+        if subjectType == Bool.self {
             if let value: Bool = data[key] as? Bool {
                 self = .bool(key, Bool(value), Bool(value))
                 return
             }
-        } else if subjectType == Int.self || subjectType == Int?.self {
+        } else if subjectType == Int.self {
             if let value: Int = data[key] as? Int {
                 self = .int(key, Int(value), Int(value))
                 return
             }
-        } else if subjectType == Int8.self || subjectType == Int8?.self {
+        } else if subjectType == Int8.self {
             if let value: Int = data[key] as? Int {
                 self = .int(key, Int(value), Int(value))
                 return
             }
-        } else if subjectType == Int16.self || subjectType == Int16?.self {
+        } else if subjectType == Int16.self {
             if let value: Int = data[key] as? Int {
                 self = .int(key, Int(value), Int(value))
                 return
             }
-        } else if subjectType == Int32.self || subjectType == Int32?.self {
+        } else if subjectType == Int32.self {
             if let value: Int = data[key] as? Int {
                 self = .int(key, Int(value), Int(value))
                 return
             }
-        } else if subjectType == Int64.self || subjectType == Int64?.self {
+        } else if subjectType == Int64.self {
             if let value: Int = data[key] as? Int {
                 self = .int(key, Int(value), Int(value))
                 return
             }
-        } else if subjectType == Float.self || subjectType == Float?.self {
+        } else if subjectType == Float.self {
             if let value: Float = data[key] as? Float {
                 self = .float(key, Double(value), Double(value))
                 return
             }
-        } else if subjectType == Double.self || subjectType == Double?.self {
+        } else if subjectType == Double.self {
             if let value: Double = data[key] as? Double {
                 self = .float(key, Double(value), Double(value))
                 return
@@ -270,6 +271,22 @@ public enum DataType {
             self = .null
         }
         self = .null
+    }
+
+    static func verify(value: Any) {
+        let mirror: Mirror = Mirror(reflecting: value)
+        let subjectType: Any.Type = mirror.subjectType
+        if
+                subjectType == Bool?.self ||
+                subjectType == Int?.self ||
+                subjectType == Int8?.self ||
+                subjectType == Int16?.self ||
+                subjectType == Int32?.self ||
+                subjectType == Int64?.self ||
+                subjectType == Float?.self ||
+                subjectType == Double?.self {
+            fatalError("[Pring.DataType] *** error: Invalid DataType. \(subjectType) is number. Pring not support optional number type." )
+        }
     }
 }
 

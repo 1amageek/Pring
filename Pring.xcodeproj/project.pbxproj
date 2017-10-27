@@ -65,6 +65,7 @@
 
 /* Begin PBXFileReference section */
 		123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestOptionalDocument.swift; sourceTree = "<group>"; };
+		124757B31FA31A0C00FA517D /* SubCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCollection.swift; sourceTree = "<group>"; };
 		124F92101F8DD6D000BEC128 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		12649F021F9F6567004C6130 /* Pring.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pring.podspec; sourceTree = "<group>"; };
 		12AF82F41F8CAEDE00561159 /* Pring.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pring.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,6 +167,7 @@
 				12AF83121F8CAEEC00561159 /* File.swift */,
 				12AF83131F8CAEEC00561159 /* Object.swift */,
 				12AF83161F8CAEED00561159 /* ReferenceCollection.swift */,
+				124757B31FA31A0C00FA517D /* SubCollection.swift */,
 				12AF83141F8CAEEC00561159 /* Relation.swift */,
 				12AF82F81F8CAEDE00561159 /* Info.plist */,
 			);

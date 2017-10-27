@@ -74,6 +74,7 @@ open class Object: NSObject, Document {
     private func _init() {
         let mirror: Mirror = Mirror(reflecting: self)
         mirror.children.forEach { (child) in
+            DataType.verify(value: child.value)
             if child.value is ReferenceCollection {
                 var relation: ReferenceCollection = child.value as! ReferenceCollection
                 relation.parent = self

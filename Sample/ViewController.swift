@@ -22,17 +22,27 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let a: User = User()
+        a.name = "A"
+        a.age = 3
 
-        let user: User = User()
-//        user.name = "A"
-        user.save { (ref, error) in
-            user.name = "B"
-            user.update { (error) in
-                User.get(ref!.documentID, block: { (aUser, error) in
-                    print(aUser)
-                })
-            }
-        }
+        let b: User = User()
+        b.name = "B"
+        b.age = 4
+
+        a.followers.insert(b)
+        a.save()
+
+
+
+//        user.save { (ref, error) in
+//            user.name = "B"
+//            user.update { (error) in
+//                User.get(ref!.documentID, block: { (aUser, error) in
+//                    print(aUser)
+//                })
+//            }
+//        }
 
 
 //        let ref = Firestore.firestore().collection("test1").document("id")

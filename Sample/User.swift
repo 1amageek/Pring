@@ -12,6 +12,13 @@ import Foundation
 class User: Object {
 
     dynamic var name: String? = "NULL"
+    dynamic var age: Int = 0
+    dynamic var followers: Relation<User> = []
 //    var thumbnailImage: File?
 //    var followers: Relation<User> = []
 }
+
+//class Follower: Relation<User> {
+//
+//}
+

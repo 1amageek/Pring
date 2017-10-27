@@ -16,11 +16,11 @@ class TestOptionalDocument: Object {
 
     dynamic var array: [String]?
     dynamic var set: Set<String>?
-    dynamic var bool: Bool?
+    dynamic var bool: Bool = false
     dynamic var binary: Data?
     dynamic var url: URL?
-    dynamic var int: Int?
-    dynamic var float: Double?
+    dynamic var int: Int = 0
+    dynamic var float: Double = 0
     dynamic var date: Date?
     dynamic var geoPoint: GeoPoint?
     dynamic var dictionary: [AnyHashable: Any]?
