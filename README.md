@@ -79,7 +79,7 @@ class MyObject: Object {
 |String|It is String type.|
 |Null|It is Null type.|
 
-⚠️ `Int` `Float` `Double` are not supported optional type. 
+⚠️ `Bool` `Int` `Float` `Double` are not supported optional type. 
 
 
 ### ⚙️ Manage data
