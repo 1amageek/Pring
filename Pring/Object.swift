@@ -75,8 +75,8 @@ open class Object: NSObject, Document {
         let mirror: Mirror = Mirror(reflecting: self)
         mirror.children.forEach { (child) in
             DataType.verify(value: child.value)
-            if child.value is ReferenceCollection {
-                var relation: ReferenceCollection = child.value as! ReferenceCollection
+            if child.value is SubCollection {
+                var relation: SubCollection = child.value as! SubCollection
                 relation.parent = self
                 relation.key = child.label
             }
@@ -289,7 +289,7 @@ open class Object: NSObject, Document {
         batch.setData(self.value as! [String : Any], forDocument: self.reference)
         let mirror: Mirror = Mirror(reflecting: self)
         mirror.children.forEach { (child) in
-            if let relation: ReferenceCollection = child.value as? ReferenceCollection {
+            if let relation: SubCollection = child.value as? SubCollection {
                 relation.pack(batch)
             }
         }

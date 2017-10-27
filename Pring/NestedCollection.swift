@@ -1,9 +1,9 @@
 //
-//  Relation.swift
+//  SubCollection.swift
 //  Pring
 //
-//  Created by 1amageek on 2017/09/04.
-//  Copyright © 2017年 Stamp. All rights reserved.
+//  Created by 1amageek on 2017/10/27.
+//  Copyright © 2017年 Stamp Inc. All rights reserved.
 //
 
 import FirebaseFirestore
@@ -13,7 +13,7 @@ import FirebaseStorage
  Relation class
  Relation works with the property of Object.
  */
-public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayLiteral {
+public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
 
@@ -29,10 +29,10 @@ public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayL
     /// It is a Path stored in Firebase.
     public var path: String {
         guard let parent: Object = self.parent else {
-            fatalError("[Pring.Relation] It is necessary to set parent.")
+            fatalError("[Pring.NestedCollection] It is necessary to set parent.")
         }
         guard let key: String = self.key else {
-            fatalError("[Pring.Relation] It is necessary to set key.")
+            fatalError("[Pring.NestedCollection] It is necessary to set key.")
         }
         return "\(parent.path)/\(key)"
     }
@@ -62,13 +62,13 @@ public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayL
         return self.isListening ? _count : _self.count
     }
 
-    /// 
+    ///
     @discardableResult
     public func pack(_ batch: WriteBatch?) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         self.forEach { (document) in
             let reference: DocumentReference = self.reference.document(document.id)
-            document.pack(batch).setData([:], forDocument: reference)
+            document.pack(batch).setData(document.value as! [String : Any], forDocument: reference)
         }
         return batch
     }
@@ -119,7 +119,7 @@ public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayL
         if isListening {
             let reference: DocumentReference = self.reference.document(newMember.id)
             let batch: WriteBatch = Firestore.firestore().batch()
-            batch.setData([:], forDocument: reference)
+            batch.setData(newMember.value as! [String : Any], forDocument: reference)
             if !newMember.isListening {
                 newMember.pack(batch)
             }
@@ -225,7 +225,7 @@ public final class Relation<T: Object>: ReferenceCollection, ExpressibleByArrayL
     }
 }
 
-extension Relation: Collection {
+extension NestedCollection: Collection {
 
     public var startIndex: Int {
         return _self.startIndex

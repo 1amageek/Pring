@@ -30,7 +30,10 @@ class ViewController: UIViewController {
         b.name = "B"
         b.age = 4
 
+        let item: Item = Item()
+
         a.followers.insert(b)
+        a.items.insert(item)
         a.save()
 
 

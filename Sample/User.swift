@@ -13,7 +13,8 @@ class User: Object {
 
     dynamic var name: String? = "NULL"
     dynamic var age: Int = 0
-    dynamic var followers: Relation<User> = []
+    dynamic var followers: ReferenceCollection<User> = []
+    dynamic var items: NestedCollection<Item> = []
 //    var thumbnailImage: File?
 //    var followers: Relation<User> = []
 }

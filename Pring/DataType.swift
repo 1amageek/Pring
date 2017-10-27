@@ -23,7 +23,7 @@ public enum DataType {
     case date       (String, Date, Date)
     case geoPoint   (String, GeoPoint, GeoPoint)
     case dictionary (String, [AnyHashable: Any], [AnyHashable: Any])
-    case relation   (String, [AnyHashable: Any], ReferenceCollection)
+    case relation   (String, [AnyHashable: Any], SubCollection)
     case string     (String, String, String)
     case null
 
@@ -110,8 +110,8 @@ public enum DataType {
                 self = .file(key, value.value, value)
                 return
             }
-        case is ReferenceCollection:
-            if let value: ReferenceCollection = value as? ReferenceCollection {
+        case is SubCollection:
+            if let value: SubCollection = value as? SubCollection {
                 self = .relation(key, value.value, value)
                 return
             }
@@ -261,8 +261,8 @@ public enum DataType {
                     return
                 }
             }
-        } else if value is ReferenceCollection {
-            let relation: ReferenceCollection = value as! ReferenceCollection
+        } else if value is SubCollection {
+            let relation: SubCollection = value as! SubCollection
             if let value: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
                 self = .relation(key, value, relation)
                 return
