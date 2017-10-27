@@ -28,7 +28,7 @@ class TestDocument: Object {
     dynamic var string: String                      = "string"
     dynamic var file: File                          = File(data: UIImagePNGRepresentation(TestDocument.image0())!, mimeType: .png)
 
-    let relation: Relation<TestDocument>    = []
+    let relation: ReferenceCollection<TestDocument>    = []
 
     static func image0() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)
