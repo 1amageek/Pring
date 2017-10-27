@@ -58,7 +58,8 @@ class MyObject: Object {
     dynamic var dictionary: [AnyHashable: Any]      = ["key": "value"]    
     dynamic var string: String                      = "string"
     
-    let relation: Relation<TestDocument>   　　　　　　　　　　　　　　　　 = []
+    let nestedCollection: NestedCollection<TestDocument>   　　　　　　　　　　= []
+    let referenceCollection: referenceCollection<TestDocument>  = []
 }
 ```
 
