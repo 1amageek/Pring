@@ -7,6 +7,8 @@
 
 </div>
 
+[Please donate to continue development.](https://gum.co/lNNIn)
+
 # Pring <β>
 Firestore model framework.
 
