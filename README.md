@@ -45,6 +45,7 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 
 ### Implementation
 - [x] Implement DataType that Firestore can handle
+- [x] Implement data management
 - [ ] Implement custom DataType (Specification under consideration)
 - [x] Implement linkage with Firestorage
 - [x] Implement the NestedCollection feature
@@ -54,6 +55,7 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 
 ### Verification (Running Unit test)
 - [x] Verify the implementation of DataType that Firestore can handle
+- [x] Verify the implementation of data management
 - [ ] Verify the implementation of custom DataType
 - [x] Verify cooperation with Firestorage
 - [ ] Verify the implementation of the NestedCollection feature
