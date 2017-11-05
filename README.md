@@ -12,7 +12,8 @@
 # Pring <β>
 Firestore model framework.
 
-<b> ⚠️ This code still contains bugs.</b>
+<b> ⚠️ This code still contains bugs.</b><br>
+Please see TODO for details.
 
 Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 
@@ -38,6 +39,29 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 ☑️ You can easily associate subcollections.<br>
 ☑️ Support GeoPoint.<br>
 
+## TODO ✅
+
+### 
+
+### Implementation
+- [x] Implement DataType that Firestore can handle
+- [ ] Implement custom DataType
+- [x] Implement linkage with Firestorage
+- [x] Implement the NestedCollection feature
+- [x] Implement the ReferenceCollection feature
+- [x] Implement DataSource
+- [ ] Implement Query-enabled DataSource
+
+### Verification (Running Unit test)
+- [x] Verify the implementation of DataType that Firestore can handle
+- [ ] Verify the implementation of custom DataType
+- [x] Verify cooperation with Firestorage
+- [ ] Verify the implementation of the NestedCollection feature
+- [ ] Verify the implementation of the ReferenceCollection feature
+- [ ] Verify the implementation of Query-enabled DataSource
+
+If you have a Feature Request, please post an [issue](https://github.com/1amageek/Pring/issues/new).
+
 ## Usage
 
 ### Model 
@@ -61,7 +85,7 @@ class MyObject: Object {
     dynamic var string: String                      = "string"
     
     let nestedCollection: NestedCollection<TestDocument>   　　　　　　　　　　= []
-    let referenceCollection: referenceCollection<TestDocument>  = []
+    let referenceCollection: ReferenceCollection<TestDocument>  = []
 }
 ```
 
