@@ -45,12 +45,12 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 
 ### Implementation
 - [x] Implement DataType that Firestore can handle
-- [ ] Implement custom DataType
+- [ ] Implement custom DataType (Specification under consideration)
 - [x] Implement linkage with Firestorage
 - [x] Implement the NestedCollection feature
 - [x] Implement the ReferenceCollection feature
 - [x] Implement DataSource
-- [ ] Implement Query-enabled DataSource
+- [ ] Implement Query-enabled DataSource (Specification under consideration)
 
 ### Verification (Running Unit test)
 - [x] Verify the implementation of DataType that Firestore can handle
