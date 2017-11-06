@@ -11,6 +11,7 @@
 
 # Pring <β>
 Firestore model framework.
+The concept of Document and Collection has been added to Firestore. Pring defines the Scheme of the Document and enables type - safe programming. SubCollection can also be defined in Scheme.
 
 <b> ⚠️ This code still contains bugs.</b><br>
 Please see TODO for details.
