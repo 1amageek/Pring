@@ -203,15 +203,11 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
         member.set(type(of: member).reference.document())
     }
 
-    // MARK: -
-
     public func contains(_ element: T, block: @escaping (Bool) -> Void) {
         self.reference.document(element.id).getDocument { (snapshot, error) in
             return block(snapshot?.exists ?? false)
         }
     }
-
-    // MARK: -
 
     public var description: String {
         if _self.isEmpty {
@@ -220,10 +216,40 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
         return "\(_self.documents.description)"
     }
 
-    // MARK: -
-
     deinit {
         self.countListener?.remove()
+    }
+}
+
+// MARK: -
+
+public extension NestedCollection {
+
+    public func get(_ id: String, block: @escaping (Element?, Error?) -> Void) {
+        self.reference.document(id).getDocument { (snapshot, error) in
+            guard let snapshot: DocumentSnapshot = snapshot, snapshot.exists else {
+                block(nil, error)
+                return
+            }
+            let document: Element = ArrayLiteralElement(snapshot: snapshot)
+            block(document, nil)
+        }
+    }
+
+    public func listen(_ id: String, block: @escaping (Element?, Error?) -> Void) -> ListenerRegistration {
+        let options: DocumentListenOptions = DocumentListenOptions()
+        return self.reference.document(id).addSnapshotListener(options: options) { (snapshot, error) in
+            guard let snapshot: DocumentSnapshot = snapshot else {
+                block(nil, error)
+                return
+            }
+            let document: Element = ArrayLiteralElement(snapshot: snapshot)
+            block(document, nil)
+        }
+    }
+
+    public func listen(_ id: String, block: @escaping (Element?, Error?) -> Void) -> Disposer<Element> {
+        return .init(.value(listen(id, block: block)))
     }
 }
 

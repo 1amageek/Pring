@@ -224,7 +224,24 @@ class PringTests: XCTestCase {
         document.nextedCollection.insert(nestedItem)
         document.save { (ref, error) in
             XCTAssertEqual(document.nextedCollection.first?.string, "nested")
-            expectation.fulfill()
+            TestDocument.get(ref!.documentID, block: { (document, error) in
+                document?.nextedCollection.get(nestedItem.id, block: { (item, error) in
+                    XCTAssertEqual(item?.array.first, "nested")
+                    XCTAssertEqual(item?.set.first, "nested")
+                    XCTAssertEqual(item?.bool, true)
+                    XCTAssertEqual(String(data: item!.binary, encoding: .utf8), "nested")
+                    XCTAssertEqual(item?.url.absoluteString, "https://firebase.google.com/nested")
+                    XCTAssertEqual(item?.int, Int.max)
+                    XCTAssertEqual(item?.float, Double.infinity)
+                    XCTAssertEqual(item?.date, Date(timeIntervalSince1970: 100))
+                    XCTAssertEqual(item?.geoPoint, GeoPoint(latitude: 0, longitude: 0))
+                    XCTAssertEqual(item?.dictionary.keys.first, "key")
+                    XCTAssertEqual(item?.dictionary.values.first as! String, "nested")
+                    XCTAssertEqual(item?.string, "nested")
+                    expectation.fulfill()
+                })
+            })
+
         }
         self.wait(for: [expectation], timeout: 10)
     }

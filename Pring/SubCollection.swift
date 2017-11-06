@@ -48,4 +48,3 @@ extension SubCollection where Self: Collection, Self.Element: Document {
         return uploadContainer.tasks
     }
 }
-
