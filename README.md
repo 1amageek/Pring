@@ -50,6 +50,8 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 - [x] Implement linkage with Firestorage
 - [x] Implement the NestedCollection feature
 - [x] Implement the ReferenceCollection feature
+- [ ] Implement the NestedCollection feature of saved
+- [ ] Implement the ReferenceCollection feature of saved
 - [x] Implement DataSource
 - [ ] Implement Query-enabled DataSource (Specification under consideration)
 
@@ -58,7 +60,7 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 - [x] Verify the implementation of data management
 - [ ] Verify the implementation of custom DataType
 - [x] Verify cooperation with Firestorage
-- [ ] Verify the implementation of the NestedCollection feature
+- [x] Verify the implementation of the NestedCollection feature
 - [ ] Verify the implementation of the ReferenceCollection feature
 - [ ] Verify the implementation of Query-enabled DataSource
 
@@ -201,6 +203,47 @@ Delete it with `delete` method.
 object.thumbnailImage.delete { (error) in
 
 }
+```
+
+### Nested Collection & Reference Collection
+
+`NestedCollection` and `ReferenceCollection` are classes that define SubCollection.
+
+When holding `File` in SubCollection, saving of `File` will be executed first. When many `File`s are stored in SubCollection at once, the performance deteriorates.
+
+#### Nested Collection
+- NestedCollection nests data and saves it under the document.
+- The destination path of File is nested path.
+
+#### Reference Collection
+- ReferenceCollection saves the documentID under the document.
+- Data is saved separately.
+
+``` swift
+@objcMembers
+class User: Object {
+    dynamic var name: String?
+    dynamic var referenceCollection: ReferenceCollection<User> = []
+    dynamic var nestedCollection: NestedCollection<Item> = []
+}
+
+@objcMembers
+class Item: Object {
+    dynamic var thumbnail: File?
+}
+
+let userA: User = User()
+userA.name = "userA"
+
+let userB: User = User()
+userB.name = "userB"
+
+let item: Item = Item()
+item.thumbnail = File(data: JPEG_DATA, mimeType: .jpeg)
+
+userA.referenceCollection.insert(userB)
+userA.nestedCollection.insert(item)
+userA.save()
 ```
 
 ### DataSource
