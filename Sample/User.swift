@@ -11,8 +11,7 @@ import UIKit
 @objcMembers
 class User: Object {
 
-    dynamic var name: String? = "NULL"
-    dynamic var age: Int = 0
+    dynamic var name: String?
     dynamic var thumbnail: File?
     dynamic var referenceCollection: ReferenceCollection<User> = []
     dynamic var nestedCollection: NestedCollection<Item> = []
