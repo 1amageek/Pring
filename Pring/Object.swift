@@ -142,7 +142,7 @@ open class Object: NSObject, Document {
                             case .date          (let key, _, let value):                self.setValue(value, forKey: key)
                             case .geoPoint      (let key, _, let value):                self.setValue(value, forKey: key)
                             case .dictionary    (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .relation      (let key, let value, let relation):     relation.setValue(value, forKey: key)
+                            case .collection    (let key, let value, let collection):   collection.setValue(value, forKey: key)
                             case .string        (let key, _, let value):                self.setValue(value, forKey: key)
                             case .null: break
                             }
@@ -197,7 +197,7 @@ open class Object: NSObject, Document {
                     case .date          (let key, let rawValue, _):   document[key] = rawValue
                     case .geoPoint      (let key, let rawValue, _):   document[key] = rawValue
                     case .dictionary    (let key, let rawValue, _):   document[key] = rawValue
-                    case .relation      (let key, let rawValue, _):   document[key] = rawValue
+                    case .collection    (let key, let rawValue, _):   document[key] = rawValue
                     case .string        (let key, let rawValue, _):   document[key] = rawValue
                     case .null: break
                     }
@@ -257,7 +257,7 @@ open class Object: NSObject, Document {
                 case .date          (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .geoPoint      (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .dictionary    (let key, let updateValue, _):   update(key: key, value: updateValue)
-                case .relation      (_, _, _):   break
+                case .collection    (_, _, _):   break
                 case .string        (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .null: break
                 }
