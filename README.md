@@ -220,6 +220,18 @@ When holding `File` in SubCollection, saving of `File` will be executed first. W
 - Data is saved separately.
 
 ``` swift
+@objcMembers
+class User: Object {
+    dynamic var name: String?
+    dynamic var referenceCollection: ReferenceCollection<User> = []
+    dynamic var nestedCollection: NestedCollection<Item> = []
+}
+
+@objcMembers
+class Item: Object {
+    dynamic var thumbnail: File?
+}
+
 let userA: User = User()
 userA.name = "userA"
 
