@@ -68,7 +68,7 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         self.forEach { (document) in
             let reference: DocumentReference = self.reference.document(document.id)
-            document.pack(batch).setData(document.value as! [String : Any], forDocument: reference)
+            batch.setData(document.value as! [String : Any], forDocument: reference)
         }
         return batch
     }
@@ -213,7 +213,7 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
 
     public var description: String {
         if _self.isEmpty {
-            return "Relation([])"
+            return "Nested([])"
         }
         return "\(_self.documents.description)"
     }

@@ -1,30 +1,29 @@
- //
-//  TestDocument.swift
-//  Pring2Tests
 //
-//  Created by 1amageek on 2017/10/06.
+//  NestedItem.swift
+//  PringTests
+//
+//  Created by 1amageek on 2017/10/29.
 //  Copyright © 2017年 Stamp Inc. All rights reserved.
 //
 
-import Foundation
-import FirebaseFirestore
 import UIKit
-import Pring
+import Firebase
+import FirebaseFirestore
 
 @objcMembers
-class TestDocument: Object {
+class NestedItem: Object {
 
-    dynamic var array: [String]                     = ["array"]
-    dynamic var set: Set<String>                    = ["set"]
+    dynamic var array: [String]                     = ["nested"]
+    dynamic var set: Set<String>                    = ["nested"]
     dynamic var bool: Bool                          = true
-    dynamic var binary: Data                        = "data".data(using: .utf8)!
-    dynamic var url: URL                            = URL(string: "https://firebase.google.com/")!
+    dynamic var binary: Data                        = "nested".data(using: .utf8)!
+    dynamic var url: URL                            = URL(string: "https://firebase.google.com/nested")!
     dynamic var int: Int                            = Int.max
     dynamic var float: Double                       = Double.infinity
     dynamic var date: Date                          = Date(timeIntervalSince1970: 100)
     dynamic var geoPoint: GeoPoint                  = GeoPoint(latitude: 0, longitude: 0)
-    dynamic var dictionary: [AnyHashable: Any]      = ["key": "value"]
-    dynamic var string: String                      = "string"
+    dynamic var dictionary: [AnyHashable: Any]      = ["key": "nested"]
+    dynamic var string: String                      = "nested"
     dynamic var file: File                          = File(data: UIImagePNGRepresentation(TestDocument.image0())!, mimeType: .png)
 
     let referenceCollection: ReferenceCollection<TestDocument>  = []

@@ -10,6 +10,5 @@ import Foundation
 
 @objcMembers
 class Item: Object {
-
     dynamic var name: String? = "NULL"
 }

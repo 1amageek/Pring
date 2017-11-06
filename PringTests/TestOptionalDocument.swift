@@ -27,7 +27,8 @@ class TestOptionalDocument: Object {
     dynamic var string: String?
     dynamic var file: File?
 
-    let relation: ReferenceCollection<TestDocument>    = []
+    let referenceCollection: ReferenceCollection<TestDocument>  = []
+    let nextedCollection: NestedCollection<NestedItem>          = []
 
     static func image0() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)

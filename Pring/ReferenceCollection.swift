@@ -29,10 +29,10 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
     /// It is a Path stored in Firebase.
     public var path: String {
         guard let parent: Object = self.parent else {
-            fatalError("[Pring.Relation] It is necessary to set parent.")
+            fatalError("[Pring.ReferenceCollection] It is necessary to set parent.")
         }
         guard let key: String = self.key else {
-            fatalError("[Pring.Relation] It is necessary to set key.")
+            fatalError("[Pring.ReferenceCollection] It is necessary to set key.")
         }
         return "\(parent.path)/\(key)"
     }
@@ -213,7 +213,7 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
 
     public var description: String {
         if _self.isEmpty {
-            return "Relation([])"
+            return "Reference([])"
         }
         return "\(_self.documents.description)"
     }

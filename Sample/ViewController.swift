@@ -32,10 +32,9 @@ class ViewController: UIViewController {
 
         let item: Item = Item()
 
-        a.followers.insert(b)
-        a.items.insert(item)
+        a.referenceCollection.insert(b)
+        a.nestedCollection.insert(item)
         a.save()
-
 
 
 //        user.save { (ref, error) in

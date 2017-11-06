@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		122FCCB31FA5C9D8005A069E /* NestedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122FCCB21FA5C9D8005A069E /* NestedItem.swift */; };
+		122FCCB41FA5C9F5005A069E /* NestedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124757B31FA31A0C00FA517D /* NestedCollection.swift */; };
 		123546C61FA1A939006DBDD6 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF830E1F8CAEEC00561159 /* DataSource.swift */; };
 		123546C71FA1A939006DBDD6 /* DataType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83101F8CAEEC00561159 /* DataType.swift */; };
 		123546C81FA1A939006DBDD6 /* Disposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF830F1F8CAEEC00561159 /* Disposer.swift */; };
@@ -67,6 +69,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		122FCCB21FA5C9D8005A069E /* NestedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItem.swift; sourceTree = "<group>"; };
 		123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestOptionalDocument.swift; sourceTree = "<group>"; };
 		124757B31FA31A0C00FA517D /* NestedCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedCollection.swift; sourceTree = "<group>"; };
 		124F92101F8DD6D000BEC128 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
@@ -185,6 +188,7 @@
 				12AF83021F8CAEDE00561159 /* PringTests.swift */,
 				12AF83201F8CAF6E00561159 /* TestDocument.swift */,
 				123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */,
+				122FCCB21FA5C9D8005A069E /* NestedItem.swift */,
 				12AF83261F8CD1ED00561159 /* Pring.png */,
 				12AF83041F8CAEDE00561159 /* Info.plist */,
 			);
@@ -582,9 +586,11 @@
 				123546C61FA1A939006DBDD6 /* DataSource.swift in Sources */,
 				123546C71FA1A939006DBDD6 /* DataType.swift in Sources */,
 				123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */,
+				122FCCB31FA5C9D8005A069E /* NestedItem.swift in Sources */,
 				123546CA1FA1A939006DBDD6 /* File.swift in Sources */,
 				123546C91FA1A939006DBDD6 /* Document.swift in Sources */,
 				12AF83211F8CAF6E00561159 /* TestDocument.swift in Sources */,
+				122FCCB41FA5C9F5005A069E /* NestedCollection.swift in Sources */,
 				123546C81FA1A939006DBDD6 /* Disposer.swift in Sources */,
 				123546CB1FA1A939006DBDD6 /* Object.swift in Sources */,
 				12AF83031F8CAEDE00561159 /* PringTests.swift in Sources */,

@@ -217,6 +217,18 @@ class PringTests: XCTestCase {
         XCTAssertNil(weakDocument)
     }
 
+    func testNestedCollection() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test NestedCollection")
+        let document: TestDocument = TestDocument()
+        let nestedItem: NestedItem = NestedItem()
+        document.nextedCollection.insert(nestedItem)
+        document.save { (ref, error) in
+            XCTAssertEqual(document.nextedCollection.first?.string, "nested")
+            expectation.fulfill()
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     
 //    func testPerformanceExample() {
 //        // This is an example of a performance test case.
