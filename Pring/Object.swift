@@ -31,11 +31,11 @@ open class Object: NSObject, Document {
         return Storage.storage().reference().child(self.path)
     }
 
+    public private(set) var reference: DocumentReference
+
     public var path: String {
         return self.reference.path
     }
-
-    public private(set) var reference: DocumentReference
 
     /// It is Qeueu of File upload.
     public let uploadQueue: DispatchQueue = DispatchQueue(label: "Pring.upload.queue")
@@ -54,20 +54,6 @@ open class Object: NSObject, Document {
     @objc private var _updatedAt: Date
 
     public private(set) var isListening: Bool = false
-
-    private var hasFiles: Bool {
-        let mirror = Mirror(reflecting: self)
-        for (_, child) in mirror.children.enumerated() {
-            if let key: String = child.label {
-                switch DataType(key: key, value: child.value) {
-                case .file(_, _, _): return true
-                default: break
-                }
-                return true
-            }
-        }
-        return false
-    }
 
     // MARK: - Initialize
 
@@ -109,6 +95,11 @@ open class Object: NSObject, Document {
 
     func _setSnapshot(_ snapshot: DocumentSnapshot) {
         self.snapshot = snapshot
+    }
+
+    internal func set(_ reference: DocumentReference) {
+        print(reference.path)
+        self.reference = reference
     }
 
     public var snapshot: DocumentSnapshot? {
@@ -309,7 +300,7 @@ open class Object: NSObject, Document {
         }
         let ref: DocumentReference = self.reference
         if self.hasFiles {
-            return self.saveFiles { (error) in
+            return self.saveFiles(container: nil) { (error) in
                 if let error = error {
                     block?(ref, error)
                     return
@@ -351,73 +342,6 @@ open class Object: NSObject, Document {
 
     public func delete(_ block: ((Error?) -> Void)? = nil) {
         self.reference.delete(completion: block)
-    }
-
-    // MARK: - File
-
-    open var timeout: Int {
-        return 30
-    }
-
-    /**
-     Save the file set in the object.
-
-     - parameter block: If saving succeeds or fails, this callback will be called.
-     - returns: Returns the StorageUploadTask set in the property.
-     */
-    private func saveFiles(_ block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
-        let group: DispatchGroup = DispatchGroup()
-        var uploadTasks: [String: StorageUploadTask] = [:]
-
-        var hasError: Error? = nil
-
-        for (_, child) in Mirror(reflecting: self).children.enumerated() {
-
-            guard let key: String = child.label else { break }
-            if self.ignore.contains(key) { break }
-            let value = child.value
-
-            let mirror: Mirror = Mirror(reflecting: value)
-            let subjectType: Any.Type = mirror.subjectType
-            if subjectType == File?.self || subjectType == File.self {
-                if let file: File = value as? File {
-                    file.parent = self
-                    file.key = key
-                    group.enter()
-                    if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
-                        if let error: Error = error {
-                            hasError = error
-                            uploadTasks.forEach({ (_, task) in
-                                task.cancel()
-                            })
-                            group.leave()
-                            return
-                        }
-                    }) {
-                        uploadTasks[key] = task
-                        group.leave()
-                    }
-                }
-            }
-        }
-
-        uploadQueue.async {
-            group.notify(queue: DispatchQueue.main, execute: {
-                block?(hasError)
-            })
-            switch group.wait(timeout: .now() + .seconds(self.timeout)) {
-            case .success: break
-            case .timedOut:
-                uploadTasks.forEach({ (_, task) in
-                    task.cancel()
-                })
-                let error: DocumentError = DocumentError(kind: .timeout, description: "Save the file timeout.")
-                DispatchQueue.main.async {
-                    block?(error)
-                }
-            }
-        }
-        return uploadTasks
     }
 
     // MARK: -
@@ -470,6 +394,10 @@ extension Object {
     public static func == (lhs: Object, rhs: Object) -> Bool {
         return lhs.id == rhs.id && type(of: lhs).modelVersion == type(of: rhs).modelVersion
     }
+}
+
+extension Object: StorageLinkable {
+    
 }
 
 public struct DocumentError: Error {

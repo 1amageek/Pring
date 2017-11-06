@@ -148,6 +148,7 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
                 })
             })
         } else {
+            newMember.set(self.reference.document(newMember.id))
             _self.insert(newMember)
         }
     }
@@ -197,6 +198,7 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
                 })
             })
         } else {
+            member.set(type(of: member).reference.document())
             _self.remove(member)
         }
     }

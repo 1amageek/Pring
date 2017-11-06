@@ -9,7 +9,7 @@
 import FirebaseFirestore
 import FirebaseStorage
 
-public protocol SubCollection {
+public protocol SubCollection: StorageLinkable {
 
     var path: String { get }
 
@@ -28,3 +28,24 @@ public protocol SubCollection {
     @discardableResult
     func pack(_ batch: WriteBatch?) -> WriteBatch
 }
+
+extension SubCollection where Self: Collection, Self.Element: Document {
+
+    public var hasFiles: Bool {
+        for (_, document) in self.enumerated() {
+            if document.hasFiles {
+                return true
+            }
+        }
+        return false
+    }
+
+    public func saveFiles(container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
+        let uploadContainer: UploadContainer = container ?? UploadContainer()
+        self.forEach { document in
+            document.saveFiles(container: uploadContainer, block: nil)
+        }
+        return uploadContainer.tasks
+    }
+}
+

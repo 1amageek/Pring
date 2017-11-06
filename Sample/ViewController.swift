@@ -12,9 +12,19 @@ import FirebaseFirestore
 class ViewController: UIViewController {
 
     @IBAction func buttonAction(_ sender: Any) {
-        let user: User = User()
-        user.name = "aa"
-        user.save()
+        let a: User = User()
+        a.name = "A"
+        a.age = 3
+
+        let b: User = User()
+        b.name = "B"
+        b.age = 4
+
+        let item: Item = Item()
+
+        a.referenceCollection.insert(b)
+        a.nestedCollection.insert(item)
+        a.save()
     }
 
     var dataSource: DataSource<User>?
@@ -29,8 +39,10 @@ class ViewController: UIViewController {
         let b: User = User()
         b.name = "B"
         b.age = 4
+        b.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
 
         let item: Item = Item()
+        item.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
 
         a.referenceCollection.insert(b)
         a.nestedCollection.insert(item)

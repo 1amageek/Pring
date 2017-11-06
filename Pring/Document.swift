@@ -12,7 +12,7 @@ import FirebaseStorage
 /**
  Firestore's Document Protocol
  */
-public protocol Document: NSObjectProtocol, Hashable {
+public protocol Document: NSObjectProtocol, Hashable, StorageLinkable {
 
     static var modelVersion: Int { get }
 
@@ -24,9 +24,9 @@ public protocol Document: NSObjectProtocol, Hashable {
 
     static var storageRef: StorageReference { get }
 
-    var path: String { get }
-
     var reference: DocumentReference { get }
+
+    var path: String { get }
 
     var id: String { get }
 
@@ -36,10 +36,71 @@ public protocol Document: NSObjectProtocol, Hashable {
 
     var value: [AnyHashable: Any] { get }
 
+    var ignore: [String] { get }
+
     init(snapshot: DocumentSnapshot)
     
     @discardableResult
     func pack(_ batch: WriteBatch?) -> WriteBatch
+}
+
+public extension Document {
+    
+    public var hasFiles: Bool {
+        let mirror = Mirror(reflecting: self)
+        for (_, child) in mirror.children.enumerated() {
+            if let key: String = child.label {
+                switch DataType(key: key, value: child.value) {
+                case .file(_, _, _): return true
+                case .collection(_, _, let collection): return collection.hasFiles
+                default: break
+                }
+            }
+        }
+        return false
+    }
+
+    public func saveFiles(container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
+
+        var uploadContainer: UploadContainer = container ?? UploadContainer()
+
+        for (_, child) in Mirror(reflecting: self).children.enumerated() {
+
+            guard let key: String = child.label else { break }
+            if self.ignore.contains(key) { break }
+            let value = child.value
+            let mirror: Mirror = Mirror(reflecting: value)
+            let subjectType: Any.Type = mirror.subjectType
+
+            switch DataType(key: key, value: value) {
+            case .file(_, _, _):
+                if let file: File = value as? File {
+                    file.parent = self as? Object
+                    file.key = key
+                    uploadContainer.group.enter()
+                    if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
+                        defer {
+                            uploadContainer.group.leave()
+                        }
+                        if let error: Error = error {
+                            uploadContainer.error = error
+                            return
+                        }
+                    }) {
+                        uploadContainer.tasks[key] = task
+                    }
+                }
+            case .collection(_, _, let collection):
+                collection.saveFiles(container: container, block: nil)
+            default: break
+            }
+
+        }
+        if container == nil {
+            uploadContainer.wait(block)
+        }
+        return uploadContainer.tasks
+    }
 }
 
 public extension Document {
