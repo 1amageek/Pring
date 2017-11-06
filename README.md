@@ -211,6 +211,14 @@ object.thumbnailImage.delete { (error) in
 
 When holding `File` in SubCollection, saving of `File` will be executed first. When many `File`s are stored in SubCollection at once, the performance deteriorates.
 
+#### Nested Collection
+- NestedCollection nests data and saves it under the document.
+- The destination path of File is nested path.
+
+#### Reference Collection
+- ReferenceCollection saves the documentID under the document.
+- Data is saved separately.
+
 ``` swift
 let userA: User = User()
 userA.name = "userA"
