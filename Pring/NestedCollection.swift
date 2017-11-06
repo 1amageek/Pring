@@ -116,8 +116,9 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
 
     /// Save the new Object.
     public func insert(_ newMember: Element) {
+        newMember.set(self.reference.document(newMember.id))
         if isListening {
-            let reference: DocumentReference = self.reference.document(newMember.id)
+            let reference: DocumentReference = newMember.reference
             let batch: WriteBatch = Firestore.firestore().batch()
             batch.setData(newMember.value as! [String : Any], forDocument: reference)
             if !newMember.isListening {
@@ -148,7 +149,6 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
                 })
             })
         } else {
-            newMember.set(self.reference.document(newMember.id))
             _self.insert(newMember)
         }
     }
@@ -156,7 +156,7 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
     /// Deletes the Object from the reference destination.
     public func remove(_ member: Element, hard: Bool = false) {
         if isListening {
-            let reference: DocumentReference = self.reference.document(member.id)
+            let reference: DocumentReference = member.reference
             let batch: WriteBatch = Firestore.firestore().batch()
             batch.deleteDocument(reference)
             if hard {
@@ -198,9 +198,9 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
                 })
             })
         } else {
-            member.set(type(of: member).reference.document())
             _self.remove(member)
         }
+        member.set(type(of: member).reference.document())
     }
 
     // MARK: -
