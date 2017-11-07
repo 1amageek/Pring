@@ -117,7 +117,7 @@ open class Object: NSObject, Document {
                 Mirror(reflecting: self).children.forEach { (key, value) in
                     if let key: String = key {
                         if !self.ignore.contains(key) {
-                            if let _: Any = self.decode(key, value: data[key]) {
+                            if self.decode(key, value: data[key]) {
                                 self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                                 return
                             }
@@ -154,8 +154,13 @@ open class Object: NSObject, Document {
     }
 
     /// Snapshot -> Model
-    open func decode(_ key: String, value: Any?) -> Any? {
-        return nil
+    ///
+    /// - Parameters:
+    ///   - key: Property name
+    ///   - value: Data saved in Firebase Snapshot
+    /// - Returns: For properties to be decoded, set to true.
+    open func decode(_ key: String, value: Any?) -> Bool {
+        return false
     }
 
     /// If propery is set with String, its property will not be written to Firebase.

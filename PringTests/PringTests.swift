@@ -62,6 +62,7 @@ class PringTests: XCTestCase {
             TestDocument.get(ref!.documentID, block: { (document, error) in
                 XCTAssertNotNil(document)
 
+                XCTAssertEqual(document?.type, .custom)
                 XCTAssertEqual(document?.array.first, "array")
                 XCTAssertEqual(document?.set.first, "set")
                 XCTAssertEqual(document?.bool, true)
@@ -75,6 +76,7 @@ class PringTests: XCTestCase {
                 XCTAssertEqual(document?.dictionary.values.first as! String, "value")
                 XCTAssertEqual(document?.string, "string")
 
+                document?.type = .update
                 document?.array = ["update"]
                 document?.set = ["update"]
                 document?.bool = false
@@ -90,6 +92,7 @@ class PringTests: XCTestCase {
                 document?.update({ (error) in
                     TestDocument.get(document!.id, block: { (document, error) in
                         XCTAssertNotNil(document)
+                        XCTAssertEqual(document?.type, .update)
                         XCTAssertEqual(document?.array.first, "update")
                         XCTAssertEqual(document?.set.first, "update")
                         XCTAssertEqual(document?.bool, false)

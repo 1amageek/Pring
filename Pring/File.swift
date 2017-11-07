@@ -290,7 +290,13 @@ public final class File: NSObject {
         self.ref?.delete(completion: { (error) in
             parent.update(key: key, value: FieldValue.delete())
             parent.update { error in
-                parent[key] = nil
+                if let value = parent[key] {
+                    let mirror: Mirror = Mirror(reflecting: value)
+                    let subjectType: Any.Type = mirror.subjectType
+                    if subjectType != File.self {
+                        parent[key] = nil
+                    }
+                }
                 block?(error)
             }
         })
