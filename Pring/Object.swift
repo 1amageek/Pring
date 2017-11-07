@@ -347,7 +347,6 @@ open class Object: NSObject, Document {
     // MARK: -
 
     override open var description: String {
-
         let base: String =
             "  id: \(self.id)\n" +
             "  createdAt: \(self.createdAt)\n" +

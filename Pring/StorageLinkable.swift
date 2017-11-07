@@ -12,7 +12,7 @@ import FirebaseStorage
 public struct UploadContainer {
 
     static var queueLabel: String {
-        return "Pring.upload.queue." + UUID().uuidString
+        return "Pring.upload.file.queue." + UUID().uuidString
     }
 
     let queue: DispatchQueue = DispatchQueue(label: queueLabel)
@@ -51,12 +51,45 @@ public struct UploadContainer {
     }
 }
 
+public struct DeleteContainer {
+
+    static var queueLabel: String {
+        return "Pring.delete.file.queue." + UUID().uuidString
+    }
+
+    let queue: DispatchQueue = DispatchQueue(label: queueLabel)
+
+    let group: DispatchGroup = DispatchGroup()
+
+    var timeout: Int = 30 // Default 30s
+
+    var error: Error? = nil
+
+    func wait(_ block: ((Error?) -> Void)?) {
+        queue.async {
+            self.group.notify(queue: DispatchQueue.main, execute: {
+                block?(self.error)
+            })
+            switch self.group.wait(timeout: .now() + .seconds(self.timeout)) {
+            case .success: break
+            case .timedOut:
+                let error: DocumentError = DocumentError(kind: .timeout, description: "Delete the file timeout.")
+                DispatchQueue.main.async {
+                    block?(error)
+                }
+            }
+        }
+    }
+}
+
 public protocol StorageLinkable {
 
     var hasFiles: Bool { get }
 
     @discardableResult
     func saveFiles(container: UploadContainer?, block: ((Error?) -> Void)?) -> [String: StorageUploadTask]
+
+    func deleteFiles(container: DeleteContainer?, block: ((Error?) -> Void)?)
 }
 
 extension StorageLinkable {

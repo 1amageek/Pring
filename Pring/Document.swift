@@ -69,8 +69,6 @@ public extension Document {
             guard let key: String = child.label else { break }
             if self.ignore.contains(key) { break }
             let value = child.value
-            let mirror: Mirror = Mirror(reflecting: value)
-            let subjectType: Any.Type = mirror.subjectType
 
             switch DataType(key: key, value: value) {
             case .file(let key, _, let file):
@@ -98,6 +96,33 @@ public extension Document {
             uploadContainer.wait(block)
         }
         return uploadContainer.tasks
+    }
+
+    public func deleteFiles(container: DeleteContainer?, block: ((Error?) -> Void)?) {
+
+        var deleteContainer: DeleteContainer = container ?? DeleteContainer()
+
+        for (_, child) in Mirror(reflecting: self).children.enumerated() {
+            guard let key: String = child.label else { break }
+            if self.ignore.contains(key) { break }
+            let value = child.value
+
+            switch DataType(key: key, value: value) {
+            case .file(let key, _, let file):
+                file.delete({ (error) in
+                    defer {
+                        deleteContainer.group.leave()
+                    }
+                    if let error: Error = error {
+                        deleteContainer.error = error
+                        return
+                    }
+                })
+            case .collection(_, _, let collection):
+                collection.deleteFiles(container: container, block: nil)
+            default: break
+            }
+        }
     }
 }
 
