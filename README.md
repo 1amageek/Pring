@@ -47,7 +47,7 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 ### Implementation
 - [x] Implement DataType that Firestore can handle
 - [x] Implement data management
-- [ ] Implement custom DataType (Specification under consideration)
+- [x] Implement custom DataType (Specification under consideration)
 - [x] Implement linkage with Firestorage
 - [x] Implement the NestedCollection feature
 - [x] Implement the ReferenceCollection feature
@@ -59,7 +59,7 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 ### Verification (Running Unit test)
 - [x] Verify the implementation of DataType that Firestore can handle
 - [x] Verify the implementation of data management
-- [ ] Verify the implementation of custom DataType
+- [x] Verify the implementation of custom DataType
 - [x] Verify cooperation with Firestorage
 - [x] Verify the implementation of the NestedCollection feature
 - [ ] Verify the implementation of the ReferenceCollection feature
@@ -75,7 +75,7 @@ Pring inherits Object class and defines the Model. Pring supports many data type
 
 ``` swift
 @objcMembers
-class MyObject: Object {
+class User: Object {
     dynamic var array: [String]                     = ["array"]
     dynamic var set: Set<String>                    = ["set"]
     dynamic var bool: Bool                          = true
@@ -89,8 +89,8 @@ class MyObject: Object {
     dynamic var dictionary: [AnyHashable: Any]      = ["key": "value"]    
     dynamic var string: String                      = "string"
     
-    let nestedCollection: NestedCollection<TestDocument>   　　　　　　　　　　= []
-    let referenceCollection: ReferenceCollection<TestDocument>  = []
+    let nestedCollection: NestedCollection<Item>   　　　　　　　　　　= []
+    let referenceCollection: ReferenceCollection<User>  = []
 }
 ```
 
@@ -109,6 +109,7 @@ class MyObject: Object {
 |Relation|It is Relation type. Relation type. Holds the count stored in SubCollection.|
 |String|It is String type.|
 |Null|It is Null type.|
+|Any|It is custom type. You can specify it as a custom type if it is a class that inherits from NSObject.|
 
 ⚠️ `Bool` `Int` `Float` `Double` are not supported optional type. 
 
