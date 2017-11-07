@@ -33,16 +33,28 @@ class ViewController: UIViewController {
 
         let userA: User = User()
         userA.name = "userA"
+        userA.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
+        userA.save { (ref, error) in
+            userA.thumbnail?.delete({ (error) in
+                User.get(ref!.documentID, block: { (user, error) in
+                    print(user)
+                })
+            })
+        }
+        
 
-        let userB: User = User()
-        userB.name = "userB"
-
-        let item: Item = Item()
-        item.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
-
-        userA.referenceCollection.insert(userB)
-        userA.nestedCollection.insert(item)
-        userA.save()
+//        let userA: User = User()
+//        userA.name = "userA"
+//
+//        let userB: User = User()
+//        userB.name = "userB"
+//
+//        let item: Item = Item()
+//        item.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
+//
+//        userA.referenceCollection.insert(userB)
+//        userA.nestedCollection.insert(item)
+//        userA.save()
 
 
 //        user.save { (ref, error) in

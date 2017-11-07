@@ -262,9 +262,9 @@ public enum DataType {
                 }
             }
         } else if value is SubCollection {
-            let relation: SubCollection = value as! SubCollection
+            let collection: SubCollection = value as! SubCollection
             if let value: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
-                self = .collection(key, value, relation)
+                self = .collection(key, value, collection)
                 return
             }
         } else {

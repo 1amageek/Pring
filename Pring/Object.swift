@@ -61,10 +61,10 @@ open class Object: NSObject, Document {
         let mirror: Mirror = Mirror(reflecting: self)
         mirror.children.forEach { (child) in
             DataType.verify(value: child.value)
-            if child.value is SubCollection {
-                var relation: SubCollection = child.value as! SubCollection
-                relation.parent = self
-                relation.key = child.label
+            switch DataType(key: child.label!, value: child.value) {
+            case .file(let key, _, let file): file.parent = self; file.key = key
+            case .collection(let key, _, var collection): collection.parent = self; collection.key = key
+            default: break
             }
         }
     }

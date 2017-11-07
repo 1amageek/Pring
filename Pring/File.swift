@@ -1,4 +1,4 @@
-//
+
 //  File.swift
 //  Pring
 //
@@ -284,14 +284,13 @@ public final class File: NSObject {
     // MARK: - DELETE
 
     public func delete(_ block: ((Error?) -> Void)? = nil) {
+        guard let parent: Object = self.parent, let key: String = self.key else {
+            fatalError("[Pring.Document] *** error: The necessary elements for deleting the file are insufficient.")
+        }
         self.ref?.delete(completion: { (error) in
-            if let parent: Object = self.parent, let key: String = self.key, parent.isListening {
-                parent.update(key: key, value: FieldValue.delete())
-                parent.update { error in
-                    parent[key] = nil
-                    block?(error)
-                }
-            } else {
+            parent.update(key: key, value: FieldValue.delete())
+            parent.update { error in
+                parent[key] = nil
                 block?(error)
             }
         })
@@ -317,10 +316,11 @@ public final class File: NSObject {
 
     override public var description: String {
         let base: String =
-            "  name: \(self.name)\n" +
-            "  url: \(self.url?.absoluteString ?? "")\n" +
-            "  hasParent: \(self.parent != nil ? "true" : "false")\n" +
-            "  key: \(self.key ?? "")\n"
-        return "File {\n\(base)}"
+            "      name: \(self.name)\n" +
+            "      url: \(self.url?.absoluteString ?? "")\n" +
+            "      hasParent: \(self.parent != nil ? "true" : "false")\n" +
+            "      key: \(self.key ?? "")\n" +
+            "    "
+        return "\n    File {\n\(base)}"
     }
 }

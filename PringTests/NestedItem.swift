@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Pring
 import Firebase
 import FirebaseFirestore
 

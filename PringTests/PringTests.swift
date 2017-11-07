@@ -7,7 +7,7 @@
 //
 
 import XCTest
-//@testable import Pring
+@testable import Pring
 import FirebaseFirestore
 import FirebaseStorage
 import FirebaseCore
@@ -183,14 +183,54 @@ class PringTests: XCTestCase {
         document.file = file
         document.save { (ref, error) in
             TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
-                document?.file?.delete({ (error) in
-                    XCTAssertNotNil(document)
-                    XCTAssertNil(document?.file)
-                    expectation.fulfill()
+                guard let document: TestOptionalDocument = document else {
+                    return
+                }
+                document.file?.delete({ (error) in
+                    TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
+                        XCTAssertNotNil(document)
+                        XCTAssertNil(document?.file)
+                        expectation.fulfill()
+                    })
                 })
             })
         }
         self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testFiles() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test Files")
+        let document: MultipleFilesDocument = MultipleFilesDocument()
+        document.file0 = File(data: UIImagePNGRepresentation(MultipleFilesDocument.image())!, mimeType: .png)
+        document.file1 = File(data: UIImagePNGRepresentation(MultipleFilesDocument.image())!, mimeType: .png)
+        document.file2 = File(data: UIImagePNGRepresentation(MultipleFilesDocument.image())!, mimeType: .png)
+        let tasks = document.save { (ref, error) in
+            MultipleFilesDocument.get(ref!.documentID, block: { (document, error) in
+                XCTAssertNotNil(document)
+                guard let document: MultipleFilesDocument = document else {
+                    return
+                }
+                document.file0?.delete({ (error) in
+                    document.file1?.delete({ (error) in
+                        document.file2?.delete({ (error) in
+                            MultipleFilesDocument.get(ref!.documentID, block: { (doc, error) in
+                                guard let doc: MultipleFilesDocument = doc else {
+                                    return
+                                }
+                                XCTAssertNotNil(doc)
+                                XCTAssertNil(doc.file0)
+                                XCTAssertNil(doc.file1)
+                                XCTAssertNil(doc.file2)
+                                expectation.fulfill()
+                            })
+                        })
+                    })
+                })
+            })
+        }
+        print(tasks)
+        XCTAssertEqual(tasks.count, 3)
+        self.wait(for: [expectation], timeout: 30)
     }
 
     func testMemory() {

@@ -73,22 +73,20 @@ public extension Document {
             let subjectType: Any.Type = mirror.subjectType
 
             switch DataType(key: key, value: value) {
-            case .file(_, _, _):
-                if let file: File = value as? File {
-                    file.parent = self as? Object
-                    file.key = key
-                    uploadContainer.group.enter()
-                    if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
-                        defer {
-                            uploadContainer.group.leave()
-                        }
-                        if let error: Error = error {
-                            uploadContainer.error = error
-                            return
-                        }
-                    }) {
-                        uploadContainer.tasks[key] = task
+            case .file(let key, _, let file):
+                file.parent = self as? Object
+                file.key = key
+                uploadContainer.group.enter()
+                if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
+                    defer {
+                        uploadContainer.group.leave()
                     }
+                    if let error: Error = error {
+                        uploadContainer.error = error
+                        return
+                    }
+                }) {
+                    uploadContainer.tasks[key] = task
                 }
             case .collection(_, _, let collection):
                 collection.saveFiles(container: container, block: nil)
