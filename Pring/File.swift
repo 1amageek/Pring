@@ -298,7 +298,8 @@ public final class File: NSObject {
 
     // MARK: - RETRIEVE
 
-    public func getData(_ size: Int64, completion: @escaping (Data?, Error?) -> Void) -> StorageDownloadTask? {
+    /// Default 100MB
+    public func getData(_ size: Int64 = Int64(10e8), completion: @escaping (Data?, Error?) -> Void) -> StorageDownloadTask? {
         self.downloadTask?.cancel()
         let task: StorageDownloadTask? = self.ref?.getData(maxSize: size, completion: { (data, error) in
             self.downloadTask = nil

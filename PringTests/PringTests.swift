@@ -102,7 +102,7 @@ class PringTests: XCTestCase {
                         XCTAssertEqual(document?.dictionary.keys.first, "key")
                         XCTAssertEqual(document?.dictionary.values.first as! String, "update")
                         XCTAssertEqual(document?.string, "update")
-                        TestDocument.delete(id: document!.id) { error in
+                        document?.delete { (error) in
                             TestDocument.get(document!.id, block: { (document, error) in
                                 XCTAssertNil(document)
                                 expectation.fulfill()
@@ -135,7 +135,6 @@ class PringTests: XCTestCase {
             
             TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
                 XCTAssertNotNil(document)
-                
                 XCTAssertEqual(document?.array?.first, "array")
                 XCTAssertEqual(document?.set?.first, "set")
                 XCTAssertEqual(document?.bool, true)
@@ -148,80 +147,67 @@ class PringTests: XCTestCase {
                 XCTAssertEqual(document?.dictionary?.keys.first, "key")
                 XCTAssertEqual(document?.dictionary?.values.first as! String, "value")
                 XCTAssertEqual(document?.string, "string")
-                
-                expectation.fulfill()
+                document?.delete { (error) in
+                    TestOptionalDocument.get(document!.id, block: { (document, error) in
+                        XCTAssertNil(document)
+                        expectation.fulfill()
+                    })
+                }
             })
         }
         self.wait(for: [expectation], timeout: 10)
     }
     
-    func testFile() {
-        let expectation: XCTestExpectation = XCTestExpectation(description: "Test File")
-        let document: TestDocument = TestDocument()
-        let file0: File = document.file
-        document.save { (ref, error) in
-            TestDocument.get(ref!.documentID, block: { (document, error) in
-                XCTAssertNotNil(document)
-                XCTAssertEqual(document?.file.name, file0.name)
-                let file1: File = File(data: UIImagePNGRepresentation(TestDocument.image1())!, mimeType: .png)
-                document?.file = file1
-                document?.file.update({ (metadata, error) in
-                    TestDocument.get(ref!.documentID, block: { (document, error) in
-                        XCTAssertEqual(document?.file.name, file1.name)
-                        expectation.fulfill()
-                    })
-                })
-            })
-        }
-        self.wait(for: [expectation], timeout: 10)
-    }
-
-    func testFileDelete() {
-        let expectation: XCTestExpectation = XCTestExpectation(description: "Test File delte")
-        let document: TestOptionalDocument = TestOptionalDocument()
-        let file: File = File(data: UIImagePNGRepresentation(TestDocument.image1())!, mimeType: .png)
-        document.file = file
-        document.save { (ref, error) in
-            TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
-                guard let document: TestOptionalDocument = document else {
-                    return
-                }
-                document.file?.delete({ (error) in
-                    TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
-                        XCTAssertNotNil(document)
-                        XCTAssertNil(document?.file)
-                        expectation.fulfill()
-                    })
-                })
-            })
-        }
-        self.wait(for: [expectation], timeout: 10)
-    }
-
     func testFiles() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test Files")
         let document: MultipleFilesDocument = MultipleFilesDocument()
+
         document.file0 = File(data: UIImagePNGRepresentation(MultipleFilesDocument.image())!, mimeType: .png)
         document.file1 = File(data: UIImagePNGRepresentation(MultipleFilesDocument.image())!, mimeType: .png)
         document.file2 = File(data: UIImagePNGRepresentation(MultipleFilesDocument.image())!, mimeType: .png)
+
         let tasks = document.save { (ref, error) in
             MultipleFilesDocument.get(ref!.documentID, block: { (document, error) in
                 XCTAssertNotNil(document)
                 guard let document: MultipleFilesDocument = document else {
                     return
                 }
-                document.file0?.delete({ (error) in
-                    document.file1?.delete({ (error) in
-                        document.file2?.delete({ (error) in
-                            MultipleFilesDocument.get(ref!.documentID, block: { (doc, error) in
-                                guard let doc: MultipleFilesDocument = doc else {
-                                    return
-                                }
-                                XCTAssertNotNil(doc)
-                                XCTAssertNil(doc.file0)
-                                XCTAssertNil(doc.file1)
-                                XCTAssertNil(doc.file2)
-                                expectation.fulfill()
+
+                let ref0 = document.file0?.ref
+                let ref1 = document.file1?.ref
+                let ref2 = document.file2?.ref
+
+                ref0?.getData(maxSize: 1000000, completion: { (data, error) in
+                    XCTAssertNotNil(data)
+                    ref1?.getData(maxSize: 1000000, completion: { (data, error) in
+                        XCTAssertNotNil(data)
+                        ref2?.getData(maxSize: 1000000, completion: { (data, error) in
+                            XCTAssertNotNil(data)
+                            document.file0?.delete({ (error) in
+                                document.file1?.delete({ (error) in
+                                    document.file2?.delete({ (error) in
+                                        MultipleFilesDocument.get(ref!.documentID, block: { (doc, error) in
+                                            guard let doc: MultipleFilesDocument = doc else {
+                                                return
+                                            }
+                                            XCTAssertNotNil(doc)
+                                            XCTAssertNil(doc.file0)
+                                            XCTAssertNil(doc.file1)
+                                            XCTAssertNil(doc.file2)
+
+                                            ref0?.getData(maxSize: 1000000, completion: { (data, error) in
+                                                XCTAssertNil(data)
+                                                ref1?.getData(maxSize: 1000000, completion: { (data, error) in
+                                                    XCTAssertNil(data)
+                                                    ref2?.getData(maxSize: 1000000, completion: { (data, error) in
+                                                        XCTAssertNil(data)
+                                                        expectation.fulfill()
+                                                    })
+                                                })
+                                            })
+                                        })
+                                    })
+                                })
                             })
                         })
                     })
@@ -231,6 +217,39 @@ class PringTests: XCTestCase {
         print(tasks)
         XCTAssertEqual(tasks.count, 3)
         self.wait(for: [expectation], timeout: 30)
+    }
+
+    func testNestedFiles() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test Nested File delete")
+
+        let document: MultipleFilesDocument = MultipleFilesDocument()
+        let item: MultipleFilesNestedItem = MultipleFilesNestedItem()
+        item.file = File(data: UIImagePNGRepresentation(MultipleFilesNestedItem.image())!, mimeType: .png)
+        document.files.insert(item)
+        let id: String = item.id
+
+        document.save { (ref, error) in
+            MultipleFilesDocument.get(ref!.documentID, block: { (document, error) in
+                guard let document: MultipleFilesDocument = document else {
+                    return
+                }
+                XCTAssertNotNil(document)
+                document.files.get(id, block: { (item, error) in
+                    let ref = item?.file?.ref
+                    ref?.getData(maxSize: 1000000, completion: { (data, error) in
+                        XCTAssertNotNil(data)
+                        item?.file?.delete({ (error) in
+                            ref?.getData(maxSize: 1000000, completion: { (data, error) in
+                                XCTAssertNil(data)
+                                expectation.fulfill()
+                            })
+                        })
+                    })
+                })
+            })
+        }
+
+        self.wait(for: [expectation], timeout: 10)
     }
 
     func testMemory() {

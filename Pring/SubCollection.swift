@@ -47,4 +47,11 @@ extension SubCollection where Self: Collection, Self.Element: Document {
         }
         return uploadContainer.tasks
     }
+
+    public func deleteFiles(container: DeleteContainer? = nil, block: ((Error?) -> Void)?) {
+        let deleteContainer: DeleteContainer = container ?? DeleteContainer()
+        self.forEach { document in
+            document.deleteFiles(container: deleteContainer, block: nil)
+        }
+    }
 }

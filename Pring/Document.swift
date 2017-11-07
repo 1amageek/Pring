@@ -109,6 +109,7 @@ public extension Document {
 
             switch DataType(key: key, value: value) {
             case .file(let key, _, let file):
+                deleteContainer.group.enter()
                 file.delete({ (error) in
                     defer {
                         deleteContainer.group.leave()
@@ -122,6 +123,10 @@ public extension Document {
                 collection.deleteFiles(container: container, block: nil)
             default: break
             }
+        }
+
+        if container == nil {
+            deleteContainer.wait(block)
         }
     }
 }

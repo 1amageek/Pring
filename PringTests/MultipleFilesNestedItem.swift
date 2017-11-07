@@ -1,24 +1,20 @@
 //
-//  MultipleFilesObject.swift
+//  MultipleFilesNestedItem.swift
 //  PringTests
 //
 //  Created by 1amageek on 2017/11/07.
 //  Copyright © 2017年 Stamp Inc. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import Pring
 import Firebase
 import FirebaseFirestore
 
 @objcMembers
-class MultipleFilesDocument: Object {
+class MultipleFilesNestedItem: Object {
 
-    dynamic var file0: File?
-    dynamic var file1: File?
-    dynamic var file2: File?
-
-    let files: NestedCollection<MultipleFilesNestedItem> = []
+    dynamic var file: File?
 
     static func image() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)

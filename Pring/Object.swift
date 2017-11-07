@@ -336,12 +336,14 @@ open class Object: NSObject, Document {
 
     // MARK: DELETE
 
-    public class func delete(id: String, block: ((Error?) -> Void)? = nil) {
-        self.reference.document(id).delete(completion: block)
-    }
-
     public func delete(_ block: ((Error?) -> Void)? = nil) {
-        self.reference.delete(completion: block)
+        self.reference.delete { (error) in
+            if let error = error {
+                block?(error)
+                return
+            }
+            self.deleteFiles(container: nil, block: block)
+        }
     }
 
     // MARK: -
