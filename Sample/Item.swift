@@ -11,7 +11,7 @@ import UIKit
 @objcMembers
 class Item: Object {
     dynamic var thumbnail: File?
-    dynamic var name: String? = "NULL"
+    dynamic var name: String? = "OWABIISHI"
 
     static func image() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)

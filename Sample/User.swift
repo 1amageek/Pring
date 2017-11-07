@@ -11,10 +11,16 @@ import UIKit
 @objcMembers
 class User: Object {
 
+    @objc enum UserType: Int {
+        case normal
+        case gold
+        case premium
+    }
+    dynamic var type: UserType = .normal
     dynamic var name: String?
     dynamic var thumbnail: File?
-    dynamic var referenceCollection: ReferenceCollection<User> = []
-    dynamic var nestedCollection: NestedCollection<Item> = []
+    dynamic var followers: ReferenceCollection<User> = []
+    dynamic var items: NestedCollection<Item> = []
 
     static func image() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)

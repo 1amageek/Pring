@@ -14,15 +14,17 @@ class ViewController: UIViewController {
     @IBAction func buttonAction(_ sender: Any) {
         let userA: User = User()
         userA.name = "userA"
+        userA.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
 
         let userB: User = User()
         userB.name = "userB"
+        userB.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
 
         let item: Item = Item()
         item.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
 
-        userA.referenceCollection.insert(userB)
-        userA.nestedCollection.insert(item)
+        userA.followers.insert(userB)
+        userA.items.insert(item)
         userA.save()
     }
 
@@ -31,17 +33,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let userA: User = User()
-        userA.name = "userA"
-        userA.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
-        userA.save { (ref, error) in
-            userA.thumbnail?.delete({ (error) in
-                User.get(ref!.documentID, block: { (user, error) in
-                    print(user)
-                })
-            })
-        }
-        
+//        let userA: User = User()
+//        userA.name = "userA"
+//        userA.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
+//        userA.save { (ref, error) in
+//            userA.thumbnail?.delete({ (error) in
+//                User.get(ref!.documentID, block: { (user, error) in
+//                    print(user)
+//                })
+//            })
+//        }
+
 
 //        let userA: User = User()
 //        userA.name = "userA"
