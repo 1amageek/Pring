@@ -47,7 +47,7 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 ### Implementation
 - [x] Implement DataType that Firestore can handle
 - [x] Implement data management
-- [ ] Implement custom DataType (Specification under consideration)
+- [x] Implement custom DataType (Specification under consideration)
 - [x] Implement linkage with Firestorage
 - [x] Implement the NestedCollection feature
 - [x] Implement the ReferenceCollection feature
@@ -59,7 +59,7 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 ### Verification (Running Unit test)
 - [x] Verify the implementation of DataType that Firestore can handle
 - [x] Verify the implementation of data management
-- [ ] Verify the implementation of custom DataType
+- [x] Verify the implementation of custom DataType
 - [x] Verify cooperation with Firestorage
 - [x] Verify the implementation of the NestedCollection feature
 - [ ] Verify the implementation of the ReferenceCollection feature
@@ -69,13 +69,56 @@ If you have a Feature Request, please post an [issue](https://github.com/1amagee
 
 ## Usage
 
-### Model 
+For example..
+
+``` swift
+@objcMembers
+class User: Object {
+    @objc enum UserType: Int {
+        case normal
+        case gold
+        case premium        
+    }
+    dynamic var type: UserType = .normal
+    dynamic var name: String?
+    dynamic var thumbnail: File?
+    dynamic var followers: ReferenceCollection<User> = []
+    dynamic var items: NestedCollection<Item> = []
+}
+```
+
+``` swift
+@objcMembers
+class Item: Object {
+    dynamic var thumbnail: File?
+    dynamic var name: String? = "OWABIISHI"
+}
+```
+
+``` swift
+let userA: User = User()
+userA.name = "userA"
+userA.thumbnail = File(data: UIImageJPEGRepresentation(IMAGE, 0.3)!, mimeType: .jpeg)
+
+let userB: User = User()
+userB.name = "userB"
+userB.thumbnail = File(data: UIImageJPEGRepresentation(IMAGE, 0.3)!, mimeType: .jpeg)
+
+let item: Item = Item()
+item.thumbnail = File(data: UIImageJPEGRepresentation(IMAGE, 0.3)!, mimeType: .jpeg)
+
+userA.followers.insert(userB)
+userA.items.insert(item)
+userA.save()
+```
+
+### Scheme 
 
 Pring inherits Object class and defines the Model. Pring supports many data types.
 
 ``` swift
 @objcMembers
-class MyObject: Object {
+class User: Object {
     dynamic var array: [String]                     = ["array"]
     dynamic var set: Set<String>                    = ["set"]
     dynamic var bool: Bool                          = true
@@ -89,8 +132,8 @@ class MyObject: Object {
     dynamic var dictionary: [AnyHashable: Any]      = ["key": "value"]    
     dynamic var string: String                      = "string"
     
-    let nestedCollection: NestedCollection<TestDocument>   　　　　　　　　　　= []
-    let referenceCollection: ReferenceCollection<TestDocument>  = []
+    let nestedCollection: NestedCollection<Item>   　　　　　　　　　　= []
+    let referenceCollection: ReferenceCollection<User>  = []
 }
 ```
 
@@ -109,6 +152,7 @@ class MyObject: Object {
 |Relation|It is Relation type. Relation type. Holds the count stored in SubCollection.|
 |String|It is String type.|
 |Null|It is Null type.|
+|Any|It is custom type. You can specify it as a custom type if it is a class that inherits from NSObject.|
 
 ⚠️ `Bool` `Int` `Float` `Double` are not supported optional type. 
 
@@ -224,8 +268,8 @@ When holding `File` in SubCollection, saving of `File` will be executed first. W
 @objcMembers
 class User: Object {
     dynamic var name: String?
-    dynamic var referenceCollection: ReferenceCollection<User> = []
-    dynamic var nestedCollection: NestedCollection<Item> = []
+    dynamic var followers: ReferenceCollection<User> = []
+    dynamic var items: NestedCollection<Item> = []
 }
 
 @objcMembers
@@ -242,8 +286,8 @@ userB.name = "userB"
 let item: Item = Item()
 item.thumbnail = File(data: JPEG_DATA, mimeType: .jpeg)
 
-userA.referenceCollection.insert(userB)
-userA.nestedCollection.insert(item)
+userA.followers.insert(userB)
+userA.items.insert(item)
 userA.save()
 ```
 
