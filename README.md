@@ -69,7 +69,50 @@ If you have a Feature Request, please post an [issue](https://github.com/1amagee
 
 ## Usage
 
-### Model 
+For example..
+
+``` swift
+@objcMembers
+class User: Object {
+    @objc enum UserType: Int {
+        case normal
+        case gold
+        case premium        
+    }
+    dynamic var type: UserType = .normal
+    dynamic var name: String?
+    dynamic var thumbnail: File?
+    dynamic var followers: ReferenceCollection<User> = []
+    dynamic var items: NestedCollection<Item> = []
+}
+```
+
+``` swift
+@objcMembers
+class Item: Object {
+    dynamic var thumbnail: File?
+    dynamic var name: String? = "OWABIISHI"
+}
+```
+
+``` swift
+let userA: User = User()
+userA.name = "userA"
+userA.thumbnail = File(data: UIImageJPEGRepresentation(IMAGE, 0.3)!, mimeType: .jpeg)
+
+let userB: User = User()
+userB.name = "userB"
+userB.thumbnail = File(data: UIImageJPEGRepresentation(IMAGE, 0.3)!, mimeType: .jpeg)
+
+let item: Item = Item()
+item.thumbnail = File(data: UIImageJPEGRepresentation(IMAGE, 0.3)!, mimeType: .jpeg)
+
+userA.followers.insert(userB)
+userA.items.insert(item)
+userA.save()
+```
+
+### Scheme 
 
 Pring inherits Object class and defines the Model. Pring supports many data types.
 
@@ -225,8 +268,8 @@ When holding `File` in SubCollection, saving of `File` will be executed first. W
 @objcMembers
 class User: Object {
     dynamic var name: String?
-    dynamic var referenceCollection: ReferenceCollection<User> = []
-    dynamic var nestedCollection: NestedCollection<Item> = []
+    dynamic var followers: ReferenceCollection<User> = []
+    dynamic var items: NestedCollection<Item> = []
 }
 
 @objcMembers
@@ -243,8 +286,8 @@ userB.name = "userB"
 let item: Item = Item()
 item.thumbnail = File(data: JPEG_DATA, mimeType: .jpeg)
 
-userA.referenceCollection.insert(userB)
-userA.nestedCollection.insert(item)
+userA.followers.insert(userB)
+userA.items.insert(item)
 userA.save()
 ```
 
