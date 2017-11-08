@@ -9,6 +9,15 @@
 import FirebaseFirestore
 import FirebaseStorage
 
+public struct DataSourceError: Error {
+    enum ErrorKind {
+        case invalidReference
+    }
+    let kind: ErrorKind
+    let description: String
+}
+
+
 public typealias Change = (deletions: [Int], insertions: [Int], modifications: [Int])
 
 public enum CollectionChange {
@@ -37,11 +46,12 @@ public enum CollectionChange {
  */
 public final class Options {
 
-    /// Number to be referenced at one time
-    public var limit: UInt = 30     // Default Limit 30
-
     /// Fetch timeout
     public var timeout: Int = 10    // Default Timeout 10s
+
+    public var includeQueryMetadataChanges: Bool = false
+
+    public var includeDocumentMetadataChanges: Bool = false
 
     /// Predicate
     public var predicate: NSPredicate?
@@ -67,7 +77,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
     public var count: Int { return documents.count }
 
     /// Reference of element
-    private(set) var reference: CollectionReference
+    private(set) var reference: Query
 
     /// Options
     private(set) var options: Options
@@ -104,7 +114,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
-    public init(reference: CollectionReference, options: Options = Options(), block: ((CollectionChange) -> Void)?) {
+    public init(reference: Query, options: Options = Options(), block: ((CollectionChange) -> Void)? = nil) {
         self.reference = reference
         self.options = options
         self.changedBlock = block
@@ -138,6 +148,8 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
         }
         var isFirst: Bool = true
         let options: QueryListenOptions = QueryListenOptions()
+        options.includeDocumentMetadataChanges(self.options.includeDocumentMetadataChanges)
+        options.includeQueryMetadataChanges(self.options.includeQueryMetadataChanges)
         self.listenr = self.reference.addSnapshotListener(options: options, listener: { [weak self] (snapshot, error) in
             guard let `self` = self else { return }
             guard let snapshot: QuerySnapshot = snapshot else {
@@ -234,7 +246,12 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
      */
     public func removeObject(at index: Int, block: @escaping (String, Error?) -> Void) {
         let id: String = self.documents[index].id
-        self.reference.document(id).delete { (error) in
+        guard let reference: CollectionReference = self.reference as? CollectionReference else {
+            let error: DataSourceError = DataSourceError(kind: .invalidReference, description: "[Pring.DataSource]  *** error: Reference is not CollectionReference")
+            block(id, error)
+            return
+        }
+        reference.document(id).delete { (error) in
             block(id, error)
         }
     }
@@ -323,5 +340,11 @@ extension Array where Element: Document {
 
     public func index(of key: String) -> Int? {
         return self.keys.index(of: key)
+    }
+}
+
+extension Query {
+    public func dataSource<T: Object>() -> DataSource<T> {
+        return DataSource(reference: self)
     }
 }
