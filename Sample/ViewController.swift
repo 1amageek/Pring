@@ -33,6 +33,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        User.where("sss", isEqualTo: "aaa").addSnapshotListener { (snap, error) in
+
+        }
+
 //        let userA: User = User()
 //        userA.name = "userA"
 //        userA.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)

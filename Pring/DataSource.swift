@@ -325,4 +325,3 @@ extension Array where Element: Document {
         return self.keys.index(of: key)
     }
 }
-

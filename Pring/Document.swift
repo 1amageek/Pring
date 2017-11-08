@@ -160,3 +160,70 @@ public extension Document {
         return .init(.value(listen(id, block: block)))
     }
 }
+
+public extension Document {
+
+    public static func `where`(_ keyPath: PartialKeyPath<Self>, isEqualTo: Any) -> Query {
+        return self.reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo)
+    }
+
+    public static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThan: Any) -> Query {
+        return self.reference.whereField(keyPath._kvcKeyPathString!, isLessThan: isLessThan)
+    }
+
+    public static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThanOrEqualTo: Any) -> Query {
+        return self.reference.whereField(keyPath._kvcKeyPathString!, isLessThanOrEqualTo: isLessThanOrEqualTo)
+    }
+
+    public static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThan: Any) -> Query {
+        return self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThan: isGreaterThan)
+    }
+
+    public static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThanOrEqualTo: Any) -> Query {
+        return self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo)
+    }
+
+    public static func order(by: PartialKeyPath<Self>) -> Query {
+        return self.reference.order(by: by._kvcKeyPathString!)
+    }
+
+    public static func order(by: PartialKeyPath<Self>, descending: Bool) -> Query {
+        return self.reference.order(by: by._kvcKeyPathString!, descending: descending)
+    }
+
+    public static func limit(to: Int) -> Query {
+        return self.reference.limit(to: to)
+    }
+
+    public static func start(at: [Any]) -> Query {
+        return self.reference.start(at: at)
+    }
+
+    public static func start(after: [Any]) -> Query {
+        return self.reference.start(after: after)
+    }
+
+    public static func start(atDocument: DocumentSnapshot) -> Query {
+        return self.reference.start(atDocument: atDocument)
+    }
+
+    public static func start(afterDocument: DocumentSnapshot) -> Query {
+        return self.reference.start(afterDocument: afterDocument)
+    }
+
+    public static func end(at: [Any]) -> Query {
+        return self.reference.end(at: at)
+    }
+
+    public static func end(atDocument: DocumentSnapshot) -> Query {
+        return self.reference.end(atDocument: atDocument)
+    }
+
+    public static func end(before: [Any]) -> Query {
+        return self.reference.end(before: before)
+    }
+
+    public static func end(beforeDocument: DocumentSnapshot) -> Query {
+        return self.reference.end(beforeDocument: beforeDocument)
+    }
+}
