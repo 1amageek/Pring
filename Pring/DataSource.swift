@@ -118,7 +118,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
         self.reference = reference
         self.options = options
         self.changedBlock = block
-        self.on(block).observe()
+        self.on(block)
     }
 
     /// Initializing the DataSource
@@ -142,7 +142,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
 
     /// Monitor changes in the DataSource.
     @discardableResult
-    public func observe() -> Self {
+    public func listen() -> Self {
         guard let block: (CollectionChange) -> Void = self.changedBlock else {
             fatalError("[Pring.DataSource] *** error: You need to define Changeblock to start observe.")
         }
@@ -220,14 +220,13 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
         })
     }
 
-    /**
-     Load the previous data from the server.
-     - parameter lastKey: It gets the data after the Key
-     - parameter limit: It the limit of from after the lastKey.
-     - parameter block: block The block that should be called. Change if successful will be returned. An error will return if it fails.
-     */
-    public func next(_ limit: Int = 30) {
-        self.nextReference?.limit(to: limit).getDocuments(completion: { [weak self] (snapshot, error) in
+    public func get() {
+        self.nextReference = self.reference
+        self.next()
+    }
+
+    public func next() {
+        self.nextReference?.getDocuments(completion: { [weak self] (snapshot, error) in
             guard let `self` = self else { return }
             self.operate(with: snapshot, error: error)
             guard let lastSnapshot = snapshot?.documents.last else {
