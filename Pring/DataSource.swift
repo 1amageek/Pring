@@ -77,7 +77,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
     public var count: Int { return documents.count }
 
     /// Reference of element
-    private(set) var reference: Query
+    private(set) var query: Query
 
     /// Options
     private(set) var options: Options
@@ -85,8 +85,6 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
     private let fetchQueue: DispatchQueue = DispatchQueue(label: "Pring.datasource.fetch.queue")
 
     private var listenr: ListenerRegistration?
-
-    private var nextReference: Query?
 
     /// Holds the Key previously sent to Firebase.
     private var previousLastKey: String?
@@ -115,7 +113,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
      - parameter block: A block which is called to process Firebase change evnet.
      */
     public init(reference: Query, options: Options = Options(), block: ((CollectionChange) -> Void)? = nil) {
-        self.reference = reference
+        self.query = reference
         self.options = options
         self.changedBlock = block
         self.on(block)
@@ -128,7 +126,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
 
     /// Initializing the DataSource
     public init(_ documents: [Element]) {
-        self.reference = Element.reference
+        self.query = Element.query
         self.options = Options()
         self.documents = documents
     }
@@ -150,7 +148,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
         let options: QueryListenOptions = QueryListenOptions()
         options.includeDocumentMetadataChanges(self.options.includeDocumentMetadataChanges)
         options.includeQueryMetadataChanges(self.options.includeQueryMetadataChanges)
-        self.listenr = self.reference.addSnapshotListener(options: options, listener: { [weak self] (snapshot, error) in
+        self.listenr = self.query.listen(options: options, listener: { [weak self] (snapshot, error) in
             guard let `self` = self else { return }
             guard let snapshot: QuerySnapshot = snapshot else {
                 block(CollectionChange(change: nil, error: error))
@@ -163,7 +161,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                     // The collection is empty.
                     return
                 }
-                self.nextReference = self.reference.start(atDocument: lastSnapshot)
+                self.query = self.query.start(atDocument: lastSnapshot)
                 isFirst = false
             }
         })
@@ -187,6 +185,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                 }
                 Element.get(id, block: { (document, error) in
                     guard let document: Element = document else { return }
+                    print(document)
                     self.documents.append(document)
                     self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
                     if let i: Int = self.documents.index(of: document) {
@@ -220,21 +219,24 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
         })
     }
 
-    public func get() {
-        self.nextReference = self.reference
+    var users: [User] = []
+    @discardableResult
+    public func get() -> Self {
         self.next()
+        return self
     }
 
-    public func next() {
-        self.nextReference?.getDocuments(completion: { [weak self] (snapshot, error) in
-            guard let `self` = self else { return }
+    @discardableResult
+    public func next() -> Self {
+        self.query.get(completion: { (snapshot, error) in
             self.operate(with: snapshot, error: error)
             guard let lastSnapshot = snapshot?.documents.last else {
                 // The collection is empty.
                 return
             }
-            self.nextReference = self.reference.start(atDocument: lastSnapshot)
+            self.query = self.query.start(atDocument: lastSnapshot)
         })
+        return self
     }
 
     /**
@@ -245,7 +247,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
      */
     public func removeObject(at index: Int, block: @escaping (String, Error?) -> Void) {
         let id: String = self.documents[index].id
-        guard let reference: CollectionReference = self.reference as? CollectionReference else {
+        guard let reference: CollectionReference = self.query.reference as? CollectionReference else {
             let error: DataSourceError = DataSourceError(kind: .invalidReference, description: "[Pring.DataSource]  *** error: Reference is not CollectionReference")
             block(id, error)
             return
@@ -342,8 +344,4 @@ extension Array where Element: Document {
     }
 }
 
-extension Query {
-    public func dataSource<T: Object>() -> DataSource<T> {
-        return DataSource(reference: self)
-    }
-}
+

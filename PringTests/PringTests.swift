@@ -308,6 +308,32 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    var dataSource: DataSource<DataSourceItem>?
+
+    func testDataSource() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test DataSource")
+
+        let group: DispatchGroup = DispatchGroup()
+        let queue: DispatchQueue = DispatchQueue(label: "Dispatch.Queue")
+        queue.async {
+            (0..<10).forEach({ (index) in
+                group.enter()
+                let document: DataSourceItem = DataSourceItem()
+                document.index = index
+                document.save({ (ref, error) in
+                    group.leave()
+                })
+            })
+            group.notify(queue: .main, execute: {
+                self.dataSource = DataSourceItem.reference.dataSource().on({ (changes) in
+                    print(changes)
+                    expectation.fulfill()
+                }).get()
+            })
+            group.wait()
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
     
 //    func testPerformanceExample() {
 //        // This is an example of a performance test case.

@@ -30,12 +30,31 @@ class ViewController: UIViewController {
 
     var dataSource: DataSource<User>?
 
+//    var users: [User] = []
+
+//    func get() {
+//        User.query.get { (snapshot, error) in
+//            snapshot?.documentChanges.forEach({ (change) in
+//                let id: String = change.document.documentID
+//                User.get(id, block: { (document, error) in
+//                    guard let document: User = document else { return }
+//                    print(document)
+//                    self.users.append(document)
+//                })
+//            })
+//        }
+//    }
+
+    var users: [[String: Any]] = []
+
+    let queue: DispatchQueue = DispatchQueue(label: "save.queue")
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        User.where("sss", isEqualTo: "aaa").addSnapshotListener { (snap, error) in
-
-        }
+        User.query.dataSource().on { (changes) in
+            print(changes)
+        }.get()
 
 //        let userA: User = User()
 //        userA.name = "userA"
@@ -58,8 +77,8 @@ class ViewController: UIViewController {
 //        let item: Item = Item()
 //        item.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
 //
-//        userA.referenceCollection.insert(userB)
-//        userA.nestedCollection.insert(item)
+//        userA.followers.insert(userB)
+//        userA.items.insert(item)
 //        userA.save()
 
 

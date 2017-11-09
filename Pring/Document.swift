@@ -161,69 +161,73 @@ public extension Document {
     }
 }
 
-public extension Document {
+public extension Document where Self: Object {
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, isEqualTo: Any) -> Query {
-        return self.reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo)
+    public static var query: DataSource<Self>.Query {
+        return DataSource.Query(self.reference)
     }
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThan: Any) -> Query {
-        return self.reference.whereField(keyPath._kvcKeyPathString!, isLessThan: isLessThan)
+    public static func `where`(_ keyPath: PartialKeyPath<Self>, isEqualTo: Any) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo))
     }
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThanOrEqualTo: Any) -> Query {
-        return self.reference.whereField(keyPath._kvcKeyPathString!, isLessThanOrEqualTo: isLessThanOrEqualTo)
+    public static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThan: Any) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThan: isLessThan))
     }
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThan: Any) -> Query {
-        return self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThan: isGreaterThan)
+    public static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThanOrEqualTo: Any) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThanOrEqualTo: isLessThanOrEqualTo))
     }
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThanOrEqualTo: Any) -> Query {
-        return self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo)
+    public static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThan: Any) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThan: isGreaterThan))
     }
 
-    public static func order(by: PartialKeyPath<Self>) -> Query {
-        return self.reference.order(by: by._kvcKeyPathString!)
+    public static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThanOrEqualTo: Any) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo))
     }
 
-    public static func order(by: PartialKeyPath<Self>, descending: Bool) -> Query {
-        return self.reference.order(by: by._kvcKeyPathString!, descending: descending)
+    public static func order(by: PartialKeyPath<Self>) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!))
     }
 
-    public static func limit(to: Int) -> Query {
-        return self.reference.limit(to: to)
+    public static func order(by: PartialKeyPath<Self>, descending: Bool) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!, descending: descending))
     }
 
-    public static func start(at: [Any]) -> Query {
-        return self.reference.start(at: at)
+    public static func limit(to: Int) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.limit(to: to))
     }
 
-    public static func start(after: [Any]) -> Query {
-        return self.reference.start(after: after)
+    public static func start(at: [Any]) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.start(at: at))
     }
 
-    public static func start(atDocument: DocumentSnapshot) -> Query {
-        return self.reference.start(atDocument: atDocument)
+    public static func start(after: [Any]) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.start(after: after))
     }
 
-    public static func start(afterDocument: DocumentSnapshot) -> Query {
-        return self.reference.start(afterDocument: afterDocument)
+    public static func start(atDocument: DocumentSnapshot) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.start(atDocument: atDocument))
     }
 
-    public static func end(at: [Any]) -> Query {
-        return self.reference.end(at: at)
+    public static func start(afterDocument: DocumentSnapshot) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.start(afterDocument: afterDocument))
     }
 
-    public static func end(atDocument: DocumentSnapshot) -> Query {
-        return self.reference.end(atDocument: atDocument)
+    public static func end(at: [Any]) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.end(at: at))
     }
 
-    public static func end(before: [Any]) -> Query {
-        return self.reference.end(before: before)
+    public static func end(atDocument: DocumentSnapshot) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.end(atDocument: atDocument))
     }
 
-    public static func end(beforeDocument: DocumentSnapshot) -> Query {
-        return self.reference.end(beforeDocument: beforeDocument)
+    public static func end(before: [Any]) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.end(before: before))
+    }
+
+    public static func end(beforeDocument: DocumentSnapshot) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.end(beforeDocument: beforeDocument))
     }
 }
