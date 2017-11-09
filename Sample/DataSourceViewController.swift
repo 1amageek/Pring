@@ -21,8 +21,8 @@ class DataSourceViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.dataSource = User.order(by: \User.createdAt).limit(to: 30).dataSource()
-            .on({ (snapshot, changes) in
-                guard let tableView: UITableView = self.tableView else { return }
+            .on({ [weak self] (snapshot, changes) in
+                guard let tableView: UITableView = self?.tableView else { return }
                 switch changes {
                 case .initial:
                     tableView.reloadData()
@@ -35,7 +35,7 @@ class DataSourceViewController: UITableViewController {
                 case .error(let error):
                     print(error)
                 }
-            })
+            }).listen()
     }
 
     // MARK: - Table view data source
