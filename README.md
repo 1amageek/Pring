@@ -51,10 +51,8 @@ Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 - [x] Implement linkage with Firestorage
 - [x] Implement the NestedCollection feature
 - [x] Implement the ReferenceCollection feature
-- [ ] Implement the NestedCollection feature of saved
-- [ ] Implement the ReferenceCollection feature of saved
 - [x] Implement DataSource
-- [ ] Implement Query-enabled DataSource (Specification under consideration)
+- [x] Implement Query-enabled DataSource (Specification under consideration)
 
 ### Verification (Running Unit test)
 - [x] Verify the implementation of DataType that Firestore can handle
