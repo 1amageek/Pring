@@ -12,6 +12,8 @@ import FirebaseStorage
 public struct DataSourceError: Error {
     enum ErrorKind {
         case invalidReference
+        case empty
+        case timeout
     }
     let kind: ErrorKind
     let description: String
@@ -70,6 +72,12 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
 
     public typealias Element = ArrayLiteralElement
 
+    public typealias ChangeBlock = (QuerySnapshot?, CollectionChange) -> Void
+
+    public typealias CompletedBlock = (QuerySnapshot?, [Element]) -> Void
+
+    public typealias ErrorBlock = (QuerySnapshot?, DataSourceError) -> Void
+
     /// Objects held in the client
     public var documents: [Element] = []
 
@@ -90,7 +98,11 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
     private var previousLastKey: String?
 
     /// Block called when there is a change in DataSource
-    private var changedBlock: ((CollectionChange) -> Void)?
+    private var changedBlock: ChangeBlock?
+
+    private var completedBlock: CompletedBlock?
+
+    private var errorBlock: ErrorBlock?
 
     /// Applies the NSPredicate specified by option.
     private func filtered() -> [Element] {
@@ -112,11 +124,10 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
      - parameter options: DataSource Options
      - parameter block: A block which is called to process Firebase change evnet.
      */
-    public init(reference: Query, options: Options = Options(), block: ((CollectionChange) -> Void)? = nil) {
+    public init(reference: Query, options: Options = Options(), block: ChangeBlock? = nil) {
         self.query = reference
         self.options = options
         self.changedBlock = block
-        self.on(block)
     }
 
     /// Initializing the DataSource
@@ -133,15 +144,27 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
 
     /// Set the Block to receive the change of the DataSource.
     @discardableResult
-    public func on(_ block: ((CollectionChange) -> Void)?) -> Self {
+    public func on(_ block: ChangeBlock?) -> Self {
         self.changedBlock = block
+        return self
+    }
+
+    @discardableResult
+    public func onCompleted(_ block: CompletedBlock?) -> Self {
+        self.completedBlock = block
+        return self
+    }
+
+    @discardableResult
+    public func onError(_ block: ErrorBlock?) -> Self {
+        self.errorBlock = block
         return self
     }
 
     /// Monitor changes in the DataSource.
     @discardableResult
     public func listen() -> Self {
-        guard let block: (CollectionChange) -> Void = self.changedBlock else {
+        guard let block: ChangeBlock = self.changedBlock else {
             fatalError("[Pring.DataSource] *** error: You need to define Changeblock to start observe.")
         }
         var isFirst: Bool = true
@@ -151,7 +174,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
         self.listenr = self.query.listen(options: options, listener: { [weak self] (snapshot, error) in
             guard let `self` = self else { return }
             guard let snapshot: QuerySnapshot = snapshot else {
-                block(CollectionChange(change: nil, error: error))
+                block(nil, CollectionChange(change: nil, error: error))
                 return
             }
 
@@ -169,57 +192,75 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
     }
 
     private func operate(with snapshot: QuerySnapshot?, error: Error?) {
-        guard let block: (CollectionChange) -> Void = self.changedBlock else {
-            fatalError("[Pring.DataSource] *** error: You need to define Changeblock to start observe.")
-        }
+        let changeBlock: ChangeBlock? = self.changedBlock
+        let completedBlock: CompletedBlock? = self.completedBlock
+        let errorBlock: ErrorBlock? = self.errorBlock
         guard let snapshot: QuerySnapshot = snapshot else {
-            block(CollectionChange(change: nil, error: error))
+            changeBlock?(nil, CollectionChange(change: nil, error: error))
+            completedBlock?(nil, [])
             return
         }
-        snapshot.documentChanges.forEach({ (change) in
-            let id: String = change.document.documentID
-            switch change.type {
-            case .added:
-                guard !self.documents.flatMap({return $0.id}).contains(id) else {
-                    return
-                }
-                Element.get(id, block: { (document, error) in
-                    guard let document: Element = document else { return }
-                    print(document)
-                    self.documents.append(document)
-                    self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
-                    if let i: Int = self.documents.index(of: document) {
-                        block(CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+
+        self.fetchQueue.async {
+            let group: DispatchGroup = DispatchGroup()
+            snapshot.documentChanges.forEach({ (change) in
+                let id: String = change.document.documentID
+                switch change.type {
+                case .added:
+                    guard !self.documents.flatMap({return $0.id}).contains(id) else {
+                        return
                     }
-                })
-            case .modified:
-                guard self.documents.flatMap({return $0.id}).contains(id) else {
-                    return
-                }
-                Element.get(id, block: { (document, error) in
-                    guard let document: Element = document else { return }
+                    group.enter()
+                    Element.get(id, block: { (document, error) in
+                        guard let document: Element = document else { return }
+                        self.documents.append(document)
+                        self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
+                        if let i: Int = self.documents.index(of: document) {
+                            changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                        }
+                        group.leave()
+                    })
+                case .modified:
+                    guard self.documents.flatMap({return $0.id}).contains(id) else {
+                        return
+                    }
+                    group.enter()
+                    Element.get(id, block: { (document, error) in
+                        guard let document: Element = document else { return }
+                        if let i: Int = self.documents.index(of: id) {
+                            self.documents.remove(at: i)
+                        }
+                        self.documents.append(document)
+                        self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
+                        if let i: Int = self.documents.index(of: document) {
+                            changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                        }
+                        group.leave()
+                    })
+                case .removed:
+                    guard self.documents.flatMap({return $0.id}).contains(id) else {
+                        return
+                    }
                     if let i: Int = self.documents.index(of: id) {
                         self.documents.remove(at: i)
+                        changeBlock?(snapshot, CollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                     }
-                    self.documents.append(document)
-                    self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
-                    if let i: Int = self.documents.index(of: document) {
-                        block(CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
-                    }
-                })
-            case .removed:
-                guard self.documents.flatMap({return $0.id}).contains(id) else {
-                    return
                 }
-                if let i: Int = self.documents.index(of: id) {
-                    self.documents.remove(at: i)
-                    block(CollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
+            })
+            group.notify(queue: DispatchQueue.main, execute: {
+                completedBlock?(snapshot, self.documents)
+            })
+            switch group.wait(timeout: .now() + .seconds(self.options.timeout)) {
+            case .success: break
+            case .timedOut:
+                let error: DataSourceError = DataSourceError(kind: .timeout, description: "DataSource fetch timed out.")
+                DispatchQueue.main.async {
+                    errorBlock?(snapshot, error)
                 }
             }
-        })
+        }
     }
 
-    var users: [User] = []
     @discardableResult
     public func get() -> Self {
         self.next()

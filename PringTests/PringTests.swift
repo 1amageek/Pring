@@ -315,8 +315,9 @@ class PringTests: XCTestCase {
 
         let group: DispatchGroup = DispatchGroup()
         let queue: DispatchQueue = DispatchQueue(label: "Dispatch.Queue")
+        let count: Int = 10
         queue.async {
-            (0..<10).forEach({ (index) in
+            (0..<count).forEach({ (index) in
                 group.enter()
                 let document: DataSourceItem = DataSourceItem()
                 document.index = index
@@ -325,14 +326,23 @@ class PringTests: XCTestCase {
                 })
             })
             group.notify(queue: .main, execute: {
-                self.dataSource = DataSourceItem.reference.dataSource().on({ (changes) in
-                    print(changes)
+                self.dataSource = DataSourceItem.query.dataSource().on({ (snapshot, change) in
+                    switch change {
+                    case .update(deletions: _, insertions: let insertions, modifications: _):
+                        XCTAssertEqual(insertions.count, 1)
+                    default: break
+                    }
+                }).onCompleted({ (snapshot, items) in
+                    XCTAssertEqual(snapshot?.count, count)
+                    items.forEach({ (item) in
+                        item.delete()
+                    })
                     expectation.fulfill()
                 }).get()
             })
             group.wait()
         }
-        self.wait(for: [expectation], timeout: 10)
+        self.wait(for: [expectation], timeout: 20)
     }
     
 //    func testPerformanceExample() {

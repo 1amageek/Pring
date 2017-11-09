@@ -52,9 +52,18 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        User.query.dataSource().on { (changes) in
-            print(changes)
+        User.query.dataSource()
+            .on { (snapshot, changes) in
+                print(changes)
+                print(Thread.isMainThread)
+            }.onCompleted { (snapshot, users) in
+                print(users)
+            }.onError { (snapshot, error) in
+                print(error)
         }.get()
+
+
+
 
 //        let userA: User = User()
 //        userA.name = "userA"
