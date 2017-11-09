@@ -243,7 +243,9 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                     }
                     if let i: Int = self.documents.index(of: id) {
                         self.documents.remove(at: i)
-                        changeBlock?(snapshot, CollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
+                        DispatchQueue.main.async {
+                            changeBlock?(snapshot, CollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
+                        }
                     }
                 }
             })
@@ -286,14 +288,10 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
      - parameter parent: Also deletes the data of the reference case of `true`.
      - parameter block: block The block that should be called. If there is an error it returns an error.
      */
-    public func removeObject(at index: Int, block: ((String, Error?) -> Void)?) {
-        let id: String = self.documents[index].id
-        guard let reference: CollectionReference = self.query.reference as? CollectionReference else {
-            let error: DataSourceError = DataSourceError(kind: .invalidReference, description: "[Pring.DataSource]  *** error: Reference is not CollectionReference")
-            block?(id, error)
-            return
-        }
-        reference.document(id).delete { (error) in
+    public func removeDocument(at index: Int, block: ((String, Error?) -> Void)?) {
+        let document: Element = self.documents[index]
+        let id: String = document.id
+        document.delete { (error) in
             block?(id, error)
         }
     }

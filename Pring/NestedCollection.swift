@@ -93,17 +93,6 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
         }
         if let count: Int = value["count"] as? Int {
             self._count = count
-            self.countListener = self.parent?.reference.addSnapshotListener({ [weak self] (snapshot, error) in
-                guard let snapshot: DocumentSnapshot = snapshot else {
-                    return
-                }
-                guard snapshot.exists else {
-                    return
-                }
-                if let count: Int = snapshot.data()["count"] as? Int {
-                    self?._count = count
-                }
-            })
         }
     }
 

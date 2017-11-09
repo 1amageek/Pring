@@ -12,10 +12,18 @@ import FirebaseStorage
 extension DataSource {
     public class Query {
 
-        internal var reference: FirebaseFirestore.Query
+        internal var reference: CollectionReference!
 
-        public init(_ reference: FirebaseFirestore.Query) {
+        internal var query: FirebaseFirestore.Query!
+
+        public init(_ reference: CollectionReference) {
             self.reference = reference
+            self.query = reference
+        }
+
+        public init(_ query: FirebaseFirestore.Query, reference: CollectionReference) {
+            self.reference = reference
+            self.query = query
         }
 
         public func dataSource() -> DataSource<Element> {
@@ -23,67 +31,67 @@ extension DataSource {
         }
 
         public func `where`(_ keyPath: PartialKeyPath<Element>, isEqualTo: Any) -> Query {
-            return Query(reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo))
+            return Query(reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo), reference: self.reference)
         }
 
         public func `where`(_ keyPath: PartialKeyPath<Element>, isLessThan: Any) -> Query {
-            return Query(reference.whereField(keyPath._kvcKeyPathString!, isLessThan: isLessThan))
+            return Query(reference.whereField(keyPath._kvcKeyPathString!, isLessThan: isLessThan), reference: self.reference)
         }
 
         public func `where`(_ keyPath: PartialKeyPath<Element>, isLessThanOrEqualTo: Any) -> Query {
-            return Query(reference.whereField(keyPath._kvcKeyPathString!, isLessThanOrEqualTo: isLessThanOrEqualTo))
+            return Query(reference.whereField(keyPath._kvcKeyPathString!, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference)
         }
 
         public func `where`(_ keyPath: PartialKeyPath<Element>, isGreaterThan: Any) -> Query {
-            return Query(reference.whereField(keyPath._kvcKeyPathString!, isGreaterThan: isGreaterThan))
+            return Query(reference.whereField(keyPath._kvcKeyPathString!, isGreaterThan: isGreaterThan), reference: self.reference)
         }
 
         public func `where`(_ keyPath: PartialKeyPath<Element>, isGreaterThanOrEqualTo: Any) -> Query {
-            return Query(reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo))
+            return Query(reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference)
         }
 
         public func order(by: PartialKeyPath<Element>) -> Query {
-            return Query(reference.order(by: by._kvcKeyPathString!))
+            return Query(reference.order(by: by._kvcKeyPathString!), reference: self.reference)
         }
 
         public func order(by: PartialKeyPath<Element>, descending: Bool) -> Query {
-            return Query(reference.order(by: by._kvcKeyPathString!, descending: descending))
+            return Query(reference.order(by: by._kvcKeyPathString!, descending: descending), reference: self.reference)
         }
 
         public func limit(to: Int) -> Query {
-            return Query(reference.limit(to: to))
+            return Query(reference.limit(to: to), reference: self.reference)
         }
 
         public func start(at: [Any]) -> Query {
-            return Query(reference.start(at: at))
+            return Query(reference.start(at: at), reference: self.reference)
         }
 
         public func start(after: [Any]) -> Query {
-            return Query(reference.start(after: after))
+            return Query(reference.start(after: after), reference: self.reference)
         }
 
         public func start(atDocument: DocumentSnapshot) -> Query {
-            return Query(reference.start(atDocument: atDocument))
+            return Query(reference.start(atDocument: atDocument), reference: self.reference)
         }
 
         public func start(afterDocument: DocumentSnapshot) -> Query {
-            return Query(reference.start(afterDocument: afterDocument))
+            return Query(reference.start(afterDocument: afterDocument), reference: self.reference)
         }
 
         public func end(at: [Any]) -> Query {
-            return Query(reference.end(at: at))
+            return Query(reference.end(at: at), reference: self.reference)
         }
 
         public func end(atDocument: DocumentSnapshot) -> Query {
-            return Query(reference.end(atDocument: atDocument))
+            return Query(reference.end(atDocument: atDocument), reference: self.reference)
         }
 
         public func end(before: [Any]) -> Query {
-            return Query(reference.end(before: before))
+            return Query(reference.end(before: before), reference: self.reference)
         }
 
         public func end(beforeDocument: DocumentSnapshot) -> Query {
-            return Query(reference.end(beforeDocument: beforeDocument))
+            return Query(reference.end(beforeDocument: beforeDocument), reference: self.reference)
         }
 
         public func listen(options: QueryListenOptions? = nil, listener: @escaping FIRQuerySnapshotBlock) -> ListenerRegistration {

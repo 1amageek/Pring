@@ -35,7 +35,7 @@ class DataSourceViewController: UITableViewController {
                 case .error(let error):
                     print(error)
                 }
-            }).listen()
+            })
     }
 
     // MARK: - Table view data source
@@ -68,8 +68,8 @@ class DataSourceViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            self.dataSource?.removeObject(at: indexPath.item, block: { (key, error) in
-                
+            self.dataSource?.removeDocument(at: indexPath.item, block: { (key, error) in
+                print(error)
             })
         }
     }

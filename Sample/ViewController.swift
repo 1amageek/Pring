@@ -12,23 +12,25 @@ import FirebaseFirestore
 class ViewController: UIViewController {
 
     @IBAction func buttonAction(_ sender: Any) {
-        let userA: User = User()
-        userA.name = "userA"
-        userA.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
-
-        let userB: User = User()
-        userB.name = "userB"
-        userB.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
-
-        let item: Item = Item()
-        item.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
-
-        userA.followers.insert(userB)
-        userA.items.insert(item)
-        userA.save()
+//        let userA: User = User()
+//        userA.name = "userA"
+//        userA.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
+//
+//        let userB: User = User()
+//        userB.name = "userB"
+//        userB.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
+//
+//        let item: Item = Item()
+//        item.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
+//
+//        userA.followers.insert(userB)
+//        userA.items.insert(item)
+//        userA.save()
     }
 
     var dataSource: DataSource<User>?
+
+
 
 //    var users: [User] = []
 
@@ -52,18 +54,26 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        User.query.dataSource()
-            .on { (snapshot, changes) in
-                print(changes)
-                print(Thread.isMainThread)
-            }.onCompleted { (snapshot, users) in
-                print(users)
-            }.onError { (snapshot, error) in
-                print(error)
-        }.get()
+        let reference: CollectionReference = User.reference
 
+        (0..<30).forEach { (index) in
+//            let batch: WriteBatch = Firestore.firestore().batch()
+//            let user = reference.document()
+//            batch.setData([
+//                "createdAt": Date(),
+//                "updatedAt": Date(),
+//                "name": "\(index)"
+//                ], forDocument: user)
+//            batch.commit(completion: { (error) in
+//                user.getDocument(completion: { (snapshot, error) in
+//                    print(error)
+//                })
+//            })
 
-
+            let user: User = User()
+            user.name = "\(index)"
+            user.save()
+        }
 
 //        let userA: User = User()
 //        userA.name = "userA"

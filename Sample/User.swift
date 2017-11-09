@@ -18,7 +18,7 @@ class User: Object {
     }
     dynamic var type: UserType = .normal
     dynamic var name: String?
-    dynamic var thumbnail: File?
+//    dynamic var thumbnail: File?
     dynamic var followers: ReferenceCollection<User> = []
     dynamic var items: NestedCollection<Item> = []
 
