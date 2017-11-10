@@ -24,7 +24,7 @@ open class Object: NSObject, Document {
     }
 
     open class var reference: CollectionReference {
-        return Firestore.firestore().collection("version").document("\(self.modelVersion)").collection(self.modelName)
+        return Firestore.firestore().collection(self.path)
     }
 
     open class var storageRef: StorageReference {
@@ -104,7 +104,6 @@ open class Object: NSObject, Document {
     }
 
     internal func set(_ reference: DocumentReference) {
-        print(reference.path)
         self.reference = reference
     }
 
@@ -406,10 +405,6 @@ extension Object {
     public static func == (lhs: Object, rhs: Object) -> Bool {
         return lhs.id == rhs.id && type(of: lhs).modelVersion == type(of: rhs).modelVersion
     }
-}
-
-extension Object: StorageLinkable {
-    
 }
 
 public struct DocumentError: Error {

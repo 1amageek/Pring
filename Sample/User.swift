@@ -16,6 +16,7 @@ class User: Object {
         case gold
         case premium
     }
+
     dynamic var type: UserType = .normal
     dynamic var name: String?
 //    dynamic var thumbnail: File?
