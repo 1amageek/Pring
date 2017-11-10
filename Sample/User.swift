@@ -20,6 +20,7 @@ class User: Object {
     dynamic var name: String?
 //    dynamic var thumbnail: File?
     dynamic var followers: ReferenceCollection<User> = []
+    dynamic var friends: ReferenceCollection<User> = []
     dynamic var items: NestedCollection<Item> = []
 
     static func image() -> UIImage {

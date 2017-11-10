@@ -11,23 +11,23 @@ import FirebaseStorage
 
 open class Object: NSObject, Document {
 
-    open static var modelVersion: Int {
+    open class var modelVersion: Int {
         return 1
     }
 
-    open static var modelName: String {
+    open class var modelName: String {
         return String(describing: Mirror(reflecting: self).subjectType).components(separatedBy: ".").first!.lowercased()
     }
 
-    open static var path: String {
+    open class var path: String {
         return "version/\(self.modelVersion)/\(self.modelName)"
     }
 
-    open static var reference: CollectionReference {
+    open class var reference: CollectionReference {
         return Firestore.firestore().collection("version").document("\(self.modelVersion)").collection(self.modelName)
     }
 
-    open static var storageRef: StorageReference {
+    open class var storageRef: StorageReference {
         return Storage.storage().reference().child(self.path)
     }
 

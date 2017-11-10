@@ -12,20 +12,17 @@ import FirebaseFirestore
 class ViewController: UIViewController {
 
     @IBAction func buttonAction(_ sender: Any) {
-//        let userA: User = User()
-//        userA.name = "userA"
-//        userA.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
-//
-//        let userB: User = User()
-//        userB.name = "userB"
-//        userB.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
-//
-//        let item: Item = Item()
-//        item.thumbnail = File(data: UIImageJPEGRepresentation(Item.image(), 0.3)!, mimeType: .jpeg)
-//
-//        userA.followers.insert(userB)
-//        userA.items.insert(item)
-//        userA.save()
+
+        let userA: User = User()
+        userA.name = "userA"
+
+        let userB: User = User()
+        userB.name = "userB"
+
+        userA.followers.insert(userB)
+        userA.save()
+
+        
     }
 
     var dataSource: DataSource<User>?

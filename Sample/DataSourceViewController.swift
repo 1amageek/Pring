@@ -20,6 +20,12 @@ class DataSourceViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        User.get("ID") { (user, error) in
+            guard let user: User = user else { return }
+            print(user)
+        }
+
         self.dataSource = User.order(by: \User.createdAt).limit(to: 30).dataSource()
             .on({ [weak self] (snapshot, changes) in
                 guard let tableView: UITableView = self?.tableView else { return }
