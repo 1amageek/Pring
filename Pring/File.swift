@@ -162,8 +162,8 @@ public final class File: NSObject {
         self.name = name
     }
 
-    public convenience init(name: String? = nil,
-                            data: Data,
+    public convenience init(data: Data,
+                            name: String? = nil,
                             mimeType: MIMEType? = nil) {
         let fileName: String = File.generateFileName(name ?? "\(Int(Date().timeIntervalSince1970 * 1000))", mimeType: mimeType)
         self.init(name: fileName)
@@ -171,8 +171,8 @@ public final class File: NSObject {
         self.data = data
     }
 
-    public convenience init(name: String? = nil,
-                            url: URL,
+    public convenience init(url: URL,
+                            name: String? = nil,
                             mimeType: MIMEType? = nil) {
         let fileName: String = File.generateFileName(name ?? "\(Int(Date().timeIntervalSince1970 * 1000))", mimeType: mimeType)
         self.init(name: fileName)

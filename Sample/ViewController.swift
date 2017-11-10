@@ -15,6 +15,7 @@ class ViewController: UIViewController {
 
         let userA: User = User()
         userA.name = "userA"
+        userA.thumbnail = File(data: <#T##Data#>, mimeType: <#T##File.MIMEType?#>)
 
         let userB: User = User()
         userB.name = "userB"
