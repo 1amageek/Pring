@@ -203,8 +203,8 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
 
     // MARK: -
 
-    public func contains(_ element: T, block: @escaping (Bool) -> Void) {
-        self.reference.document(element.id).getDocument { (snapshot, error) in
+    public func contains(_ id: String, block: @escaping (Bool) -> Void) {
+        self.reference.document(id).getDocument { (snapshot, error) in
             return block(snapshot?.exists ?? false)
         }
     }
