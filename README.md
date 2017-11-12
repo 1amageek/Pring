@@ -193,7 +193,9 @@ MyObject.get(document!.id, block: { (document, error) in
 Delete document with ID.
 
 ``` swift
-MyObject.delete(id: document!.id)
+MyObject.get(document!.id, block: { (document, error) in
+    document.delete()
+})
 ```
 
 ### 📄 File
