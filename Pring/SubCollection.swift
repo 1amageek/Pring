@@ -55,3 +55,74 @@ extension SubCollection where Self: Collection, Self.Element: Document {
         }
     }
 }
+
+public extension SubCollection where Self: Collection, Self.Element: Object {
+
+    public var query: DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference)
+    }
+
+    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isEqualTo: Any) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo), reference: self.reference)
+    }
+
+    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isLessThan: Any) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThan: isLessThan), reference: self.reference)
+    }
+
+    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isLessThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference)
+    }
+
+    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isGreaterThan: Any) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThan: isGreaterThan), reference: self.reference)
+    }
+
+    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isGreaterThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference)
+    }
+
+    public func order(by: PartialKeyPath<Self.Element>) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!), reference: self.reference)
+    }
+
+    public func order(by: PartialKeyPath<Self.Element>, descending: Bool) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!, descending: descending), reference: self.reference)
+    }
+
+    public func limit(to: Int) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.limit(to: to), reference: self.reference)
+    }
+
+    public func start(at: [Any]) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.start(at: at), reference: self.reference)
+    }
+
+    public func start(after: [Any]) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.start(after: after), reference: self.reference)
+    }
+
+    public func start(atDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.start(atDocument: atDocument), reference: self.reference)
+    }
+
+    public func start(afterDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.start(afterDocument: afterDocument), reference: self.reference)
+    }
+
+    public func end(at: [Any]) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.end(at: at), reference: self.reference)
+    }
+
+    public func end(atDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.end(atDocument: atDocument), reference: self.reference)
+    }
+
+    public func end(before: [Any]) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.end(before: before), reference: self.reference)
+    }
+
+    public func end(beforeDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.end(beforeDocument: beforeDocument), reference: self.reference)
+    }
+}

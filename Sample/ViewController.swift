@@ -8,21 +8,19 @@
 
 import UIKit
 import FirebaseFirestore
+import FirebaseStorage
 
 class ViewController: UIViewController {
 
     @IBAction func buttonAction(_ sender: Any) {
 
-        let userA: User = User()
-        userA.name = "userA"
-        userA.thumbnail = File(data: <#T##Data#>, mimeType: <#T##File.MIMEType?#>)
-
-        let userB: User = User()
-        userB.name = "userB"
-
-        userA.followers.insert(userB)
-        userA.save()
-
+        let user: User = User()
+        user.name = "Jony"
+        user.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
+        let task: [String: StorageUploadTask] = user.save()
+        task["thumbnail"]?.observe(.progress) { (snapshot) in
+            print(snapshot.progress?.completedUnitCount)
+        }
         
     }
 
