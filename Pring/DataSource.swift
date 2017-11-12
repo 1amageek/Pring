@@ -288,7 +288,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
      - parameter parent: Also deletes the data of the reference case of `true`.
      - parameter block: block The block that should be called. If there is an error it returns an error.
      */
-    public func removeDocument(at index: Int, block: ((String, Error?) -> Void)?) {
+    public func removeDocument(at index: Int, block: ((String, Error?) -> Void)? = nil) {
         let document: Element = self.documents[index]
         let id: String = document.id
         document.delete { (error) in
