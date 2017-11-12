@@ -352,3 +352,14 @@ class DataSourceViewController: UITableViewController {
     }
 }
 ```
+
+#### SubCollection DataSource
+``` swift
+User.get("USER_ID") { (user, error) in
+    guard let user: User = user else { return }
+    self.dataSource = user.followers.order(by: \User.createdAt).dataSource()
+        .on { (snapshot, changes) in
+            // something
+        }.listen()
+}
+```
