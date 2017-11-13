@@ -104,19 +104,20 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
     // MARK: -
 
     /// Save the new Object.
-    public func insert(_ newMember: Element) {
+    public func insert(_ newMember: Element, block: ((Error?) -> Void)? = nil) {
         newMember.set(self.reference.document(newMember.id))
         if isListening {
+
             let reference: DocumentReference = newMember.reference
             let batch: WriteBatch = Firestore.firestore().batch()
-            batch.setData(newMember.value as! [String : Any], forDocument: reference)
-            if !newMember.isListening {
-                newMember.pack(batch)
-            }
+            batch.setData(newMember.value as! [String: Any], forDocument: reference)
+
             let parentRef: DocumentReference = self.parent!.reference
-            batch.commit(completion: {(error) in
+            let key: String = self.key!
+            var count: Int = 0
+            batch.commit(completion: { (error) in
                 if let error: Error = error {
-                    print(error)
+                    block?(error)
                     return
                 }
                 Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
@@ -127,23 +128,29 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
                         errorPointer?.pointee = fetchError
                         return nil
                     }
-                    let oldCount = document.data()["count"] as? Int ?? 0
-                    transaction.updateData(["count": oldCount + 1], forDocument: parentRef)
+                    let oldParent: [String: Any] = document.data() as [String: Any]
+                    let subCollection: [String: Any] = oldParent[key] as? [String: Any] ?? [key: 0]
+                    let oldCount = subCollection["count"] as? Int ?? 0
+                    count = oldCount + 1
+                    transaction.updateData([key: ["count": count]], forDocument: parentRef)
                     return nil
                 }, completion: { (object, error) in
-                    if let error: Error = error {
-                        print(error)
+                    if let error = error {
+                        block?(error)
                         return
                     }
+                    self._count = count
+                    block?(error)
                 })
             })
         } else {
             _self.insert(newMember)
+            block?(nil)
         }
     }
 
     /// Deletes the Object from the reference destination.
-    public func remove(_ member: Element, hard: Bool = false) {
+    public func remove(_ member: Element, hard: Bool = false, block: ((Error?) -> Void)? = nil) {
         if isListening {
             let reference: DocumentReference = member.reference
             let batch: WriteBatch = Firestore.firestore().batch()
@@ -152,9 +159,11 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
                 batch.deleteDocument(member.reference)
             }
             let parentRef: DocumentReference = self.parent!.reference
+            let key: String = self.key!
+            var count: Int = 0
             batch.commit(completion: {(error) in
                 if let error: Error = error {
-                    print(error)
+                    block?(error)
                     return
                 }
                 Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
@@ -165,7 +174,10 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
                         errorPointer?.pointee = fetchError
                         return nil
                     }
-                    guard let oldCount = document.data()["count"] as? Int else {
+                    let oldParent: [String: Any] = document.data() as [String: Any]
+                    guard
+                        let subCollection: [String: Any] = oldParent[key] as? [String: Any],
+                        let oldCount = subCollection["count"] as? Int else {
                         let error = NSError(
                             domain: "AppErrorDomain",
                             code: -1,
@@ -176,20 +188,24 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
                         errorPointer?.pointee = error
                         return nil
                     }
-
-                    transaction.updateData(["count": oldCount - 1], forDocument: parentRef)
+                    count = oldCount - 1
+                    transaction.updateData([key: ["count": count]], forDocument: parentRef)
                     return nil
                 }, completion: { (object, error) in
-                    if let error: Error = error {
-                        print(error)
+                    if let error = error {
+                        block?(error)
                         return
                     }
+                    self._count = count
+                    block?(error)
                 })
             })
+            member.set(type(of: member).reference.document())
         } else {
             _self.remove(member)
+            member.set(type(of: member).reference.document())
+            block?(nil)
         }
-        member.set(type(of: member).reference.document())
     }
 
     public func contains(_ id: String, block: @escaping (Bool) -> Void) {

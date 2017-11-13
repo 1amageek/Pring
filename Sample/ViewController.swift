@@ -14,14 +14,25 @@ class ViewController: UIViewController {
 
     @IBAction func buttonAction(_ sender: Any) {
 
+//        let user: User = User()
+//        user.name = "Jony"
+//        user.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
+//        let task: [String: StorageUploadTask] = user.save()
+//        task["thumbnail"]?.observe(.progress) { (snapshot) in
+//            print(snapshot.progress?.completedUnitCount)
+//        }
+
         let user: User = User()
-        user.name = "Jony"
-        user.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
-        let task: [String: StorageUploadTask] = user.save()
-        task["thumbnail"]?.observe(.progress) { (snapshot) in
-            print(snapshot.progress?.completedUnitCount)
+        let value: [String: Any] = user.value as! [String: Any]
+        let reference = user.reference
+        let batch: WriteBatch = Firestore.firestore().batch()
+        batch.setData(value, forDocument: reference)
+        batch.commit { (error) in
+            reference.getDocument(completion: { (snapshot, error) in
+                print(error)
+            })
         }
-        
+
     }
 
     var dataSource: DataSource<User>?
@@ -50,26 +61,31 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let reference: CollectionReference = User.reference
+        let user: User = User()
+        user.save { (ref, error) in
+            let item: Item = Item()
+            user.items.insert(item, block: { (error) in
+                print("ITEM", error)
+            })
 
-        (0..<30).forEach { (index) in
-//            let batch: WriteBatch = Firestore.firestore().batch()
-//            let user = reference.document()
-//            batch.setData([
-//                "createdAt": Date(),
-//                "updatedAt": Date(),
-//                "name": "\(index)"
-//                ], forDocument: user)
-//            batch.commit(completion: { (error) in
-//                user.getDocument(completion: { (snapshot, error) in
-//                    print(error)
-//                })
-//            })
-
-            let user: User = User()
-            user.name = "\(index)"
-            user.save()
+            let aUser: User = User()
+            user.friends.insert(aUser, block: { (error) in
+                print("FRIENDE", error)
+            })
         }
+
+//        let user: User = User()
+//        let value: [String: Any] = user.value as! [String: Any]
+//        let reference = user.reference
+//        let batch: WriteBatch = Firestore.firestore().batch()
+//        batch.setData(value, forDocument: reference)
+//        batch.commit { (error) in
+//            reference.getDocument(completion: { (snapshot, error) in
+//                print(error)
+//            })
+//        }
+
+
 
 //        let userA: User = User()
 //        userA.name = "userA"

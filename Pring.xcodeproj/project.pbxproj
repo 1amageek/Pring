@@ -11,6 +11,7 @@
 		123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */; };
 		1249ABED1FB45DB400E78EA6 /* DataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */; };
 		1249ABEF1FB45ED800E78EA6 /* DataSourceViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEE1FB45ED800E78EA6 /* DataSourceViewCell.swift */; };
+		126080401FB86FE2001B5DDA /* CollectionObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1260803F1FB86FE2001B5DDA /* CollectionObject.swift */; };
 		129E368F1FA34EA600336C4D /* NestedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124757B31FA31A0C00FA517D /* NestedCollection.swift */; };
 		129E36921FA34F3200336C4D /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129E36911FA34F3200336C4D /* Item.swift */; };
 		12AF82FE1F8CAEDE00561159 /* Pring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AF82F41F8CAEDE00561159 /* Pring.framework */; };
@@ -73,6 +74,7 @@
 		124757B31FA31A0C00FA517D /* NestedCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedCollection.swift; sourceTree = "<group>"; };
 		1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceViewController.swift; sourceTree = "<group>"; };
 		1249ABEE1FB45ED800E78EA6 /* DataSourceViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceViewCell.swift; sourceTree = "<group>"; };
+		1260803F1FB86FE2001B5DDA /* CollectionObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionObject.swift; sourceTree = "<group>"; };
 		12649F021F9F6567004C6130 /* Pring.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pring.podspec; sourceTree = "<group>"; };
 		129E36911FA34F3200336C4D /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		12AF82F41F8CAEDE00561159 /* Pring.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pring.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -198,6 +200,7 @@
 				122FCCB21FA5C9D8005A069E /* NestedItem.swift */,
 				12D14A8A1FB150DA006679B6 /* MultipleFilesDocument.swift */,
 				12D14A8C1FB19236006679B6 /* MultipleFilesNestedItem.swift */,
+				1260803F1FB86FE2001B5DDA /* CollectionObject.swift */,
 				12C41E751FB30FEE002B1526 /* DataSourceItem.swift */,
 				12AF83261F8CD1ED00561159 /* Pring.png */,
 				12AF83041F8CAEDE00561159 /* Info.plist */,
@@ -598,6 +601,7 @@
 				12D14A8D1FB19236006679B6 /* MultipleFilesNestedItem.swift in Sources */,
 				122FCCB31FA5C9D8005A069E /* NestedItem.swift in Sources */,
 				12C41E761FB30FEE002B1526 /* DataSourceItem.swift in Sources */,
+				126080401FB86FE2001B5DDA /* CollectionObject.swift in Sources */,
 				12AF83211F8CAF6E00561159 /* TestDocument.swift in Sources */,
 				12D14A8B1FB150DA006679B6 /* MultipleFilesDocument.swift in Sources */,
 				12AF83031F8CAEDE00561159 /* PringTests.swift in Sources */,
@@ -861,7 +865,7 @@
 				DEVELOPMENT_TEAM = 88ACA86N96;
 				INFOPLIST_FILE = Sample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Sample;
+				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Pring;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -877,7 +881,7 @@
 				DEVELOPMENT_TEAM = 88ACA86N96;
 				INFOPLIST_FILE = Sample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Sample;
+				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Pring;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

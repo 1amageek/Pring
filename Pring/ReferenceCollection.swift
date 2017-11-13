@@ -115,7 +115,7 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
     // MARK: -
 
     /// Save the new Object.
-    public func insert(_ newMember: Element) {
+    public func insert(_ newMember: Element, block: ((Error?) -> Void)? = nil) {
         if isListening {
             let reference: DocumentReference = self.reference.document(newMember.id)
             let batch: WriteBatch = Firestore.firestore().batch()
@@ -124,9 +124,11 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
                 newMember.pack(batch)
             }
             let parentRef: DocumentReference = self.parent!.reference
-            batch.commit(completion: {(error) in
+            let key: String = self.key!
+            var count: Int = 0
+            batch.commit(completion: { (error) in
                 if let error: Error = error {
-                    print(error)
+                    block?(error)
                     return
                 }
                 Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
@@ -137,14 +139,19 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
                         errorPointer?.pointee = fetchError
                         return nil
                     }
-                    let oldCount = document.data()["count"] as? Int ?? 0
-                    transaction.updateData(["count": oldCount + 1], forDocument: parentRef)
+                    let oldParent: [String: Any] = document.data() as [String: Any]
+                    let subCollection: [String: Any] = oldParent[key] as? [String: Any] ?? [key: 0]
+                    let oldCount = subCollection["count"] as? Int ?? 0
+                    count = oldCount + 1
+                    transaction.updateData([key: ["count": count]], forDocument: parentRef)
                     return nil
                 }, completion: { (object, error) in
-                    if let error: Error = error {
-                        print(error)
+                    if let error = error {
+                        block?(error)
                         return
                     }
+                    self._count = count
+                    block?(error)
                 })
             })
         } else {
@@ -153,7 +160,7 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
     }
 
     /// Deletes the Object from the reference destination.
-    public func remove(_ member: Element, hard: Bool = false) {
+    public func remove(_ member: Element, hard: Bool = false, block: ((Error?) -> Void)? = nil) {
         if isListening {
             let reference: DocumentReference = self.reference.document(member.id)
             let batch: WriteBatch = Firestore.firestore().batch()
@@ -162,9 +169,11 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
                 batch.deleteDocument(member.reference)
             }
             let parentRef: DocumentReference = self.parent!.reference
+            let key: String = self.key!
+            var count: Int = 0
             batch.commit(completion: {(error) in
                 if let error: Error = error {
-                    print(error)
+                    block?(error)
                     return
                 }
                 Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
@@ -175,29 +184,35 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
                         errorPointer?.pointee = fetchError
                         return nil
                     }
-                    guard let oldCount = document.data()["count"] as? Int else {
-                        let error = NSError(
-                            domain: "AppErrorDomain",
-                            code: -1,
-                            userInfo: [
-                                NSLocalizedDescriptionKey: "Unable to retrieve count from snapshot \(document)"
-                            ]
-                        )
-                        errorPointer?.pointee = error
-                        return nil
+                    let oldParent: [String: Any] = document.data() as [String: Any]
+                    guard
+                        let subCollection: [String: Any] = oldParent[key] as? [String: Any],
+                        let oldCount = subCollection["count"] as? Int else {
+                            let error = NSError(
+                                domain: "AppErrorDomain",
+                                code: -1,
+                                userInfo: [
+                                    NSLocalizedDescriptionKey: "Unable to retrieve count from snapshot \(document)"
+                                ]
+                            )
+                            errorPointer?.pointee = error
+                            return nil
                     }
-
-                    transaction.updateData(["count": oldCount - 1], forDocument: parentRef)
+                    count = oldCount - 1
+                    transaction.updateData([key: ["count": count]], forDocument: parentRef)
                     return nil
                 }, completion: { (object, error) in
-                    if let error: Error = error {
-                        print(error)
+                    if let error = error {
+                        block?(error)
                         return
                     }
+                    self._count = count
+                    block?(error)
                 })
             })
         } else {
             _self.remove(member)
+            block?(nil)
         }
     }
 
