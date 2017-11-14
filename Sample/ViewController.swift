@@ -33,10 +33,10 @@ class ViewController: UIViewController {
 //            })
 //        }
 
-//        let item: Item = Item()
-//        self.user?.items.insert(item, block: { (error) in
-//            print(self.user?.items.count ,error)
-//        })
+        let item: Item = Item()
+        self.user?.items.insert(item, block: { (error) in
+            print(self.user?.items.count ,error)
+        })
 //        let user: User = User()
 //        user.save { (_, error) in
 //            self.user?.friends.insert(user, block: { (error) in
@@ -83,11 +83,11 @@ class ViewController: UIViewController {
 //            print(items)
 //        }).get()
 
-        self.d = c.nestedCollection.order(by: \Item.createdAt).dataSource().on({ (_, change) in
-            print(change)
-        }).onCompleted { (_, items) in
-            print(items)
-        }.get()
+//        self.d = c.nestedCollection.order(by: \Item.createdAt).dataSource().on({ (_, change) in
+//            print(change)
+//        }).onCompleted { (_, items) in
+//            print(items)
+//        }.get()
 
 //        let c: Collector = Collector()
 //
@@ -111,16 +111,17 @@ class ViewController: UIViewController {
 
 
 
-//        let userA: User = User()
-//        userA.name = "userA"
+        let userA: User = User()
+        userA.name = "userA"
 //        userA.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
-//        userA.save { (ref, error) in
+        userA.save { (ref, error) in
+            self.user = userA
 //            userA.thumbnail?.delete({ (error) in
 //                User.get(ref!.documentID, block: { (user, error) in
 //                    print(user)
 //                })
 //            })
-//        }
+        }
 
 
 //        let userA: User = User()

@@ -376,12 +376,10 @@ class PringTests: XCTestCase {
                             }
                             XCTAssertEqual(object.nestedCollection.count, count)
                             object.nestedCollection.query.dataSource().onCompleted({ (_, items) in
-                                print("!!!!!!!", items)
                                 queue.async {
                                     items.forEach({ (item) in
                                         group.enter()
                                         object.nestedCollection.remove(item, block: { (error) in
-                                            print("1111111")
                                             group.leave()
                                         })
                                     })
@@ -390,7 +388,6 @@ class PringTests: XCTestCase {
                                             guard let object: CollectionObject = object else {
                                                 return
                                             }
-                                            print("!!!!", object.nestedCollection.count)
                                             XCTAssertEqual(object.nestedCollection.count, 0)
                                             expectation.fulfill()
                                         })
@@ -407,17 +404,62 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 20)
     }
 
-    func testS() {
-        let expectation: XCTestExpectation = XCTestExpectation(description: "Test NestedCollection")
+    func testReferenceCollectionsCount() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test ReferenceCollection")
 
-        CollectionObject.get("lbYWmfOzIAR91SnxrGdB") { (object, error) in
-            guard let object = object else { return }
-            object.nestedCollection.query.dataSource().onCompleted({ (_, items) in
-                print(items)
-                expectation.fulfill()
-            }).get()
+        let group: DispatchGroup = DispatchGroup()
+        let queue: DispatchQueue = DispatchQueue(label: "Dispatch.Queue")
+        let count: Int = 5
+        let object: CollectionObject = CollectionObject()
+        object.save { (ref, error) in
+            if let error = error {
+                print(error)
+            }
+            CollectionObject.get(ref!.documentID, block: { (object, _) in
+                guard let object: CollectionObject = object else {
+                    return
+                }
+
+                queue.async {
+                    (0..<count).forEach({ (index) in
+                        group.enter()
+                        let obj: CollectionObject = CollectionObject()
+                        object.referenceCollection.insert(obj, block: { (error) in
+                            group.leave()
+                        })
+                    })
+                    group.notify(queue: .main, execute: {
+                        CollectionObject.get(ref!.documentID, block: { (object, _) in
+                            guard let object: CollectionObject = object else {
+                                return
+                            }
+                            XCTAssertEqual(object.referenceCollection.count, count)
+                            object.referenceCollection.query.dataSource().onCompleted({ (_, items) in
+                                queue.async {
+                                    items.forEach({ (item) in
+                                        group.enter()
+                                        object.referenceCollection.remove(item, hard: true, block: { (error) in
+                                            group.leave()
+                                        })
+                                    })
+                                    group.notify(queue: .main, execute: {
+                                        CollectionObject.get(ref!.documentID, block: { (object, _) in
+                                            guard let object: CollectionObject = object else {
+                                                return
+                                            }
+                                            XCTAssertEqual(object.referenceCollection.count, 0)
+                                            expectation.fulfill()
+                                        })
+                                    })
+                                    group.wait()
+                                }
+                            }).get()
+                        })
+                    })
+                    group.wait()
+                }
+            })
         }
-
         self.wait(for: [expectation], timeout: 20)
     }
 

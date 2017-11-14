@@ -16,17 +16,11 @@ class DataSourceViewController: UITableViewController {
     @IBAction func add(_ sender: Any) {
         let user: User = User()
         user.name = UUID().uuidString
-        (0..<10).forEach { (index) in
-            let aUser: User = User()
-            aUser.name = "\(index)"
-            user.followers.insert(aUser)
+        user.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
+        let task: [String: StorageUploadTask] = user.save()
+        task["thumbnail"]?.observe(.progress) { (snapshot) in
+            print(snapshot.progress?.completedUnitCount)
         }
-        user.save()
-//        user.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
-//        let task: [String: StorageUploadTask] = user.save()
-//        task["thumbnail"]?.observe(.progress) { (snapshot) in
-//            print(snapshot.progress?.completedUnitCount)
-//        }
     }
     
     override func viewDidLoad() {

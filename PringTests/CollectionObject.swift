@@ -14,5 +14,5 @@ import FirebaseFirestore
 class CollectionObject: Object {
 
     let nestedCollection: NestedCollection<NestedItem> = []
-    let referenceCollection: ReferenceCollection<NestedItem> = []
+    let referenceCollection: ReferenceCollection<CollectionObject> = []
 }

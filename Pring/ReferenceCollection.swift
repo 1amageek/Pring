@@ -84,8 +84,6 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
         self.init(elements)
     }
 
-    private var countListener: ListenerRegistration?
-
     public func setValue(_ value: Any?, forKey key: String) {
         self.key = key
         guard let value: [AnyHashable: Any] = value as? [AnyHashable: Any] else {
@@ -93,17 +91,6 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
         }
         if let count: Int = value["count"] as? Int {
             self._count = count
-//            self.countListener = self.parent?.reference.addSnapshotListener({ [weak self] (snapshot, error) in
-//                guard let snapshot: DocumentSnapshot = snapshot else {
-//                    return
-//                }
-//                guard snapshot.exists else {
-//                    return
-//                }
-//                if let count: Int = snapshot.data()["count"] as? Int {
-//                    self?._count = count
-//                }
-//            })
         }
     }
 
@@ -117,40 +104,38 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
     /// Save the new Object.
     public func insert(_ newMember: Element, block: ((Error?) -> Void)? = nil) {
         if isListening {
+
             let reference: DocumentReference = self.reference.document(newMember.id)
-            let batch: WriteBatch = Firestore.firestore().batch()
-            batch.setData([:], forDocument: reference)
-            if !newMember.isListening {
-                newMember.pack(batch)
-            }
             let parentRef: DocumentReference = self.parent!.reference
             let key: String = self.key!
             var count: Int = 0
-            batch.commit(completion: { (error) in
-                if let error: Error = error {
+
+            Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
+                let document: DocumentSnapshot
+                do {
+                    try document = transaction.getDocument(parentRef)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+                let oldParent: [String: Any] = document.data() as [String: Any]
+                let subCollection: [String: Any] = oldParent[key] as? [String: Any] ?? [key: 0]
+                let oldCount = subCollection["count"] as? Int ?? 0
+                count = oldCount + 1
+                transaction.updateData([key: ["count": count]], forDocument: parentRef)
+                return nil
+            }, completion: { (object, error) in
+                if let error = error {
                     block?(error)
                     return
                 }
-                Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
-                    let document: DocumentSnapshot
-                    do {
-                        try document = transaction.getDocument(parentRef)
-                    } catch let fetchError as NSError {
-                        errorPointer?.pointee = fetchError
-                        return nil
-                    }
-                    let oldParent: [String: Any] = document.data() as [String: Any]
-                    let subCollection: [String: Any] = oldParent[key] as? [String: Any] ?? [key: 0]
-                    let oldCount = subCollection["count"] as? Int ?? 0
-                    count = oldCount + 1
-                    transaction.updateData([key: ["count": count]], forDocument: parentRef)
-                    return nil
-                }, completion: { (object, error) in
-                    if let error = error {
-                        block?(error)
-                        return
-                    }
-                    self._count = count
+                self._count = count
+                let batch: WriteBatch = Firestore.firestore().batch()
+                batch.setData([:], forDocument: reference)
+                if !newMember.isListening {
+                    newMember.pack(batch)
+                }
+                batch.commit(completion: { (error) in
                     block?(error)
                 })
             })
@@ -162,51 +147,49 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
     /// Deletes the Object from the reference destination.
     public func remove(_ member: Element, hard: Bool = false, block: ((Error?) -> Void)? = nil) {
         if isListening {
+
             let reference: DocumentReference = self.reference.document(member.id)
-            let batch: WriteBatch = Firestore.firestore().batch()
-            batch.deleteDocument(reference)
-            if hard {
-                batch.deleteDocument(member.reference)
-            }
             let parentRef: DocumentReference = self.parent!.reference
             let key: String = self.key!
             var count: Int = 0
-            batch.commit(completion: {(error) in
-                if let error: Error = error {
+
+            Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
+                let document: DocumentSnapshot
+                do {
+                    try document = transaction.getDocument(parentRef)
+                } catch let fetchError as NSError {
+                    errorPointer?.pointee = fetchError
+                    return nil
+                }
+                let oldParent: [String: Any] = document.data() as [String: Any]
+                guard
+                    let subCollection: [String: Any] = oldParent[key] as? [String: Any],
+                    let oldCount = subCollection["count"] as? Int else {
+                        let error = NSError(
+                            domain: "AppErrorDomain",
+                            code: -1,
+                            userInfo: [
+                                NSLocalizedDescriptionKey: "Unable to retrieve count from snapshot \(document)"
+                            ]
+                        )
+                        errorPointer?.pointee = error
+                        return nil
+                }
+                count = oldCount - 1
+                transaction.updateData([key: ["count": count]], forDocument: parentRef)
+                return nil
+            }, completion: { (object, error) in
+                if let error = error {
                     block?(error)
                     return
                 }
-                Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
-                    let document: DocumentSnapshot
-                    do {
-                        try document = transaction.getDocument(parentRef)
-                    } catch let fetchError as NSError {
-                        errorPointer?.pointee = fetchError
-                        return nil
-                    }
-                    let oldParent: [String: Any] = document.data() as [String: Any]
-                    guard
-                        let subCollection: [String: Any] = oldParent[key] as? [String: Any],
-                        let oldCount = subCollection["count"] as? Int else {
-                            let error = NSError(
-                                domain: "AppErrorDomain",
-                                code: -1,
-                                userInfo: [
-                                    NSLocalizedDescriptionKey: "Unable to retrieve count from snapshot \(document)"
-                                ]
-                            )
-                            errorPointer?.pointee = error
-                            return nil
-                    }
-                    count = oldCount - 1
-                    transaction.updateData([key: ["count": count]], forDocument: parentRef)
-                    return nil
-                }, completion: { (object, error) in
-                    if let error = error {
-                        block?(error)
-                        return
-                    }
-                    self._count = count
+                self._count = count
+                let batch: WriteBatch = Firestore.firestore().batch()
+                batch.deleteDocument(reference)
+                if hard {
+                    batch.deleteDocument(member.reference)
+                }
+                batch.commit(completion: {(error) in
                     block?(error)
                 })
             })
@@ -231,12 +214,6 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
             return "Reference([])"
         }
         return "\(_self.documents.description)"
-    }
-
-    // MARK: -
-
-    deinit {
-        self.countListener?.remove()
     }
 }
 
