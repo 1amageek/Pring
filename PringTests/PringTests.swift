@@ -348,6 +348,9 @@ class PringTests: XCTestCase {
     func testNestedCollectionsCount() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test NestedCollection")
 
+        let group: DispatchGroup = DispatchGroup()
+        let queue: DispatchQueue = DispatchQueue(label: "Dispatch.Queue")
+        let count: Int = 5
         let object: CollectionObject = CollectionObject()
         object.save { (ref, error) in
             if let error = error {
@@ -357,70 +360,67 @@ class PringTests: XCTestCase {
                 guard let object: CollectionObject = object else {
                     return
                 }
-                let group: DispatchGroup = DispatchGroup()
-                let queue: DispatchQueue = DispatchQueue(label: "Dispatch.Queue")
-                let count: Int = 5
+
                 queue.async {
                     (0..<count).forEach({ (index) in
                         group.enter()
                         let item: NestedItem = NestedItem()
                         object.nestedCollection.insert(item, block: { (error) in
-                            print("1!!!xxx1")
                             group.leave()
                         })
                     })
-                }
-                group.notify(queue: .main, execute: {
-
-                    CollectionObject.get(ref!.documentID, block: { (object, _) in
-                        guard let object: CollectionObject = object else {
-                            return
-                        }
-                        XCTAssertEqual(object.nestedCollection.count, count)
-                        expectation.fulfill()
+                    group.notify(queue: .main, execute: {
+                        CollectionObject.get(ref!.documentID, block: { (object, _) in
+                            guard let object: CollectionObject = object else {
+                                return
+                            }
+                            XCTAssertEqual(object.nestedCollection.count, count)
+                            object.nestedCollection.query.dataSource().onCompleted({ (_, items) in
+                                print("!!!!!!!", items)
+                                queue.async {
+                                    items.forEach({ (item) in
+                                        group.enter()
+                                        object.nestedCollection.remove(item, block: { (error) in
+                                            print("1111111")
+                                            group.leave()
+                                        })
+                                    })
+                                    group.notify(queue: .main, execute: {
+                                        CollectionObject.get(ref!.documentID, block: { (object, _) in
+                                            guard let object: CollectionObject = object else {
+                                                return
+                                            }
+                                            print("!!!!", object.nestedCollection.count)
+                                            XCTAssertEqual(object.nestedCollection.count, 0)
+                                            expectation.fulfill()
+                                        })
+                                    })
+                                    group.wait()
+                                }
+                            }).get()
+                        })
                     })
-
-
-                    print("111111")
-//                    let group: DispatchGroup = DispatchGroup()
-//                    let queue: DispatchQueue = DispatchQueue(label: "Dispatch.Queue")
-//                    let count: Int = 5
-//                    queue.async {
-//                        group.enter()
-//                        CollectionObject.get(ref!.documentID, block: { (object, _) in
-//                            guard let object: CollectionObject = object else {
-//                                return
-//                            }
-//                            object.nestedCollection.query.dataSource().onCompleted({ (_, items) in
-//                                for (index, item) in items.enumerated() {
-//                                    group.enter()
-//                                    object.nestedCollection.remove(item, block: { (error) in
-//                                        XCTAssertEqual(object.nestedCollection.count, (count - (index + 1)))
-//                                        CollectionObject.get(ref!.documentID, block: { (object, _) in
-//                                            guard let object: CollectionObject = object else {
-//                                                return
-//                                            }
-//                                            print(object.nestedCollection.count)
-//                                            XCTAssertEqual(object.nestedCollection.count, (count - (index + 1)))
-//                                            group.leave()
-//                                        })
-//                                    })
-//                                }
-//                                group.leave()
-//                            }).get()
-//                        })
-//                    }
-//                    group.notify(queue: .main, execute: {
-//                        expectation.fulfill()
-//                    })
-//                    group.wait()
-                })
-                group.wait(timeout: DispatchTime.distantFuture)
+                    group.wait()
+                }
             })
         }
         self.wait(for: [expectation], timeout: 20)
     }
-    
+
+    func testS() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test NestedCollection")
+
+        CollectionObject.get("lbYWmfOzIAR91SnxrGdB") { (object, error) in
+            guard let object = object else { return }
+            object.nestedCollection.query.dataSource().onCompleted({ (_, items) in
+                print(items)
+                expectation.fulfill()
+            }).get()
+        }
+
+        self.wait(for: [expectation], timeout: 20)
+    }
+
 //    func testPerformanceExample() {
 //        // This is an example of a performance test case.
 //        self.measure {

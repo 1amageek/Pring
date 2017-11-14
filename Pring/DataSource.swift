@@ -211,22 +211,35 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                         return
                     }
                     group.enter()
-                    Element.get(id, block: { (document, error) in
-                        guard let document: Element = document else { return }
+                    self.get(with: change, block: { (document, error) in
+                        defer {
+                            group.leave()
+                        }
+                        guard let document: Element = document else {
+                            let collectionChange: CollectionChange = CollectionChange.error(error!)
+                            changeBlock?(snapshot, collectionChange)
+                            return
+                        }
                         self.documents.append(document)
                         self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
                         if let i: Int = self.documents.index(of: document) {
                             changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                         }
-                        group.leave()
                     })
                 case .modified:
                     guard self.documents.flatMap({return $0.id}).contains(id) else {
                         return
                     }
                     group.enter()
-                    Element.get(id, block: { (document, error) in
-                        guard let document: Element = document else { return }
+                    self.get(with: change, block: { (document, error) in
+                        defer {
+                            group.leave()
+                        }
+                        guard let document: Element = document else {
+                            let collectionChange: CollectionChange = CollectionChange.error(error!)
+                            changeBlock?(snapshot, collectionChange)
+                            return
+                        }
                         if let i: Int = self.documents.index(of: id) {
                             self.documents.remove(at: i)
                         }
@@ -235,7 +248,6 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                         if let i: Int = self.documents.index(of: document) {
                             changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
                         }
-                        group.leave()
                     })
                 case .removed:
                     guard self.documents.flatMap({return $0.id}).contains(id) else {
@@ -260,6 +272,18 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                     errorBlock?(snapshot, error)
                 }
             }
+        }
+    }
+
+    private func get(with change: DocumentChange, block: @escaping (Element?, Error?) -> Void) {
+        if change.document.data().count != 0 {
+            let document: Element = Element(snapshot: change.document)
+            DispatchQueue.main.async {
+                block(document, nil)
+            }
+        } else {
+            let id: String = change.document.documentID
+            Element.get(id, block: block)
         }
     }
 

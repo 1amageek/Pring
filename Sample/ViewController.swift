@@ -22,16 +22,27 @@ class ViewController: UIViewController {
 //            print(snapshot.progress?.completedUnitCount)
 //        }
 
-        let user: User = User()
-        let value: [String: Any] = user.value as! [String: Any]
-        let reference = user.reference
-        let batch: WriteBatch = Firestore.firestore().batch()
-        batch.setData(value, forDocument: reference)
-        batch.commit { (error) in
-            reference.getDocument(completion: { (snapshot, error) in
-                print(error)
-            })
-        }
+//        let collector: Collector = Collector()
+//        let value: [String: Any] = collector.value as! [String: Any]
+//        let reference = collector.reference
+//        let batch: WriteBatch = Firestore.firestore().batch()
+//        batch.setData(value, forDocument: reference)
+//        batch.commit { (error) in
+//            reference.getDocument(completion: { (snapshot, error) in
+//                print(error)
+//            })
+//        }
+
+//        let item: Item = Item()
+//        self.user?.items.insert(item, block: { (error) in
+//            print(self.user?.items.count ,error)
+//        })
+//        let user: User = User()
+//        user.save { (_, error) in
+//            self.user?.friends.insert(user, block: { (error) in
+//                print(self.user?.friends.count ,error)
+//            })
+//        }
 
     }
 
@@ -58,21 +69,34 @@ class ViewController: UIViewController {
 
     let queue: DispatchQueue = DispatchQueue(label: "save.queue")
 
+    var user: User?
+
+    var item: Item?
+
+    var d: DataSource<Item>?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let user: User = User()
-        user.save { (ref, error) in
-            let item: Item = Item()
-            user.items.insert(item, block: { (error) in
-                print("ITEM", error)
-            })
+        let c = Collector(id: "wn6jcN2kajmE8EuSGJrG")
+//        self.d = c.referenceCollection.query.dataSource().onCompleted({ (_, items) in
+//            print(items)
+//        }).get()
 
-            let aUser: User = User()
-            user.friends.insert(aUser, block: { (error) in
-                print("FRIENDE", error)
-            })
-        }
+        self.d = c.nestedCollection.order(by: \Item.createdAt).dataSource().on({ (_, change) in
+            print(change)
+        }).onCompleted { (_, items) in
+            print(items)
+        }.get()
+
+//        let c: Collector = Collector()
+//
+//        (0..<10).forEach { (index) in
+//            let item = Item()
+//            c.nestedCollection.insert(item)
+//        }
+//
+//        c.save()
 
 //        let user: User = User()
 //        let value: [String: Any] = user.value as! [String: Any]
