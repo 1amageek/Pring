@@ -325,6 +325,10 @@ open class Object: NSObject, Document {
 
     private func _save(_ block: ((DocumentReference?, Error?) -> Void)?) {
         self.pack().commit { (error) in
+            if let error: Error = error {
+                block?(nil, error)
+                return
+            }
             self.reference.getDocument(completion: { (snapshot, error) in
                 self.snapshot = snapshot
                 block?(snapshot?.reference, error)
