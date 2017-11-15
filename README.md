@@ -82,6 +82,22 @@ class User: Object {
     dynamic var thumbnail: File?
     dynamic var followers: ReferenceCollection<User> = []
     dynamic var items: NestedCollection<Item> = []
+    
+    // Custom property
+    override func encode(_ key: String, value: Any?) -> Any? {
+        if key == "type" {
+            return self.type.rawValue
+        }
+        return nil
+    }
+
+    override func decode(_ key: String, value: Any?) -> Bool {
+        if key == "type" {
+            self.type = UserType(rawValue: value as! Int)
+            return true
+        }
+        return false
+    }
 }
 ```
 
