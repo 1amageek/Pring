@@ -5,6 +5,7 @@
 //  Created by 1amageek on 2017/10/05.
 //  Copyright © 2017年 Stamp Inc. All rights reserved.
 //
+//  Contact us https://twitter.com/1amageek
 
 import FirebaseFirestore
 
