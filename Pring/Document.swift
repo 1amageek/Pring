@@ -163,13 +163,7 @@ public extension Document {
 
     public func listen(_ block: @escaping (Self?, Error?) -> Void) -> ListenerRegistration {
         let options: DocumentListenOptions = DocumentListenOptions()
-        var isFirst: Bool = true
         return self.reference.addSnapshotListener(options: options) { (snapshot, error) in
-            // Do not process at the first time
-            if isFirst {
-                isFirst = false
-                return
-            }
             guard let snapshot: DocumentSnapshot = snapshot, snapshot.exists else {
                 block(nil, error)
                 return
