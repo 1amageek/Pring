@@ -216,6 +216,18 @@ MyObject.get(document!.id, block: { (document, error) in
 })
 ```
 
+#### Batched writes
+
+``` swift
+let batch: WriteBatch = Firestore.firestore().batch()
+batch.add(.save, object: userA)    //  ** File is not saved.
+batch.add(.update, object: userB)
+batch.add(.delete, object: userC)
+batch.commit(completion: { (error) in
+  // error handling
+})
+```
+
 ### 📄 File
 **Pring** has a File class because it seamlessly works with Firebase Storage.
 
