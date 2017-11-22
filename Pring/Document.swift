@@ -13,7 +13,7 @@ import FirebaseStorage
 /**
  Firestore's Document Protocol
  */
-public protocol Document: NSObjectProtocol, Hashable, StorageLinkable {
+public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable {
 
     static var modelVersion: Int { get }
 
@@ -40,9 +40,6 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable {
     var ignore: [String] { get }
 
     init(snapshot: DocumentSnapshot)
-    
-    @discardableResult
-    func pack(_ batch: WriteBatch?) -> WriteBatch
 }
 
 public extension Document {

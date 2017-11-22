@@ -74,6 +74,29 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
         return batch
     }
 
+    @discardableResult
+    public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
+        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
+        switch type {
+        case .save:
+            self.forEach { (document) in
+                let reference: DocumentReference = self.reference.document(document.id)
+                batch.setData(document.value as! [String : Any], forDocument: reference)
+            }
+        case .update:
+            self.forEach { (document) in
+                let reference: DocumentReference = self.reference.document(document.id)
+                batch.updateData(document.updateValue as! [String: Any], forDocument: reference)
+            }
+        case .delete:
+            self.forEach { (document) in
+                let reference: DocumentReference = self.reference.document(document.id)
+                batch.deleteDocument(reference)
+            }
+        }
+        return batch
+    }
+
     /**
      Initialize Relation.
      */

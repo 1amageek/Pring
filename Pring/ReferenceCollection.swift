@@ -63,13 +63,25 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
         return self.isListening ? _count : _self.count
     }
 
-    /// 
     @discardableResult
-    public func pack(_ batch: WriteBatch?) -> WriteBatch {
+    public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
-        self.forEach { (document) in
-            let reference: DocumentReference = self.reference.document(document.id)
-            document.pack(batch).setData([:], forDocument: reference)
+        switch type {
+        case .save:
+            self.forEach { (document) in
+                let reference: DocumentReference = self.reference.document(document.id)
+                document.pack(.save, batch: batch).setData([:], forDocument: reference)
+            }
+        case .update:
+            self.forEach { (document) in
+                let reference: DocumentReference = self.reference.document(document.id)
+                document.pack(.update, batch: batch).updateData([:], forDocument: reference)
+            }
+        case .delete:
+            self.forEach { (document) in
+                let reference: DocumentReference = self.reference.document(document.id)
+                batch.deleteDocument(reference)
+            }
         }
         return batch
     }
@@ -134,7 +146,7 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
                 let batch: WriteBatch = Firestore.firestore().batch()
                 batch.setData([:], forDocument: reference)
                 if !newMember.isListening {
-                    newMember.pack(batch)
+                    newMember.pack(.save, batch: batch)
                 }
                 batch.commit(completion: { (error) in
                     block?(error)

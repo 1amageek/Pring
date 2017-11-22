@@ -78,7 +78,20 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let c = Collector(id: "wn6jcN2kajmE8EuSGJrG")
+        let userA: User = User()
+        let userB: User = User()
+
+        userA.name = "userA"
+        userB.name = "userBs"
+
+        userA.save { _, _ in
+            userB.save({ _, _ in
+
+            })
+        }
+
+
+//        let c = Collector(id: "wn6jcN2kajmE8EuSGJrG")
 //        self.d = c.referenceCollection.query.dataSource().onCompleted({ (_, items) in
 //            print(items)
 //        }).get()

@@ -282,18 +282,23 @@ open class Object: NSObject, Document {
         updateValue[key] = value
     }
 
-    /**
-
-     */
     @discardableResult
-    public func pack(_ batch: WriteBatch? = nil) -> WriteBatch {
+    public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
-        batch.setData(self.value as! [String : Any], forDocument: self.reference)
-        let mirror: Mirror = Mirror(reflecting: self)
-        mirror.children.forEach { (child) in
-            if let relation: SubCollection = child.value as? SubCollection {
-                relation.pack(batch)
+        switch type {
+        case .save:
+            batch.setData(self.value as! [String : Any], forDocument: self.reference)
+            let mirror: Mirror = Mirror(reflecting: self)
+            mirror.children.forEach { (child) in
+                if let relation: SubCollection = child.value as? SubCollection {
+                    relation.pack(.save, batch: batch)
+                }
             }
+        case .update:
+            updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+            batch.updateData(updateValue, forDocument: self.reference)
+        case .delete:
+            batch.deleteDocument(self.reference)
         }
         return batch
     }
@@ -325,7 +330,7 @@ open class Object: NSObject, Document {
     }
 
     private func _save(_ block: ((DocumentReference?, Error?) -> Void)?) {
-        self.pack().commit { (error) in
+        self.pack(.save).commit { (error) in
             if let error: Error = error {
                 block?(nil, error)
                 return
@@ -340,23 +345,21 @@ open class Object: NSObject, Document {
     // MARK: UPDATE
 
     public func update(_ block: ((Error?) -> Void)? = nil) {
-        updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
-        let batch: WriteBatch = self.reference.firestore.batch()
-        batch.updateData(updateValue, forDocument: self.reference)
-        batch.commit(completion: { (error) in
+        self.pack(.update).commit { (error) in
             self.updateValue = [:]
             block?(error)
-        })
+        }
     }
 
     // MARK: DELETE
 
     public func delete(_ block: ((Error?) -> Void)? = nil) {
-        self.reference.delete { (error) in
+        self.pack(.delete).commit { (error) in
             if let error = error {
                 block?(error)
                 return
             }
+            self.updateValue = [:]
             self.deleteFiles(container: nil, block: block)
         }
     }

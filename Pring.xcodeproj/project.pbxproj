@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		120A17901FC58FC3002767F6 /* Batchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120A178F1FC58FC3002767F6 /* Batchable.swift */; };
 		122FCCB31FA5C9D8005A069E /* NestedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122FCCB21FA5C9D8005A069E /* NestedItem.swift */; };
 		123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */; };
 		1249ABED1FB45DB400E78EA6 /* DataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */; };
@@ -70,6 +71,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		120A178F1FC58FC3002767F6 /* Batchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Batchable.swift; sourceTree = "<group>"; };
 		122FCCB21FA5C9D8005A069E /* NestedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItem.swift; sourceTree = "<group>"; };
 		123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestOptionalDocument.swift; sourceTree = "<group>"; };
 		124757B31FA31A0C00FA517D /* NestedCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedCollection.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 				12C41E771FB31F41002B1526 /* Query.swift */,
 				12AF83101F8CAEEC00561159 /* DataType.swift */,
 				12F84CBB1FB054CD00D889BE /* StorageLinkable.swift */,
+				120A178F1FC58FC3002767F6 /* Batchable.swift */,
 				12AF83111F8CAEEC00561159 /* Document.swift */,
 				12AF83161F8CAEED00561159 /* SubCollection.swift */,
 				12AF83121F8CAEEC00561159 /* File.swift */,
@@ -586,6 +589,7 @@
 				12AF83551F8CE16900561159 /* Document.swift in Sources */,
 				12AF83521F8CE16900561159 /* DataSource.swift in Sources */,
 				12AF83541F8CE16900561159 /* Disposer.swift in Sources */,
+				120A17901FC58FC3002767F6 /* Batchable.swift in Sources */,
 				12AF83571F8CE16900561159 /* Object.swift in Sources */,
 				12C41E781FB31F41002B1526 /* Query.swift in Sources */,
 				12AF83531F8CE16900561159 /* DataType.swift in Sources */,

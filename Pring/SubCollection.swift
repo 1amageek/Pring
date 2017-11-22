@@ -10,7 +10,7 @@
 import FirebaseFirestore
 import FirebaseStorage
 
-public protocol SubCollection: StorageLinkable {
+public protocol SubCollection: StorageLinkable, Batchable {
 
     var path: String { get }
 
@@ -25,9 +25,6 @@ public protocol SubCollection: StorageLinkable {
     var references: [AnyHashable: Any] { get }
 
     func setValue(_ value: Any?, forKey key: String)
-
-    @discardableResult
-    func pack(_ batch: WriteBatch?) -> WriteBatch
 }
 
 extension SubCollection where Self: Collection, Self.Element: Document {
