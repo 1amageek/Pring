@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		120A17901FC58FC3002767F6 /* Batchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120A178F1FC58FC3002767F6 /* Batchable.swift */; };
+		120A17911FC5AA61002767F6 /* Batchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120A178F1FC58FC3002767F6 /* Batchable.swift */; };
 		122FCCB31FA5C9D8005A069E /* NestedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122FCCB21FA5C9D8005A069E /* NestedItem.swift */; };
 		123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */; };
 		1249ABED1FB45DB400E78EA6 /* DataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */; };
@@ -630,6 +631,7 @@
 				12C41E831FB336C1002B1526 /* Document.swift in Sources */,
 				12C41E841FB336C1002B1526 /* SubCollection.swift in Sources */,
 				12AF83511F8CD4A400561159 /* User.swift in Sources */,
+				120A17911FC5AA61002767F6 /* Batchable.swift in Sources */,
 				12C41E811FB336C1002B1526 /* DataType.swift in Sources */,
 				12C41E871FB336C1002B1526 /* NestedCollection.swift in Sources */,
 				12C41E851FB336C1002B1526 /* File.swift in Sources */,

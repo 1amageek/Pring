@@ -19,3 +19,11 @@ public protocol Batchable {
     @discardableResult
     func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch
 }
+
+extension WriteBatch {
+
+    @discardableResult
+    public func add(_ type: BatchType, object: Object) -> WriteBatch {
+        return object.pack(type, batch: self)
+    }
+}
