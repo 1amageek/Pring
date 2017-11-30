@@ -68,8 +68,9 @@ open class Object: NSObject, Document {
         mirror.children.forEach { (child) in
             DataType.verify(value: child.value)
             switch DataType(key: child.label!, value: child.value) {
-            case .file(let key, _, let file): file.parent = self; file.key = key
-            case .collection(let key, _, var collection): collection.parent = self; collection.key = key
+            case .file          (let key, _, let file):         file.setParent(self, forKey: key)
+            case .collection    (let key, _, let collection):   collection.setParent(self, forKey: key)
+            case .reference     (let key, _, let reference):    reference.setParent(self, forKey: key)
             default: break
             }
         }
@@ -140,6 +141,7 @@ open class Object: NSObject, Document {
                             case .geoPoint      (let key, _, let value):                self.setValue(value, forKey: key)
                             case .dictionary    (let key, _, let value):                self.setValue(value, forKey: key)
                             case .collection    (let key, let value, let collection):   collection.setValue(value, forKey: key)
+                            case .reference     (let key, _, let value):                self.setValue(value, forKey: key); value.setParent(self, forKey: key)
                             case .string        (let key, _, let value):                self.setValue(value, forKey: key)
                             case .null: break
                             }
@@ -187,6 +189,9 @@ open class Object: NSObject, Document {
                         document[key] = rawValue
                         return
                     }
+
+                    let value: Any? = DataType.unwrap(value)
+
                     switch DataType(key: key, value: value) {
                     case .array         (let key, let rawValue, _):   document[key] = rawValue
                     case .set           (let key, let rawValue, _):   document[key] = rawValue
@@ -200,6 +205,7 @@ open class Object: NSObject, Document {
                     case .geoPoint      (let key, let rawValue, _):   document[key] = rawValue
                     case .dictionary    (let key, let rawValue, _):   document[key] = rawValue
                     case .collection    (let key, let rawValue, _):   document[key] = rawValue
+                    case .reference     (let key, let rawValue, _):   document[key] = rawValue
                     case .string        (let key, let rawValue, _):   document[key] = rawValue
                     case .null: break
                     }
@@ -260,6 +266,7 @@ open class Object: NSObject, Document {
                 case .geoPoint      (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .dictionary    (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .collection    (_, _, _):   break
+                case .reference     (_, _, _):   break
                 case .string        (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .null: break
                 }
@@ -288,12 +295,16 @@ open class Object: NSObject, Document {
         switch type {
         case .save:
             batch.setData(self.value as! [String : Any], forDocument: self.reference)
-            let mirror: Mirror = Mirror(reflecting: self)
-            mirror.children.forEach { (child) in
-                if let relation: SubCollection = child.value as? SubCollection {
-                    relation.pack(.save, batch: batch)
+            self.each({ (key, value) in
+                if let value = value {
+                    print(value)
+                    switch DataType(key: key, value: value) {
+                    case .collection    (_, _, let collection):     collection.pack(.save, batch: batch)
+                    case .reference     (_, _, let reference):      reference.pack(.save, batch: batch)
+                    default: break
+                    }
                 }
-            }
+            })
         case .update:
             updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             batch.updateData(updateValue, forDocument: self.reference)
@@ -388,6 +399,16 @@ open class Object: NSObject, Document {
         }
         set(newValue) {
             self.setValue(newValue, forKey: key)
+        }
+    }
+
+    private func each(_ block: (String, Any?) -> Void) {
+        let mirror = Mirror(reflecting: self)
+        mirror.children.forEach { (key, value) in
+            if let key: String = key {
+                let value: Any? = DataType.unwrap(value)
+                block(key, value)
+            }
         }
     }
 

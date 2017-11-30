@@ -192,6 +192,11 @@ public final class File: NSObject {
         }
     }
 
+    internal func setParent(_ object: Object, forKey key: String) {
+        self.parent = object
+        self.key = key
+    }
+
     class func generateFileName(_ name: String, mimeType: MIMEType?) -> String {
         var fileName: String = name
         if let mimeType: MIMEType = mimeType {

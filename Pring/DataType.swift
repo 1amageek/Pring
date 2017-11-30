@@ -25,6 +25,7 @@ public enum DataType {
     case geoPoint   (String, GeoPoint, GeoPoint)
     case dictionary (String, [AnyHashable: Any], [AnyHashable: Any])
     case collection (String, [AnyHashable: Any], SubCollection)
+    case reference  (String, [AnyHashable: Any], AnyReference)
     case string     (String, String, String)
     case null
 
@@ -33,7 +34,13 @@ public enum DataType {
 
      | key | Firestore | Local |
     */
-    public init(key: String, value: Any) {
+    public init(key: String, value: Any?) {
+
+        guard value != nil else {
+            self = .null
+            return
+        }
+
         switch value.self {
         case is Bool:
             if let value: Bool = value as? Bool {
@@ -114,6 +121,11 @@ public enum DataType {
         case is SubCollection:
             if let value: SubCollection = value as? SubCollection {
                 self = .collection(key, value.value, value)
+                return
+            }
+        case is AnyReference:
+            if let value: AnyReference = value as? AnyReference {
+                self = .reference(key, value.value, value)
                 return
             }
         case is [String: Any]:
@@ -268,6 +280,13 @@ public enum DataType {
                 self = .collection(key, value, collection)
                 return
             }
+        } else if value is AnyReference {
+            let reference: AnyReference = value as! AnyReference
+            if let value: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
+                reference.setValue(value)
+                self = .reference(key, value, reference)
+                return
+            }
         } else {
             self = .null
         }
@@ -288,6 +307,14 @@ public enum DataType {
                 subjectType == Double?.self {
             fatalError("[Pring.DataType] *** error: Invalid DataType. \(subjectType) is number. Pring not support optional number type." )
         }
+    }
+
+    internal static func unwrap(_ value: Any) -> Any? {
+        let mirror = Mirror(reflecting: value)
+        if let (_, v) = mirror.children.first {
+            return v
+        }
+        return nil
     }
 }
 

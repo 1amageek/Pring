@@ -10,7 +10,7 @@
 import FirebaseFirestore
 import FirebaseStorage
 
-public protocol SubCollection: StorageLinkable, Batchable {
+public protocol SubCollection: class, StorageLinkable, Batchable {
 
     var path: String { get }
 
@@ -25,6 +25,16 @@ public protocol SubCollection: StorageLinkable, Batchable {
     var references: [AnyHashable: Any] { get }
 
     func setValue(_ value: Any?, forKey key: String)
+
+    func setParent(_ object: Object, forKey key: String)
+}
+
+extension SubCollection {
+
+    public func setParent(_ object: Object, forKey key: String) {
+        self.parent = object
+        self.key = key
+    }
 }
 
 extension SubCollection where Self: Collection, Self.Element: Document {
