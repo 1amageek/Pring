@@ -23,7 +23,7 @@ class User: Object {
     dynamic var followers: ReferenceCollection<User> = []
     dynamic var friends: ReferenceCollection<User> = []
     dynamic var items: NestedCollection<Item> = []
-    dynamic var group: Reference<Group>?
+    dynamic var group: Reference<Group> = Reference()
 
     static func image() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)

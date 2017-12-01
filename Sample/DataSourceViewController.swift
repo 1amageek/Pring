@@ -17,6 +17,9 @@ class DataSourceViewController: UITableViewController {
         let user: User = User()
         user.name = UUID().uuidString
         user.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
+        let group: Group = Group()
+        group.name = "group"
+        user.group = group.ref()
         let task: [String: StorageUploadTask] = user.save()
         task["thumbnail"]?.observe(.progress) { (snapshot) in
             print(snapshot.progress?.completedUnitCount)
@@ -25,27 +28,6 @@ class DataSourceViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-//        User.get("A5TshfykKf1XXVqIaDio") { (user, error) in
-//            guard let user: User = user else { return }
-//            self.dataSource = user.followers.order(by: \User.createdAt).dataSource()
-//                .on({ [weak self] (snapshot, changes) in
-//                guard let tableView: UITableView = self?.tableView else { return }
-//                switch changes {
-//                case .initial:
-//                    tableView.reloadData()
-//                case .update(let deletions, let insertions, let modifications):
-//                    tableView.beginUpdates()
-//                    tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-//                    tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-//                    tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .automatic)
-//                    tableView.endUpdates()
-//                case .error(let error):
-//                    print(error)
-//                }
-//            }).listen()
-//        }
-
         self.dataSource = User.order(by: \User.createdAt).limit(to: 30).dataSource()
             .on({ [weak self] (snapshot, changes) in
                 guard let tableView: UITableView = self?.tableView else { return }
@@ -61,7 +43,14 @@ class DataSourceViewController: UITableViewController {
                 case .error(let error):
                     print(error)
                 }
-            }).listen()
+            })
+            .on(parse: { (snapshot, user, done) in
+                user.group.get({ (group, error) in
+                    done(user)
+                })
+            })
+
+            .listen()
     }
 
     // MARK: - Table view data source
@@ -79,6 +68,10 @@ class DataSourceViewController: UITableViewController {
     func configure(_ cell: DataSourceViewCell, atIndexPath indexPath: IndexPath) {
         guard let user: User = self.dataSource?[indexPath.item] else { return }
         cell.textLabel?.text = user.name
+        cell.detailTextLabel?.text = user.group.object?.name
+
+        print(user.name)
+        print(user.group.object?.name)
         cell.disposer = user.listen { (user, error) in
             cell.textLabel?.text = user?.name
         }

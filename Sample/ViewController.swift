@@ -39,18 +39,18 @@ class ViewController: UIViewController {
             let item: Item = Item()
             user.items.insert(item)
         }
-        user.group = Reference(group)
-        user.save { (ref, _) in
-
-            let query: DataSource<Item>.Query = user.items.limit(to: 2)
-
-            debugPrint(query.query)
-
-            self.dataSource = query.dataSource().onCompleted({ (_, items) in
-                print(items)
-            }).get()
-
-        }
+//        user.group = Reference(group)
+//        user.save { (ref, _) in
+//
+//            let query: DataSource<Item>.Query = user.items.limit(to: 2)
+//
+//            debugPrint(query.query)
+//
+//            self.dataSource = query.dataSource().onCompleted({ (_, items) in
+//                print(items)
+//            }).get()
+//
+//        }
     }
 }
 

@@ -75,6 +75,8 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
 
     public typealias ChangeBlock = (QuerySnapshot?, CollectionChange) -> Void
 
+    public typealias ParseBlock = (QuerySnapshot?, Element, @escaping ((Element) -> Void)) -> Void
+
     public typealias CompletedBlock = (QuerySnapshot?, [Element]) -> Void
 
     public typealias ErrorBlock = (QuerySnapshot?, DataSourceError) -> Void
@@ -100,6 +102,8 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
 
     /// Block called when there is a change in DataSource
     private var changedBlock: ChangeBlock?
+
+    private var parseBlock: ParseBlock?
 
     private var completedBlock: CompletedBlock?
 
@@ -151,6 +155,12 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
     }
 
     @discardableResult
+    public func on(parse block: ParseBlock?) -> Self {
+        self.parseBlock = block
+        return self
+    }
+
+    @discardableResult
     public func onCompleted(_ block: CompletedBlock?) -> Self {
         self.completedBlock = block
         return self
@@ -194,6 +204,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
 
     private func operate(with snapshot: QuerySnapshot?, error: Error?) {
         let changeBlock: ChangeBlock? = self.changedBlock
+        let parseBlock: ParseBlock? = self.parseBlock
         let completedBlock: CompletedBlock? = self.completedBlock
         let errorBlock: ErrorBlock? = self.errorBlock
         guard let snapshot: QuerySnapshot = snapshot else {
@@ -213,18 +224,28 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                     }
                     group.enter()
                     self.get(with: change, block: { (document, error) in
-                        defer {
-                            group.leave()
-                        }
                         guard let document: Element = document else {
                             let collectionChange: CollectionChange = CollectionChange.error(error!)
                             changeBlock?(snapshot, collectionChange)
+                            group.leave()
                             return
                         }
-                        self.documents.append(document)
-                        self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
-                        if let i: Int = self.documents.index(of: document) {
-                            changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                        if let parseBlock: ParseBlock = parseBlock {
+                            parseBlock(snapshot, document, { document in
+                                self.documents.append(document)
+                                self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
+                                if let i: Int = self.documents.index(of: document) {
+                                    changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                                }
+                                group.leave()
+                            })
+                        } else {
+                            self.documents.append(document)
+                            self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
+                            if let i: Int = self.documents.index(of: document) {
+                                changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                            }
+                            group.leave()
                         }
                     })
                 case .modified:
@@ -233,21 +254,34 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                     }
                     group.enter()
                     self.get(with: change, block: { (document, error) in
-                        defer {
-                            group.leave()
-                        }
                         guard let document: Element = document else {
                             let collectionChange: CollectionChange = CollectionChange.error(error!)
                             changeBlock?(snapshot, collectionChange)
+                            group.leave()
                             return
                         }
-                        if let i: Int = self.documents.index(of: id) {
-                            self.documents.remove(at: i)
-                        }
-                        self.documents.append(document)
-                        self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
-                        if let i: Int = self.documents.index(of: document) {
-                            changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                        if let parseBlock: ParseBlock = parseBlock {
+                            parseBlock(snapshot, document, { document in
+                                if let i: Int = self.documents.index(of: id) {
+                                    self.documents.remove(at: i)
+                                }
+                                self.documents.append(document)
+                                self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
+                                if let i: Int = self.documents.index(of: document) {
+                                    changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                                }
+                                group.leave()
+                            })
+                        } else {
+                            if let i: Int = self.documents.index(of: id) {
+                                self.documents.remove(at: i)
+                            }
+                            self.documents.append(document)
+                            self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
+                            if let i: Int = self.documents.index(of: document) {
+                                changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                            }
+                            group.leave()
                         }
                     })
                 case .removed:

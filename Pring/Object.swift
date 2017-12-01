@@ -121,6 +121,33 @@ open class Object: NSObject, Document {
                 self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Date ?? _createdAt
                 self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as? Date ?? _updatedAt
 
+//                self.each({ (key, value) in
+//                    if !self.ignore.contains(key) {
+//                        if self.decode(key, value: data[key]) {
+//                            self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
+//                            return
+//                        }
+//                        switch DataType(key: key, value: value, data: data) {
+//                        case .array         (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .set           (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .bool          (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .binary        (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .file          (let key, _, let value):                self.setValue(value, forKey: key); value.parent = self; value.key = key
+//                        case .url           (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .int           (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .float         (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .date          (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .geoPoint      (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .dictionary    (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .collection    (let key, let value, let collection):   collection.setValue(value, forKey: key)
+//                        case .reference     (let key, _, let value):                self.setValue(value, forKey: key); value.setParent(self, forKey: key)
+//                        case .string        (let key, _, let value):                self.setValue(value, forKey: key)
+//                        case .null: break
+//                        }
+//                        self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
+//                    }
+//                })
+
                 Mirror(reflecting: self).children.forEach { (key, value) in
                     if let key: String = key {
                         if !self.ignore.contains(key) {
@@ -133,7 +160,7 @@ open class Object: NSObject, Document {
                             case .set           (let key, _, let value):                self.setValue(value, forKey: key)
                             case .bool          (let key, _, let value):                self.setValue(value, forKey: key)
                             case .binary        (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .file          (let key, _, let value):                self.setValue(value, forKey: key); value.parent = self; value.key = key
+                            case .file          (let key, _, let value):                self.setValue(value, forKey: key); value.setParent(self, forKey: key)
                             case .url           (let key, _, let value):                self.setValue(value, forKey: key)
                             case .int           (let key, _, let value):                self.setValue(value, forKey: key)
                             case .float         (let key, _, let value):                self.setValue(value, forKey: key)
@@ -141,7 +168,7 @@ open class Object: NSObject, Document {
                             case .geoPoint      (let key, _, let value):                self.setValue(value, forKey: key)
                             case .dictionary    (let key, _, let value):                self.setValue(value, forKey: key)
                             case .collection    (let key, let value, let collection):   collection.setValue(value, forKey: key)
-                            case .reference     (let key, _, let value):                self.setValue(value, forKey: key); value.setParent(self, forKey: key)
+                            case .reference     (let key, _, let reference):            reference.setParent(self, forKey: key)
                             case .string        (let key, _, let value):                self.setValue(value, forKey: key)
                             case .null: break
                             }
@@ -299,7 +326,10 @@ open class Object: NSObject, Document {
                 if let value = value {
                     switch DataType(key: key, value: value) {
                     case .collection    (_, _, let collection):     collection.pack(.save, batch: batch)
-                    case .reference     (_, _, let reference):      reference.pack(.save, batch: batch)
+                    case .reference     (_, _, let reference):
+                        if reference is Batchable {
+                            (reference as! Batchable).pack(.save, batch: batch)
+                        }
                     default: break
                     }
                 }

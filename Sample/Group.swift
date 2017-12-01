@@ -15,6 +15,8 @@ class Group: Object {
         case photo
     }
 
+    dynamic var name: String?
+
     dynamic var owner: Reference<User>?
 
     dynamic var media: MultipleReference<Media>?

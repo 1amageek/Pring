@@ -124,8 +124,8 @@ public enum DataType {
                 return
             }
         case is AnyReference:
-            if let value: AnyReference = value as? AnyReference {
-                self = .reference(key, value.value, value)
+            if let value: AnyReference = value as? AnyReference, let rawValue: [AnyHashable: Any] = value.rawValue {
+                self = .reference(key, rawValue, value)
                 return
             }
         case is [String: Any]:
@@ -152,7 +152,9 @@ public enum DataType {
     public init(key: String, value: Any, data: [String: Any]) {
         let mirror: Mirror = Mirror(reflecting: value)
         let subjectType: Any.Type = mirror.subjectType
+
         DataType.verify(value: value)
+
         if subjectType == Bool.self {
             if let value: Bool = data[key] as? Bool {
                 self = .bool(key, Bool(value), Bool(value))
@@ -274,17 +276,19 @@ public enum DataType {
                     return
                 }
             }
-        } else if value is SubCollection {
+        }
+
+        if value is SubCollection {
             let collection: SubCollection = value as! SubCollection
             if let value: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
                 self = .collection(key, value, collection)
                 return
             }
         } else if value is AnyReference {
-            let reference: AnyReference = value as! AnyReference
-            if let value: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
-                reference.setValue(value)
-                self = .reference(key, value, reference)
+            if let rawValue: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
+                let reference: AnyReference = value as! AnyReference
+                reference.setRawValue(rawValue: rawValue)
+                self = .reference(key, rawValue, reference)
                 return
             }
         } else {
