@@ -37,9 +37,38 @@ class ViewController: UIViewController {
         let user: User = User()
         user.name = "aaaa"
 
+        let photo: Photo = Photo()
+
         group.owner = Reference(user)
 
-        group.save()
+        group.media = MultipleReference(photo)
+
+        group.save { (ref, error) in
+
+            group.owner?.get({ (user, error) in
+                print(user)
+            })
+
+            guard let media: Group.Media = group.media?.contentType, let id: String = group.media?.id else {
+                return
+            }
+            
+            switch media {
+            case .photo: Photo.get(id, block: { (photo, error) in
+                print(photo)
+            })
+            }
+    
+//
+//            model?.get(photo.id, block: { (photo, error) in
+//                print(photo)
+//            })
+
+//            group.media?.get({ (document, error) in
+//                print(document)
+//            })
+
+        }
 
 //        let user: User = User()
 //

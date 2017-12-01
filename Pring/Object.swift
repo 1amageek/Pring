@@ -297,7 +297,6 @@ open class Object: NSObject, Document {
             batch.setData(self.value as! [String : Any], forDocument: self.reference)
             self.each({ (key, value) in
                 if let value = value {
-                    print(value)
                     switch DataType(key: key, value: value) {
                     case .collection    (_, _, let collection):     collection.pack(.save, batch: batch)
                     case .reference     (_, _, let reference):      reference.pack(.save, batch: batch)

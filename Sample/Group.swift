@@ -11,6 +11,11 @@ import Foundation
 @objcMembers
 class Group: Object {
 
+    enum Media: String, AnyContentType {
+        case photo
+    }
+
     dynamic var owner: Reference<User>?
 
+    dynamic var media: MultipleReference<Media>?
 }
