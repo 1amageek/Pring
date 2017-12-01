@@ -16,7 +16,7 @@ class ViewController: UIViewController {
 
     }
 
-    var dataSource: DataSource<User>?
+    var dataSource: DataSource<Item>?
 
 
     var users: [[String: Any]] = []
@@ -32,70 +32,25 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let user: User = User()
         let group: Group = Group()
 
-        let user: User = User()
-        user.name = "aaaa"
+        (0..<10).forEach { (index) in
+            let item: Item = Item()
+            user.items.insert(item)
+        }
+        user.group = Reference(group)
+        user.save { (ref, _) in
 
-        let photo: Photo = Photo()
+            let query: DataSource<Item>.Query = user.items.limit(to: 2)
 
-        group.owner = Reference(user)
+            debugPrint(query.query)
 
-        group.media = MultipleReference(photo)
-
-        group.save { (ref, error) in
-
-            group.owner?.get({ (user, error) in
-                print(user)
-            })
-
-            guard let media: Group.Media = group.media?.contentType, let id: String = group.media?.id else {
-                return
-            }
-            
-            switch media {
-            case .photo: Photo.get(id, block: { (photo, error) in
-                print(photo)
-            })
-            }
-    
-//
-//            model?.get(photo.id, block: { (photo, error) in
-//                print(photo)
-//            })
-
-//            group.media?.get({ (document, error) in
-//                print(document)
-//            })
+            self.dataSource = query.dataSource().onCompleted({ (_, items) in
+                print(items)
+            }).get()
 
         }
-
-//        let user: User = User()
-//
-//        user.name = "media"
-//
-//        let photo: Photo = Photo()
-//
-//        user.content = Media(photo)
-
-
-//        let userA: User = User()
-//        let userB: User = User()
-//
-//        userA.name = "userA"
-//        userB.name = "userB"
-//
-//        userA.save { _, _ in
-//            userB.save({ _, _ in
-//                userA.name = "USER A"
-//                userB.name = "USER B"
-//                let batch = userA.pack(.update)
-//                batch.add(.update, object: userB)
-//                batch.commit(completion: { (error) in
-//                    print(error)
-//                })
-//            })
-//        }
     }
 }
 

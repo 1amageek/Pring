@@ -36,7 +36,7 @@ public enum DataType {
     */
     public init(key: String, value: Any?) {
 
-        guard value != nil else {
+        guard let value = value else {
             self = .null
             return
         }
@@ -311,8 +311,14 @@ public enum DataType {
 
     internal static func unwrap(_ value: Any) -> Any? {
         let mirror = Mirror(reflecting: value)
-        if let (_, v) = mirror.children.first {
-            return v
+        guard let _: Mirror.DisplayStyle = mirror.displayStyle else {
+            return value
+        }
+        if let (label, v) = mirror.children.first {
+            if label == "some" {
+                return v
+            }
+            return value
         }
         return nil
     }

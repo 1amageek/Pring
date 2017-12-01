@@ -133,9 +133,10 @@ class PringTests: XCTestCase {
         document.geoPoint = GeoPoint(latitude: 0, longitude: 0)
         document.dictionary = ["key": "value"]
         document.string = "string"
+
+        print(document)
         
         document.save { (ref, error) in
-            
             TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
                 XCTAssertNotNil(document)
                 XCTAssertEqual(document?.array?.first, "array")
@@ -217,7 +218,6 @@ class PringTests: XCTestCase {
                 })
             })
         }
-        print(tasks)
         XCTAssertEqual(tasks.count, 3)
         self.wait(for: [expectation], timeout: 30)
     }
@@ -434,25 +434,29 @@ class PringTests: XCTestCase {
                                 return
                             }
                             XCTAssertEqual(object.referenceCollection.count, count)
-                            object.referenceCollection.query.dataSource().onCompleted({ (_, items) in
-                                queue.async {
-                                    items.forEach({ (item) in
-                                        group.enter()
-                                        object.referenceCollection.remove(item, hard: true, block: { (error) in
-                                            group.leave()
+                            let limit: Int = 2
+                            object.referenceCollection.limit(to: limit).dataSource().onCompleted({ (_, items) in
+                                XCTAssertEqual(items.count, limit)
+                                object.referenceCollection.query.dataSource().onCompleted({ (_, items) in
+                                    queue.async {
+                                        items.forEach({ (item) in
+                                            group.enter()
+                                            object.referenceCollection.remove(item, hard: true, block: { (error) in
+                                                group.leave()
+                                            })
                                         })
-                                    })
-                                    group.notify(queue: .main, execute: {
-                                        CollectionObject.get(ref!.documentID, block: { (object, _) in
-                                            guard let object: CollectionObject = object else {
-                                                return
-                                            }
-                                            XCTAssertEqual(object.referenceCollection.count, 0)
-                                            expectation.fulfill()
+                                        group.notify(queue: .main, execute: {
+                                            CollectionObject.get(ref!.documentID, block: { (object, _) in
+                                                guard let object: CollectionObject = object else {
+                                                    return
+                                                }
+                                                XCTAssertEqual(object.referenceCollection.count, 0)
+                                                expectation.fulfill()
+                                            })
                                         })
-                                    })
-                                    group.wait()
-                                }
+                                        group.wait()
+                                    }
+                                }).get()
                             }).get()
                         })
                     })
