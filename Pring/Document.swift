@@ -179,10 +179,6 @@ public extension Document {
     public func listen(block: @escaping (Self?, Error?) -> Void) -> Disposer<Self> {
         return .init(.value(listen(block)))
     }
-
-    public func ref() -> Reference<Self> {
-        return Reference(self)!
-    }
 }
 
 public extension Document where Self: Object {

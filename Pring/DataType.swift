@@ -35,7 +35,6 @@ public enum DataType {
      | key | Firestore | Local |
     */
     public init(key: String, value: Any?) {
-
         guard let value = value else {
             self = .null
             return
@@ -124,7 +123,7 @@ public enum DataType {
                 return
             }
         case is AnyReference:
-            if let value: AnyReference = value as? AnyReference, let rawValue: [AnyHashable: Any] = value.rawValue {
+            if let value: AnyReference = value as? AnyReference, let rawValue: [AnyHashable: Any] = value.value {
                 self = .reference(key, rawValue, value)
                 return
             }

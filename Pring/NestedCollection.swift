@@ -63,17 +63,6 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
         return self.isListening ? _count : _self.count
     }
 
-    ///
-//    @discardableResult
-//    public func pack(_ batch: WriteBatch?) -> WriteBatch {
-//        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
-//        self.forEach { (document) in
-//            let reference: DocumentReference = self.reference.document(document.id)
-//            batch.setData(document.value as! [String : Any], forDocument: reference)
-//        }
-//        return batch
-//    }
-
     @discardableResult
     public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()

@@ -19,7 +19,7 @@ class DataSourceViewController: UITableViewController {
         user.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
         let group: Group = Group()
         group.name = "group"
-        user.group = group.ref()
+        user.group.set(group)
         let task: [String: StorageUploadTask] = user.save()
         task["thumbnail"]?.observe(.progress) { (snapshot) in
             print(snapshot.progress?.completedUnitCount)

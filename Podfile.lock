@@ -5,36 +5,35 @@ PODS:
   - BoringSSL/Implementation (9.1):
     - BoringSSL/Interface (= 9.1)
   - BoringSSL/Interface (9.1)
-  - Firebase/Core (4.5.0):
-    - FirebaseAnalytics (= 4.0.4)
-    - FirebaseCore (= 4.0.10)
-  - Firebase/Firestore (4.5.0):
+  - Firebase/Core (4.7.0):
+    - FirebaseAnalytics (= 4.0.5)
+    - FirebaseCore (= 4.0.12)
+  - Firebase/Firestore (4.7.0):
     - Firebase/Core
-    - FirebaseFirestore (= 0.9.1)
-  - Firebase/Storage (4.5.0):
+    - FirebaseFirestore (= 0.9.3)
+  - Firebase/Storage (4.7.0):
     - Firebase/Core
-    - FirebaseStorage (= 2.0.2)
-  - FirebaseAnalytics (4.0.4):
+    - FirebaseStorage (= 2.1.0)
+  - FirebaseAnalytics (4.0.5):
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
     - nanopb (~> 0.3)
-  - FirebaseAuth (4.3.1):
+  - FirebaseAuth (4.4.0):
     - FirebaseAnalytics (~> 4.0)
     - GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)
     - GTMSessionFetcher/Core (~> 1.1)
-  - FirebaseCore (4.0.10):
+  - FirebaseCore (4.0.12):
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-    - nanopb (~> 0.3)
-  - FirebaseFirestore (0.9.1):
+  - FirebaseFirestore (0.9.3):
     - FirebaseAnalytics (~> 4.0)
-    - FirebaseAuth (~> 4.3)
+    - FirebaseAuth (~> 4.4)
     - FirebaseCore (~> 4.0)
     - gRPC-ProtoRPC (~> 1.0)
     - leveldb-library (~> 1.18)
     - Protobuf (~> 3.1)
-  - FirebaseInstanceID (2.0.5)
-  - FirebaseStorage (2.0.2):
+  - FirebaseInstanceID (2.0.7)
+  - FirebaseStorage (2.1.0):
     - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
     - GTMSessionFetcher/Core (~> 1.1)
@@ -74,7 +73,7 @@ PODS:
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
-  - Protobuf (3.4.0)
+  - Protobuf (3.5.0)
 
 DEPENDENCIES:
   - Firebase/Core
@@ -83,22 +82,22 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   BoringSSL: 84318770d120503ab1a6aaf1df777c5ca053697e
-  Firebase: d83d287bdb6b1c78320561482706d1fcfc8ddfc1
-  FirebaseAnalytics: 722b53c7b32bfc7806b06e0093a2f5180d4f2c5a
-  FirebaseAuth: e7c2b1359c2df4af23a568100a8eace0b8c507e4
-  FirebaseCore: da5e8e372cb6046212739a4d81e42d32c22907cc
-  FirebaseFirestore: 2112e800ec742daa37b3500b227aaa13e7ca236c
-  FirebaseInstanceID: f2b688c66b972f30d7fa9f5f9f91455454a03b47
-  FirebaseStorage: 0cca42d9b889a0227c3a50121f45a4469fc9eb27
+  Firebase: dbfb98ccec2dcfcd21ab9cc1b4981a3f3c8c5e26
+  FirebaseAnalytics: 5b02a63ead2c3f0259cfc7f15e053e440587ecf8
+  FirebaseAuth: cdeee95b528958dbb7dcf220ad0fb804d3a284b0
+  FirebaseCore: 6cf108b63997bc08c04a1ffa55a3ac0d71a59ffc
+  FirebaseFirestore: 0b62fdbe420f2f88b6b2037ba4d92bbd4525e04a
+  FirebaseInstanceID: 148c25c986c8699e67304b114e365713dce467f2
+  FirebaseStorage: 0930e97994dc79b404179bdfafb6b16f59433a82
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
   gRPC: b56decfd0094854d2ccfe80c8fb767237dace3be
   gRPC-Core: 95c4968ae43d29219226f22b656d9f625904281e
   gRPC-ProtoRPC: b7259f51cbc19b77c7a38d96f52a00c3a4ea1637
   gRPC-RxLibrary: 4f46343e74e74a7ee8373ffeeaf772dfb330cbd7
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
-  leveldb-library: 44ef425bfde64f5b41daef86b38db2d13edbbee1
+  leveldb-library: 4f9eedf84ab46b4fa3b7893bf30714b2a1a74022
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
-  Protobuf: 03eef2ee0b674770735cf79d9c4d3659cf6908e8
+  Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
 
 PODFILE CHECKSUM: b6b3fe8fb023828197a15c84fe83dedffdba2154
 

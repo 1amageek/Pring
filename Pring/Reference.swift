@@ -32,7 +32,7 @@ public protocol AnyReference: ReferenceRawValue {
 
     var contentType: String? { get }
 
-    var value: [AnyHashable: Any] { get }
+    var value: [AnyHashable: Any]? { get }
 }
 
 public class ReferencePlaceholder: AnyReference {
@@ -70,8 +70,8 @@ public class ReferencePlaceholder: AnyReference {
         self.rawValue = rawValue
     }
 
-    public var value: [AnyHashable: Any] {
-        guard let id: String = self.id, let contentType: String = self.contentType else { return [:] }
+    public var value: [AnyHashable: Any]? {
+        guard let id: String = self.id, let contentType: String = self.contentType else { return nil }
         return [
             "id": id,
             "contentType": contentType
@@ -88,7 +88,7 @@ public class ReferencePlaceholder: AnyReference {
     }
 }
 
-public class Reference<T: Document>: ReferencePlaceholder {
+public class Reference<T: Document>: ReferencePlaceholder, Batchable {
 
     public typealias ContentType = T
 
@@ -120,6 +120,10 @@ public class Reference<T: Document>: ReferencePlaceholder {
         self.object = object
     }
 
+    public func set(_ object: ContentType) {
+        self.object = object
+    }
+
     public func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         if let document = self.object {
@@ -144,7 +148,7 @@ public protocol AnyContentType: RawRepresentable {
 
 }
 
-public class MultipleReference<T: AnyContentType>: ReferencePlaceholder where T.RawValue == String {
+public class MultipleReference<T: AnyContentType>: ReferencePlaceholder, Batchable where T.RawValue == String {
 
     public typealias ContentType = T
 
@@ -182,6 +186,10 @@ public class MultipleReference<T: AnyContentType>: ReferencePlaceholder where T.
     public required convenience init(rawValue: [AnyHashable : Any]?) {
         self.init()
         self.rawValue = rawValue
+    }
+
+    public func set(_ object: Object) {
+        self.object = object
     }
 
     public func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch {
