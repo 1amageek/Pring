@@ -266,7 +266,7 @@ open class Object: NSObject, Document {
                 case .geoPoint      (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .dictionary    (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .collection    (_, _, _):   break
-                case .reference     (_, _, _):   break //(let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .reference     (_, _, _):   break
                 case .string        (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .null: break
                 }
