@@ -128,6 +128,14 @@ public class Reference<T: Document>: ReferencePlaceholder, Batchable {
         self.parent?.update(key: key, value: value)
     }
 
+    public func delete() {
+        self.object = nil
+        guard let key: String = self.key else {
+            return
+        }
+        self.parent?.update(key: key, value: FieldValue.delete())
+    }
+
     public func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         switch type {
@@ -208,6 +216,14 @@ public class MultipleReference<T: AnyContentType>: ReferencePlaceholder, Batchab
             return
         }
         self.parent?.update(key: key, value: value)
+    }
+
+    public func delete() {
+        self.object = nil
+        guard let key: String = self.key else {
+            return
+        }
+        self.parent?.update(key: key, value: FieldValue.delete())
     }
 
     public func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch {

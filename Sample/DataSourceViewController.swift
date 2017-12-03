@@ -85,6 +85,7 @@ class DataSourceViewController: UITableViewController {
         let group: Group = Group()
         group.name = "update"
         user.group.set(group)
+        user.group.delete()
         user.update()
     }
 
