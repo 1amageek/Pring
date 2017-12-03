@@ -298,6 +298,7 @@ public enum DataType {
 
     static func verify(value: Any) {
         let mirror: Mirror = Mirror(reflecting: value)
+
         let subjectType: Any.Type = mirror.subjectType
         if
                 subjectType == Bool?.self ||
@@ -309,6 +310,13 @@ public enum DataType {
                 subjectType == Float?.self ||
                 subjectType == Double?.self {
             fatalError("[Pring.DataType] *** error: Invalid DataType. \(subjectType) is number. Pring not support optional number type." )
+        }
+
+        if let displayStyle: Mirror.DisplayStyle = mirror.displayStyle {
+            let subjectTypeString: String = String(describing: subjectType)
+            if displayStyle == .optional && subjectTypeString.contains("Reference") {
+                fatalError("[Pring.DataType] *** error: Invalid DataType. \(subjectType) is Reference. Pring not support optional AnyReference Protocol." )
+            }
         }
     }
 

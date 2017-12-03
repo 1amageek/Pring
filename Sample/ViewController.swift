@@ -33,12 +33,12 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         let user: User = User()
-        let group: Group = Group()
-
-        (0..<10).forEach { (index) in
-            let item: Item = Item()
-            user.items.insert(item)
-        }
+//        let group: Group = Group()
+//
+//        (0..<10).forEach { (index) in
+//            let item: Item = Item()
+//            user.items.insert(item)
+//        }
 //        user.group = Reference(group)
 //        user.save { (ref, _) in
 //

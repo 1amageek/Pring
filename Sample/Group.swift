@@ -17,7 +17,7 @@ class Group: Object {
 
     dynamic var name: String?
 
-    dynamic var owner: Reference<User>?
-
-    dynamic var media: MultipleReference<Media>?
+//    dynamic var owner: Reference<User>?
+//
+//    dynamic var media: MultipleReference<Media>?
 }
