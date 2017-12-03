@@ -19,7 +19,7 @@ class DataSourceViewController: UITableViewController {
         user.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
         let group: Group = Group()
         group.name = "group"
-//        user.group.set(group)
+        user.group.set(group)
         let task: [String: StorageUploadTask] = user.save()
         task["thumbnail"]?.observe(.progress) { (snapshot) in
             print(snapshot.progress?.completedUnitCount)
@@ -45,11 +45,10 @@ class DataSourceViewController: UITableViewController {
                 }
             })
             .on(parse: { (snapshot, user, done) in
-//                user.group.get({ (group, error) in
-//                    done(user)
-//                })
+                user.group.get({ (group, error) in
+                    done(user)
+                })
             })
-
             .listen()
     }
 
@@ -68,10 +67,10 @@ class DataSourceViewController: UITableViewController {
     func configure(_ cell: DataSourceViewCell, atIndexPath indexPath: IndexPath) {
         guard let user: User = self.dataSource?[indexPath.item] else { return }
         cell.textLabel?.text = user.name
-//        cell.detailTextLabel?.text = user.group.object?.name
+        cell.detailTextLabel?.text = user.group.content?.name
 
-//        print(user.name)
-//        print(user.group.object?.name)
+        print(user.name)
+        print(user.group.content?.name)
         cell.disposer = user.listen { (user, error) in
             cell.textLabel?.text = user?.name
         }
@@ -79,6 +78,14 @@ class DataSourceViewController: UITableViewController {
 
     func tableView(_ tableView: UITableView, didEndDisplaying cell: DataSourceViewCell, forRowAt indexPath: IndexPath) {
         cell.disposer?.dispose()
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let user: User = self.dataSource?[indexPath.item] else { return }
+        let group: Group = Group()
+        group.name = "update"
+        user.group.set(group)
+        user.update()
     }
 
     override func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {

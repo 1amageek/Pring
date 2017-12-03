@@ -266,7 +266,7 @@ open class Object: NSObject, Document {
                 case .geoPoint      (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .dictionary    (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .collection    (_, _, _):   break
-                case .reference     (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .reference     (_, _, _):   break //(let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .string        (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .null: break
                 }
@@ -310,6 +310,17 @@ open class Object: NSObject, Document {
         case .update:
             updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             batch.updateData(updateValue, forDocument: self.reference)
+            self.each({ (key, value) in
+                if let value = value {
+                    switch DataType(key: key, value: value) {
+                    case .reference     (_, _, let reference):
+                        if reference is Batchable {
+                            (reference as! Batchable).pack(.update, batch: batch)
+                        }
+                    default: break
+                    }
+                }
+            })
         case .delete:
             batch.deleteDocument(self.reference)
         }

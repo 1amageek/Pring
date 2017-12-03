@@ -122,12 +122,26 @@ public class Reference<T: Document>: ReferencePlaceholder, Batchable {
 
     public func set(_ object: ContentType) {
         self.object = object
+        guard let key: String = self.key, let value: [AnyHashable: Any] = self.value else {
+            return
+        }
+        self.parent?.update(key: key, value: value)
     }
 
     public func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
-        if let document = self.object {
-            batch.setData(document.value as! [String : Any], forDocument: document.reference)
+        switch type {
+        case .save:
+            if let document = self.object {
+                batch.setData(document.value as! [String : Any], forDocument: document.reference)
+            }
+        case .update:
+            if let document = self.object {
+                if !document.isListening {
+                    batch.setData(document.value as! [String : Any], forDocument: document.reference)
+                }
+            }
+        case .delete: break
         }
         return batch
     }
@@ -190,12 +204,26 @@ public class MultipleReference<T: AnyContentType>: ReferencePlaceholder, Batchab
 
     public func set(_ object: Object) {
         self.object = object
+        guard let key: String = self.key, let value: [AnyHashable: Any] = self.value else {
+            return
+        }
+        self.parent?.update(key: key, value: value)
     }
 
     public func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
-        if let document = self.object {
-            batch.setData(document.value as! [String : Any], forDocument: document.reference)
+        switch type {
+        case .save:
+            if let document = self.object {
+                batch.setData(document.value as! [String : Any], forDocument: document.reference)
+            }
+        case .update:
+            if let document = self.object {
+                if !document.isListening {
+                    batch.setData(document.value as! [String : Any], forDocument: document.reference)
+                }
+            }
+        case .delete: break
         }
         return batch
     }
