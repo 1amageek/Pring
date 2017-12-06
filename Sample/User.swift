@@ -21,10 +21,12 @@ class User: Object {
     dynamic var name: String?
     dynamic var thumbnail: File?
     dynamic var isDeleted: Bool = false
+    dynamic var itemIDs: Set<String> = []
     let followers: ReferenceCollection<User> = []
     let friends: ReferenceCollection<User> = []
     let items: NestedCollection<Item> = []
     let group: Reference<Group> = Reference()
+
 
 
     static func image() -> UIImage {

@@ -14,15 +14,28 @@ class DataSourceViewController: UITableViewController {
     var dataSource: DataSource<User>?
 
     @IBAction func add(_ sender: Any) {
-        let user: User = User()
-        user.name = UUID().uuidString
-        user.save()
+//        let user: User = User()
+//        user.name = UUID().uuidString
+//        user.save()
+
+        self.user?.itemIDs.remove(self.item!.id)
+        self.user?.update()
     }
 
     var user: User?
-    
+    var item: Item?
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let user: User = User()
+        let item: Item = Item()
+
+        user.itemIDs.insert(item.id)
+        user.save()
+
+        self.item = item
+        self.user = user
 
         self.dataSource = User.where(\User.isDeleted, isEqualTo: false).order(by: \User.updatedAt).dataSource()
             .on({ [weak self] (snapshot, changes) in

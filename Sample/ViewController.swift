@@ -32,7 +32,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let user: User = User()
+//        let user: User = User()
+//        let item: Item = Item()
+//        user.items.insert(item.id)
+//        user.save()
 //        let group: Group = Group()
 //
 //        (0..<10).forEach { (index) in

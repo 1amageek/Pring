@@ -103,12 +103,12 @@ public enum DataType {
                 return
             }
         case is [Any]:
-            if let value: [Any] = value as? [Any], !value.isEmpty {
+            if let value: [Any] = value as? [Any] {
                 self = .array(key, value, value)
                 return
             }
         case is Set<String>:
-            if let value: Set<String> = value as? Set<String>, !value.isEmpty {
+            if let value: Set<String> = value as? Set<String> {
                 self = .set(key, value.toKeys(), value)
                 return
             }
