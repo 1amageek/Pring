@@ -68,14 +68,19 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         switch type {
         case .save:
+            var value: [AnyHashable: Any] = [:]
+            value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+            value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             self.forEach { (document) in
                 let reference: DocumentReference = self.reference.document(document.id)
-                document.pack(.save, batch: batch).setData([:], forDocument: reference)
+                document.pack(.save, batch: batch).setData(value as! [String : Any], forDocument: reference)
             }
         case .update:
+            var value: [AnyHashable: Any] = [:]
+            value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             self.forEach { (document) in
                 let reference: DocumentReference = self.reference.document(document.id)
-                document.pack(.update, batch: batch).updateData([:], forDocument: reference)
+                document.pack(.update, batch: batch).updateData(value, forDocument: reference)
             }
         case .delete:
             self.forEach { (document) in
@@ -144,7 +149,10 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
                 }
                 self._count = count
                 let batch: WriteBatch = Firestore.firestore().batch()
-                batch.setData([:], forDocument: reference)
+                var value: [AnyHashable: Any] = [:]
+                value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+                value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+                batch.setData(value as! [String : Any], forDocument: reference)
                 if !newMember.isListening {
                     newMember.pack(.save, batch: batch)
                 }

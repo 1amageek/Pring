@@ -16,21 +16,18 @@ class DataSourceViewController: UITableViewController {
     @IBAction func add(_ sender: Any) {
         let user: User = User()
         user.name = UUID().uuidString
-        user.thumbnail = File(data: UIImageJPEGRepresentation(User.image(), 0.3)!, mimeType: .jpeg)
-        let group: Group = Group()
-        group.name = "group"
-        user.group.set(group)
-        let task: [String: StorageUploadTask] = user.save()
-        task["thumbnail"]?.observe(.progress) { (snapshot) in
-            print(snapshot.progress?.completedUnitCount)
-        }
+        user.save()
     }
+
+    var user: User?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.dataSource = User.order(by: \User.createdAt).limit(to: 30).dataSource()
+
+        self.dataSource = User.where(\User.isDeleted, isEqualTo: false).order(by: \User.updatedAt).dataSource()
             .on({ [weak self] (snapshot, changes) in
                 guard let tableView: UITableView = self?.tableView else { return }
+                debugPrint("On")
                 switch changes {
                 case .initial:
                     tableView.reloadData()
@@ -48,6 +45,9 @@ class DataSourceViewController: UITableViewController {
                 user.group.get({ (group, error) in
                     done(user)
                 })
+            })
+            .onCompleted({ (snapshot, users) in
+                debugPrint("completed")
             })
             .listen()
     }
@@ -68,9 +68,6 @@ class DataSourceViewController: UITableViewController {
         guard let user: User = self.dataSource?[indexPath.item] else { return }
         cell.textLabel?.text = user.name
         cell.detailTextLabel?.text = user.group.content?.name
-
-        print(user.name)
-        print(user.group.content?.name)
         cell.disposer = user.listen { (user, error) in
             cell.textLabel?.text = user?.name
         }

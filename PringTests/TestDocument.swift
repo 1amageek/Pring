@@ -32,7 +32,7 @@ class TestDocument: Object {
     dynamic var dictionary: [AnyHashable: Any]      = ["key": "value"]
     dynamic var string: String                      = "string"
     dynamic var file: File                          = File(data: UIImagePNGRepresentation(TestDocument.image0())!, mimeType: .png)
-    dynamic var refItem: Reference<ReferenceItem>   = ReferenceItem().ref()
+    dynamic var refItem: Reference<ReferenceItem>   = Reference()
 
     let referenceCollection: ReferenceCollection<TestDocument>  = []
     let nextedCollection: NestedCollection<NestedItem>          = []

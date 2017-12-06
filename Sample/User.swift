@@ -20,10 +20,12 @@ class User: Object {
     dynamic var type: UserType = .normal
     dynamic var name: String?
     dynamic var thumbnail: File?
+    dynamic var isDeleted: Bool = false
     let followers: ReferenceCollection<User> = []
     let friends: ReferenceCollection<User> = []
     let items: NestedCollection<Item> = []
     let group: Reference<Group> = Reference()
+
 
     static func image() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)

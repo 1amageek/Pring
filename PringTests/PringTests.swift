@@ -75,7 +75,7 @@ class PringTests: XCTestCase {
                 XCTAssertEqual(document?.dictionary.keys.first, "key")
                 XCTAssertEqual(document?.dictionary.values.first as! String, "value")
                 XCTAssertEqual(document?.string, "string")
-                XCTAssertEqual(document?.refItem.modelName, "referenceitem")
+                XCTAssertEqual(document?.refItem.contentType, "referenceitem")
 
 
                 document?.type = .update

@@ -311,7 +311,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
     }
 
     private func get(with change: DocumentChange, block: @escaping (Element?, Error?) -> Void) {
-        if change.document.data().count != 0 {
+        if change.document.data().count > 2 {
             let document: Element = Element(snapshot: change.document)
             DispatchQueue.main.async {
                 block(document, nil)
