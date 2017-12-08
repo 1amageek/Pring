@@ -218,8 +218,12 @@ open class Object: NSObject, Document {
     /// Object value
     public var value: [AnyHashable: Any] {
         var value: [AnyHashable: Any] = self.rawValue
-        value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
-        value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+        if isListening {
+            value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+        } else {
+            value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+            value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+        }
         return value
     }
 

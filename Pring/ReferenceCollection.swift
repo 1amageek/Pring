@@ -137,7 +137,7 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
                     return nil
                 }
                 let oldParent: [String: Any] = document.data() as [String: Any]
-                let subCollection: [String: Any] = oldParent[key] as? [String: Any] ?? [key: 0]
+                let subCollection: [String: Any] = oldParent[key] as? [String: Any] ?? ["count": 0]
                 let oldCount = subCollection["count"] as? Int ?? 0
                 count = oldCount + 1
                 transaction.updateData([key: ["count": count]], forDocument: parentRef)
