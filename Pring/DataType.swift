@@ -290,6 +290,16 @@ public enum DataType {
                 self = .reference(key, rawValue, reference)
                 return
             }
+        } else if value is [String: Any] {
+            if let value: [String: Any] = data[key] as? [String: Any] {
+                self = .dictionary(key, value, value)
+                return
+            }
+        } else if value is [AnyHashable: Any] {
+            if let value: [String: Any] = data[key] as? [String: Any] {
+                self = .dictionary(key, value, value)
+                return
+            }
         } else {
             self = .null
         }
