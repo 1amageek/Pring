@@ -123,7 +123,8 @@ public enum DataType {
                 return
             }
         case is AnyReference:
-            if let value: AnyReference = value as? AnyReference, let rawValue: [AnyHashable: Any] = value.value {
+            if let value: AnyReference = value as? AnyReference {
+                let rawValue: [AnyHashable: Any] = value.value ?? [:]
                 self = .reference(key, rawValue, value)
                 return
             }

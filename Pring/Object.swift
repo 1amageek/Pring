@@ -372,7 +372,7 @@ open class Object: NSObject, Document {
 
     // MARK: UPDATE
 
-    public func update(_ block: ((Error?) -> Void)? = nil) {
+    public func update(_ batck: WriteBatch? = nil, _ block: ((Error?) -> Void)? = nil) {
         self.pack(.update).commit { (error) in
             self.updateValue = [:]
             block?(error)
@@ -381,7 +381,7 @@ open class Object: NSObject, Document {
 
     // MARK: DELETE
 
-    public func delete(_ block: ((Error?) -> Void)? = nil) {
+    public func delete(_ batck: WriteBatch? = nil, _ block: ((Error?) -> Void)? = nil) {
         self.pack(.delete).commit { (error) in
             if let error = error {
                 block?(error)
