@@ -339,6 +339,11 @@ open class Object: NSObject, Document {
      */
     @discardableResult
     public func save(_ block: ((DocumentReference?, Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
+        return self.save(nil, block: block)
+    }
+
+    @discardableResult
+    public func save(_ batch: WriteBatch? = nil, block: ((DocumentReference?, Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
         if isListening {
             fatalError("[Pring.Document] *** error: \(type(of: self)) has already been saved.")
         }
@@ -349,16 +354,16 @@ open class Object: NSObject, Document {
                     block?(ref, error)
                     return
                 }
-                self._save(block)
+                self._save(batch, block: block)
             }
         } else {
-            _save(block)
+            _save(batch, block: block)
             return [:]
         }
     }
 
-    private func _save(_ block: ((DocumentReference?, Error?) -> Void)?) {
-        self.pack(.save).commit { (error) in
+    private func _save(_ batch: WriteBatch? = nil, block: ((DocumentReference?, Error?) -> Void)?) {
+        self.pack(.save, batch: batch).commit { (error) in
             if let error: Error = error {
                 block?(nil, error)
                 return
@@ -372,8 +377,12 @@ open class Object: NSObject, Document {
 
     // MARK: UPDATE
 
-    public func update(_ batck: WriteBatch? = nil, _ block: ((Error?) -> Void)? = nil) {
-        self.pack(.update).commit { (error) in
+    public func update(_ block: ((Error?) -> Void)? = nil) {
+        self.update(nil, block: block)
+    }
+
+    public func update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) {
+        self.pack(.update, batch: batch).commit { (error) in
             self.updateValue = [:]
             block?(error)
         }
@@ -381,8 +390,12 @@ open class Object: NSObject, Document {
 
     // MARK: DELETE
 
-    public func delete(_ batck: WriteBatch? = nil, _ block: ((Error?) -> Void)? = nil) {
-        self.pack(.delete).commit { (error) in
+    public func delete(_ block: ((Error?) -> Void)? = nil) {
+        self.delete(nil, block: block)
+    }
+
+    public func delete(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) {
+        self.pack(.delete, batch: batch).commit { (error) in
             if let error = error {
                 block?(error)
                 return
