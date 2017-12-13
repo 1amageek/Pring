@@ -45,12 +45,11 @@ class ViewController: UIViewController {
             self.tra = transcript
         }
 
-//        let video: Video = Video()
-//        video.file = File(data: UIImagePNGRepresentation(User.image())!, mimeType: .png)
-//        let transcript: Transcript = Transcript()
-////        transcript.file = File(data: UIImagePNGRepresentation(User.image())!, mimeType: .png)
-//        transcript.video = video
-//        let tasks = transcript.save()
+        let video: Video = Video()
+        video.file = File(data: UIImagePNGRepresentation(User.image())!, mimeType: .png)
+        let transcript: Transcript = Transcript()
+        transcript.video = video
+        transcript.save()
 //        print(tasks)
 //        let user: User = User()
 //        let item: Item = Item()
