@@ -181,13 +181,13 @@ public final class File: NSObject {
         self.url = url
     }
 
-    internal convenience init?(propery: [AnyHashable: String]) {
-        guard let name: String = propery["name"] else { return nil }
+    internal convenience init?(property: [AnyHashable: String]) {
+        guard let name: String = property["name"] else { return nil }
         self.init(name: name)
-        if let mimeType: String = propery["mimeType"] {
+        if let mimeType: String = property["mimeType"] {
             self.mimeType = MIMEType(rawValue: mimeType)
         }
-        if let downloadURL: String = propery["url"] {
+        if let downloadURL: String = property["url"] {
             self._downloadURL = URL(string: downloadURL)
         }
     }

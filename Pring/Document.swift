@@ -40,6 +40,8 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
     var ignore: [String] { get }
 
     init(snapshot: DocumentSnapshot)
+
+    init(id: String, value: [AnyHashable: Any])
 }
 
 public extension Document {
@@ -51,6 +53,7 @@ public extension Document {
                 switch DataType(key: key, value: child.value) {
                 case .file(_, _, _): return true
                 case .collection(_, _, let collection): return collection.hasFiles
+                case .document(_, _, let document): return document!.hasFiles
                 default: break
                 }
             }
@@ -58,6 +61,7 @@ public extension Document {
         return false
     }
 
+    @discardableResult
     public func saveFiles(container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
 
         var uploadContainer: UploadContainer = container ?? UploadContainer()
@@ -70,6 +74,7 @@ public extension Document {
 
             switch DataType(key: key, value: value) {
             case .file(let key, _, let file):
+                print(key, file)
                 file.parent = self as? Object
                 file.key = key
                 uploadContainer.group.enter()
@@ -85,7 +90,9 @@ public extension Document {
                     uploadContainer.tasks[key] = task
                 }
             case .collection(_, _, let collection):
-                collection.saveFiles(container: container, block: nil)
+                collection.saveFiles(container: uploadContainer, block: nil)
+            case .document(_, _, let document):
+                document?.saveFiles(container: uploadContainer, block: nil)
             default: break
             }
 
