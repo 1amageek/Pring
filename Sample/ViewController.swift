@@ -29,9 +29,29 @@ class ViewController: UIViewController {
 
     var d: DataSource<Item>?
 
+    var tra: Transcript?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        Transcript.get("khuRukcwO5a3IUL9Gimc") { (transcript, error) in
+            print(transcript?.video?.file?.downloadURL)
+
+            transcript?.video?.file = File(data: UIImagePNGRepresentation(User.image())!, mimeType: .png)
+            transcript?.video?.file?.update({ (_, _) in
+                transcript?.update()
+            })
+
+            self.tra = transcript
+        }
+
+//        let video: Video = Video()
+//        video.file = File(data: UIImagePNGRepresentation(User.image())!, mimeType: .png)
+//        let transcript: Transcript = Transcript()
+////        transcript.file = File(data: UIImagePNGRepresentation(User.image())!, mimeType: .png)
+//        transcript.video = video
+//        let tasks = transcript.save()
+//        print(tasks)
 //        let user: User = User()
 //        let item: Item = Item()
 //        user.items.insert(item.id)

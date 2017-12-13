@@ -101,6 +101,48 @@ open class Object: NSObject, Document {
         _setSnapshot(snapshot)
     }
 
+    public convenience required init(id: String, value: [AnyHashable: Any]) {
+        self.init()
+
+        self.id = id
+
+        let data: [String: Any] = value as! [String: Any]
+
+        self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Date ?? _createdAt
+        self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as? Date ?? _updatedAt
+
+        Mirror(reflecting: self).children.forEach { (key, value) in
+            if let key: String = key {
+                if !self.ignore.contains(key) {
+                    if self.decode(key, value: data[key]) {
+                        self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
+                        return
+                    }
+                    switch DataType(key: key, value: value, data: data) {
+                    case .array         (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .set           (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .bool          (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .binary        (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .file          (let key, _, let value):                self.setValue(value, forKey: key); value.setParent(self, forKey: key)
+                    case .url           (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .int           (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .float         (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .date          (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .geoPoint      (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .dictionary    (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .collection    (let key, let value, let collection):   collection.setValue(value, forKey: key)
+                    case .reference     (let key, _, let reference):            reference.setParent(self, forKey: key)
+                    case .document      (_, _, _):                              break
+                    case .string        (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .null: break
+                    }
+                    self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
+                }
+            }
+        }
+        self.isListening = true
+    }
+
     func _setSnapshot(_ snapshot: DocumentSnapshot) {
         self.snapshot = snapshot
     }
@@ -142,6 +184,7 @@ open class Object: NSObject, Document {
                             case .dictionary    (let key, _, let value):                self.setValue(value, forKey: key)
                             case .collection    (let key, let value, let collection):   collection.setValue(value, forKey: key)
                             case .reference     (let key, _, let reference):            reference.setParent(self, forKey: key)
+                            case .document      (_, _, _):                              break
                             case .string        (let key, _, let value):                self.setValue(value, forKey: key)
                             case .null: break
                             }
@@ -207,6 +250,7 @@ open class Object: NSObject, Document {
                     case .collection    (let key, let rawValue, _):   document[key] = rawValue
                     case .reference     (let key, let rawValue, _):   document[key] = rawValue
                     case .string        (let key, let rawValue, _):   document[key] = rawValue
+                    case .document      (let key, let rawValue, _):   document[key] = rawValue
                     case .null: break
                     }
                 }
@@ -271,6 +315,7 @@ open class Object: NSObject, Document {
                 case .dictionary    (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .collection    (_, _, _):   break
                 case .reference     (_, _, _):   break
+                case .document      (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .string        (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .null: break
                 }
@@ -339,6 +384,11 @@ open class Object: NSObject, Document {
      */
     @discardableResult
     public func save(_ block: ((DocumentReference?, Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
+        return self.save(nil, block: block)
+    }
+
+    @discardableResult
+    public func save(_ batch: WriteBatch? = nil, block: ((DocumentReference?, Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
         if isListening {
             fatalError("[Pring.Document] *** error: \(type(of: self)) has already been saved.")
         }
@@ -349,16 +399,16 @@ open class Object: NSObject, Document {
                     block?(ref, error)
                     return
                 }
-                self._save(block)
+                self._save(batch, block: block)
             }
         } else {
-            _save(block)
+            _save(batch, block: block)
             return [:]
         }
     }
 
-    private func _save(_ block: ((DocumentReference?, Error?) -> Void)?) {
-        self.pack(.save).commit { (error) in
+    private func _save(_ batch: WriteBatch? = nil, block: ((DocumentReference?, Error?) -> Void)?) {
+        self.pack(.save, batch: batch).commit { (error) in
             if let error: Error = error {
                 block?(nil, error)
                 return
@@ -373,7 +423,11 @@ open class Object: NSObject, Document {
     // MARK: UPDATE
 
     public func update(_ block: ((Error?) -> Void)? = nil) {
-        self.pack(.update).commit { (error) in
+        self.update(nil, block: block)
+    }
+
+    public func update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) {
+        self.pack(.update, batch: batch).commit { (error) in
             self.updateValue = [:]
             block?(error)
         }
@@ -382,7 +436,11 @@ open class Object: NSObject, Document {
     // MARK: DELETE
 
     public func delete(_ block: ((Error?) -> Void)? = nil) {
-        self.pack(.delete).commit { (error) in
+        self.delete(nil, block: block)
+    }
+
+    public func delete(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) {
+        self.pack(.delete, batch: batch).commit { (error) in
             if let error = error {
                 block?(error)
                 return

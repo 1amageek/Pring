@@ -11,4 +11,5 @@ import Foundation
 @objcMembers
 class Video: Object {
     dynamic var file: File?
+    dynamic var name: String = "aaaaa"
 }

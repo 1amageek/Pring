@@ -27,6 +27,7 @@ public enum DataType {
     case collection (String, [AnyHashable: Any], SubCollection)
     case reference  (String, [AnyHashable: Any], AnyReference)
     case string     (String, String, String)
+    case document   (String, [AnyHashable: Any], Object?)
     case null
 
     /**
@@ -123,8 +124,14 @@ public enum DataType {
                 return
             }
         case is AnyReference:
-            if let value: AnyReference = value as? AnyReference, let rawValue: [AnyHashable: Any] = value.value {
+            if let value: AnyReference = value as? AnyReference {
+                let rawValue: [AnyHashable: Any] = value.value ?? [:]
                 self = .reference(key, rawValue, value)
+                return
+            }
+        case is Object:
+            if let value: Object = value as? Object {
+                self = .document(key, value.value, value)
                 return
             }
         case is [String: Any]:
@@ -270,7 +277,7 @@ public enum DataType {
             }
         } else if subjectType == File.self || subjectType == File?.self {
             if let value: [AnyHashable: String] = data[key] as? [AnyHashable: String] {
-                if let file: File = File(propery: value) {
+                if let file: File = File(property: value) {
                     self = .file(key, value, file)
                     return
                 }
@@ -288,6 +295,11 @@ public enum DataType {
                 let reference: AnyReference = value as! AnyReference
                 reference.setRawValue(rawValue: rawValue)
                 self = .reference(key, rawValue, reference)
+                return
+            }
+        } else if value is Object {
+            if let rawValue: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
+                self = .document(key, rawValue, nil)
                 return
             }
         } else if value is [String: Any] {

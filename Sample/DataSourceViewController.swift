@@ -14,12 +14,12 @@ class DataSourceViewController: UITableViewController {
     var dataSource: DataSource<User>?
 
     @IBAction func add(_ sender: Any) {
-//        let user: User = User()
-//        user.name = UUID().uuidString
-//        user.save()
+        let user: User = User()
+        user.name = UUID().uuidString
+        user.save()
 
-        self.user?.itemIDs.remove(self.item!.id)
-        self.user?.update()
+//        self.user?.itemIDs.remove(self.item!.id)
+//        self.user?.update()
     }
 
     var user: User?
@@ -95,8 +95,7 @@ class DataSourceViewController: UITableViewController {
         let group: Group = Group()
         group.name = "update"
         user.group.set(group)
-        user.group.delete()
-        user.update()
+        user.update(group.pack(.save, batch: nil))
     }
 
     override func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
