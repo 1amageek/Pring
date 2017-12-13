@@ -429,6 +429,10 @@ extension DataSource: Collection {
     public subscript(index: Int) -> Element {
         return self.documents[index]
     }
+
+    public func forEach(_ body: (T) throws -> Void) rethrows {
+        return try self.documents.forEach(body)
+    }
 }
 
 extension Array where Element: Document {
