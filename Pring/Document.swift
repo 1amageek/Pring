@@ -80,7 +80,6 @@ public extension Document {
 
             switch DataType(key: key, value: value) {
             case .file(let key, _, let file):
-                print(key, file)
                 file.parent = self as? Object
                 file.key = key
                 uploadContainer.group.enter()
