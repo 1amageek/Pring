@@ -52,8 +52,14 @@ public extension Document {
             if let key: String = child.label {
                 switch DataType(key: key, value: child.value) {
                 case .file(_, _, _): return true
-                case .collection(_, _, let collection): return collection.hasFiles
-                case .document(_, _, let document): return document!.hasFiles
+                case .collection(_, _, let collection):
+                    if collection.hasFiles {
+                        return true
+                    }
+                case .document(_, _, let document):
+                    if document!.hasFiles {
+                        return true
+                    }
                 default: break
                 }
             }
