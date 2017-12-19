@@ -17,25 +17,18 @@ public protocol HasParent {
     func setParent(_ object: Object, forKey key: String)
 }
 
-public protocol ReferenceRawValue: HasParent {
-
-    var rawValue: [AnyHashable: Any]? { get }
-
-    init(rawValue: [AnyHashable: Any]?)
-
-    func setRawValue(rawValue: [AnyHashable: Any]?)
-}
-
-public protocol AnyReference: ReferenceRawValue {
+public protocol AnyReference: HasParent {
 
     var id: String? { get }
 
-    var contentType: String? { get }
+    var documentReference: DocumentReference? { get set }
 
-    var value: [AnyHashable: Any]? { get }
+    var value: DocumentReference? { get }
 }
 
-public class ReferencePlaceholder: AnyReference {
+public class Reference<T: Document>: AnyReference, Batchable {
+
+    public typealias ContentType = T
 
     /// Parent to hold the location where you want to save
     public weak var parent: Object?
@@ -43,105 +36,43 @@ public class ReferencePlaceholder: AnyReference {
     /// Property name to save
     public var key: String?
 
-    internal var _id: String? {
-        return self.rawValue?["id"] as? String
-    }
+    var object: ContentType?
 
-    internal var _contentType: String? {
-        return self.rawValue?["contentType"] as? String
-    }
+    public var documentReference: DocumentReference?
 
     public var id: String? {
-        return _id
+        return self.object?.id ?? self.documentReference?.documentID
     }
 
-    public var contentType: String? {
-        return _contentType
+    public var value: DocumentReference? {
+        return self.object?.reference
     }
 
-    public internal(set) var rawValue: [AnyHashable: Any]?
-
-    public init() {
-
-    }
-
-    public required convenience init(rawValue: [AnyHashable : Any]?) {
-        self.init()
-        self.rawValue = rawValue
-    }
-
-    public var value: [AnyHashable: Any]? {
-        guard let id: String = self.id, let contentType: String = self.contentType else { return nil }
-        return [
-            "id": id,
-            "contentType": contentType
-        ]
-    }
-
-    public func setRawValue(rawValue: [AnyHashable : Any]?) {
-        self.rawValue = rawValue
-    }
+    public init() { }
 
     public func setParent(_ object: Object, forKey key: String) {
         self.parent = object
         self.key = key
     }
-}
-
-public class Reference<T: Document>: ReferencePlaceholder, Batchable {
-
-    public typealias ContentType = T
-
-    var object: ContentType?
-
-    public override var id: String? {
-        return self.object?.id ?? _id
-    }
-
-    public override var contentType: String? {
-        return ContentType.modelName
-    }
-
-    public var content: ContentType? {
-        return self.object
-    }
-
-    public override init() {
-
-    }
-
-    public required convenience init(rawValue: [AnyHashable : Any]?) {
-        self.init()
-        self.rawValue = rawValue
-    }
-
-    public convenience init?(_ object: ContentType) {
-        self.init(rawValue: nil)
-        self.object = object
-    }
 
     public func set(_ object: ContentType) {
         self.object = object
-        guard let key: String = self.key, let value: [AnyHashable: Any] = self.value else {
+        guard let key: String = self.key, let value: DocumentReference = self.value else {
             return
         }
-        self.parent?.update(key: key, value: value)
-    }
-
-    public func delete() {
-        self.object = nil
-        guard let key: String = self.key else {
-            return
+        if self.parent?.isListening ?? false {
+            self.parent?.update(key: key, value: value)
         }
-        self.parent?.update(key: key, value: FieldValue.delete())
     }
 
     public func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         switch type {
         case .save:
-            if let document = self.object {
-                batch.setData(document.value as! [String : Any], forDocument: document.reference)
+            if let document: ContentType = self.object {
+                if !document.isListening {
+                    batch.setData(document.value as! [String : Any], forDocument: document.reference)
+                }
             }
         case .update:
             if let document = self.object {
@@ -156,91 +87,12 @@ public class Reference<T: Document>: ReferencePlaceholder, Batchable {
 
     public func get(_ block: @escaping (ContentType?, Error?) -> Void) {
         guard let id: String = self.id else {
-            block(nil, nil) // TODO: Error handling
+            block(nil, nil)
             return
         }
         ContentType.get(id) { (document, error) in
             self.object = document
             block(document, error)
         }
-    }
-}
-
-public protocol AnyContentType: RawRepresentable {
-
-}
-
-public class MultipleReference<T: AnyContentType>: ReferencePlaceholder, Batchable where T.RawValue == String {
-
-    public typealias ContentType = T
-
-    var object: Object?
-
-    public override var id: String? {
-        return self.object?.id ?? _id
-    }
-
-    public override var contentType: String? {
-        guard let object = self.object else {
-            return _contentType
-        }
-        return type(of: object).modelName
-    }
-
-    public var content: ContentType? {
-        guard let contentType: String = self.contentType else {
-            return nil
-        }
-        return ContentType(rawValue: contentType)
-    }
-
-    public var modelName: String? {
-        guard let object: Object = self.object else {
-            return _contentType
-        }
-        return type(of: object).modelName
-    }
-
-    public override init() {
-
-    }
-
-    public required convenience init(rawValue: [AnyHashable : Any]?) {
-        self.init()
-        self.rawValue = rawValue
-    }
-
-    public func set(_ object: Object) {
-        self.object = object
-        guard let key: String = self.key, let value: [AnyHashable: Any] = self.value else {
-            return
-        }
-        self.parent?.update(key: key, value: value)
-    }
-
-    public func delete() {
-        self.object = nil
-        guard let key: String = self.key else {
-            return
-        }
-        self.parent?.update(key: key, value: FieldValue.delete())
-    }
-
-    public func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch {
-        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
-        switch type {
-        case .save:
-            if let document = self.object {
-                batch.setData(document.value as! [String : Any], forDocument: document.reference)
-            }
-        case .update:
-            if let document = self.object {
-                if !document.isListening {
-                    batch.setData(document.value as! [String : Any], forDocument: document.reference)
-                }
-            }
-        case .delete: break
-        }
-        return batch
     }
 }

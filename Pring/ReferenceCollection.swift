@@ -65,22 +65,30 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
 
     @discardableResult
     public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
-        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
+        var batch: WriteBatch = batch ?? Firestore.firestore().batch()
         switch type {
         case .save:
             var value: [AnyHashable: Any] = [:]
             value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             self.forEach { (document) in
+                if !document.isListening {
+                    batch = document.pack(.save, batch: batch)
+                }
                 let reference: DocumentReference = self.reference.document(document.id)
-                document.pack(.save, batch: batch).setData(value as! [String : Any], forDocument: reference)
+                batch.setData(value as! [String : Any], forDocument: reference)
             }
         case .update:
             var value: [AnyHashable: Any] = [:]
             value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             self.forEach { (document) in
+                if !document.isListening {
+                    batch = document.pack(.save, batch: batch)
+                } else {
+                    batch = document.pack(.update, batch: batch)
+                }
                 let reference: DocumentReference = self.reference.document(document.id)
-                document.pack(.update, batch: batch).updateData(value, forDocument: reference)
+                batch.updateData(value, forDocument: reference)
             }
         case .delete:
             self.forEach { (document) in

@@ -13,7 +13,10 @@ import FirebaseStorage
 class ViewController: UIViewController {
 
     @IBAction func buttonAction(_ sender: Any) {
-
+        let group: Group = Group()
+        let user: User = User()
+//        user.group.set(group)
+        user.save()
     }
 
     var dataSource: DataSource<Item>?
@@ -34,22 +37,33 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        Transcript.get("khuRukcwO5a3IUL9Gimc") { (transcript, error) in
-            print(transcript?.video?.file?.downloadURL)
-
-            transcript?.video?.file = File(data: UIImagePNGRepresentation(User.image())!, mimeType: .png)
-            transcript?.video?.file?.update({ (_, _) in
-                transcript?.update()
+        User.get("Vveyas6yDJmmUJwBGCi6") { (user, error) in
+            user?.group.get({ (group, error) in
+                print(group)
             })
-
-            self.tra = transcript
         }
 
-        let video: Video = Video()
-        video.file = File(data: UIImagePNGRepresentation(User.image())!, mimeType: .png)
-        let transcript: Transcript = Transcript()
-        transcript.video = video
-        transcript.save()
+//        let group: Group = Group()
+//        let user: User = User()
+//        user.group.set(group)
+//        user.save()
+
+//        Transcript.get("khuRukcwO5a3IUL9Gimc") { (transcript, error) in
+//            print(transcript?.video?.file?.downloadURL)
+//
+//            transcript?.video?.file = File(data: UIImagePNGRepresentation(User.image())!, mimeType: .png)
+//            transcript?.video?.file?.update({ (_, _) in
+//                transcript?.update()
+//            })
+//
+//            self.tra = transcript
+//        }
+//
+//        let video: Video = Video()
+//        video.file = File(data: UIImagePNGRepresentation(User.image())!, mimeType: .png)
+//        let transcript: Transcript = Transcript()
+//        transcript.video = video
+//        transcript.save()
 //        print(tasks)
 //        let user: User = User()
 //        let item: Item = Item()

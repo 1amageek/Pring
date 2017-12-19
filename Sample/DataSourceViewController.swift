@@ -80,7 +80,7 @@ class DataSourceViewController: UITableViewController {
     func configure(_ cell: DataSourceViewCell, atIndexPath indexPath: IndexPath) {
         guard let user: User = self.dataSource?[indexPath.item] else { return }
         cell.textLabel?.text = user.name
-        cell.detailTextLabel?.text = user.group.content?.name
+        cell.detailTextLabel?.text = user.group.object?.name
         cell.disposer = user.listen { (user, error) in
             cell.textLabel?.text = user?.name
         }
@@ -94,7 +94,7 @@ class DataSourceViewController: UITableViewController {
         guard let user: User = self.dataSource?[indexPath.item] else { return }
         let group: Group = Group()
         group.name = "update"
-        user.group.set(group)
+//        user.group.set(group)
         user.update(group.pack(.save, batch: nil))
     }
 

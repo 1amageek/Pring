@@ -25,7 +25,7 @@ public enum DataType {
     case geoPoint   (String, GeoPoint, GeoPoint)
     case dictionary (String, [AnyHashable: Any], [AnyHashable: Any])
     case collection (String, [AnyHashable: Any], SubCollection)
-    case reference  (String, [AnyHashable: Any], AnyReference)
+    case reference  (String, DocumentReference?, AnyReference)
     case string     (String, String, String)
     case document   (String, [AnyHashable: Any], Object?)
     case null
@@ -125,8 +125,7 @@ public enum DataType {
             }
         case is AnyReference:
             if let value: AnyReference = value as? AnyReference {
-                let rawValue: [AnyHashable: Any] = value.value ?? [:]
-                self = .reference(key, rawValue, value)
+                self = .reference(key, value.value, value)
                 return
             }
         case is Object:
@@ -291,10 +290,10 @@ public enum DataType {
                 return
             }
         } else if value is AnyReference {
-            if let rawValue: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
-                let reference: AnyReference = value as! AnyReference
-                reference.setRawValue(rawValue: rawValue)
-                self = .reference(key, rawValue, reference)
+            if let documentReference: DocumentReference = data[key] as? DocumentReference {
+                var reference: AnyReference = value as! AnyReference
+                reference.documentReference = documentReference
+                self = .reference(key, documentReference, reference)
                 return
             }
         } else if value is Object {

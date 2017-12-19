@@ -27,8 +27,6 @@ class User: Object {
     let items: NestedCollection<Item> = []
     let group: Reference<Group> = Reference()
 
-
-
     static func image() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)
         UIGraphicsBeginImageContext(frame.size)

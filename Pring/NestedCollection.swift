@@ -75,7 +75,11 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
         case .update:
             self.forEach { (document) in
                 let reference: DocumentReference = self.reference.document(document.id)
-                batch.updateData(document.updateValue as! [String: Any], forDocument: reference)
+                if document.isListening {
+                    batch.updateData(document.updateValue as! [String: Any], forDocument: reference)
+                } else {
+                    batch.setData(document.updateValue as! [String: Any], forDocument: reference)
+                }
             }
         case .delete:
             self.forEach { (document) in
