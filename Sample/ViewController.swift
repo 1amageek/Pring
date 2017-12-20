@@ -17,6 +17,7 @@ class ViewController: UIViewController {
         let user: User = User()
         user.name = "hoge"
         user.group.set(group)
+        user.item = Item()
         user.save()
     }
 
@@ -45,11 +46,28 @@ class ViewController: UIViewController {
 //        }
 
 
-        let ref = Group(id: "6MRhrD5IQd62xxrg84RI").reference
-
-        User.where("group", isEqualTo: Group(id: "6MRhrD5IQd62xxrg84RI").reference).get { (snapshot, error) in
-            print(snapshot?.documents.first)
-        }
+//        let ref = Group(id: "6MRhrD5IQd62xxrg84RI").reference
+//
+//        User.where(\User.name, isEqualTo: "name").get { (snapshot, error) in
+//            print(snapshot?.documents)
+//        }
+//
+//        let user: User = User(id: "user_id")
+//        user.items.where(\Item.name, isEqualTo: "item_name").get { (snapshot, error) in
+//            print(snapshot?.documents)
+//        }
+//
+//        user.items.where(\Item.name, isEqualTo: "item_name").dataSource()
+//            .on({ (snapshot, change) in
+//                // do something
+//            })
+//            .onCompleted { (snapshot, items) in
+//            print(items)
+//        }
+//
+//        User.where("group", isEqualTo: Group(id: "6MRhrD5IQd62xxrg84RI").reference).get { (snapshot, error) in
+//            print(snapshot?.documents)
+//        }
 
 //        User.get("nnuqWHOddo640SPbyHXU") { (user, error) in
 //            print(user)
