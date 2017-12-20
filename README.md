@@ -437,3 +437,37 @@ self.dataSource = User.order(by: \User.updatedAt).dataSource()
     })
     .listen()
 ```
+
+### Query
+
+#### Get documents
+
+```swift
+User.where(\User.name, isEqualTo: "name").get { (snapshot, error) in
+    print(snapshot?.documents)
+}
+```
+
+#### Get SubCollections
+
+```swift
+let user: User = User(id: "user_id")
+user.items.where(\Item.name, isEqualTo: "item_name").get { (snapshot, error) in
+    print(snapshot?.documents)
+}
+```
+
+**Create DataSource from Query**
+
+```swift
+let user: User = User(id: "user_id")
+user.items
+    .where(\Item.name, isEqualTo: "item_name")
+    .dataSource()
+    .on({ (snapshot, change) in
+        // do something
+    })
+    .onCompleted { (snapshot, items) in
+        print(items)
+}
+```
