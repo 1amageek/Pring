@@ -25,6 +25,8 @@ class User: Object {
 
     dynamic var item: Item?
 
+    dynamic var files: [File] = []
+
     let followers: ReferenceCollection<User> = []
     let friends: ReferenceCollection<User> = []
     let items: NestedCollection<Item> = []

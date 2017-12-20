@@ -18,6 +18,7 @@ public enum DataType {
     case bool       (String, Bool, Bool)
     case binary     (String, Data, Data)           // Up to 1,048,487 bytes
     case file       (String, [AnyHashable: Any], File)
+    case files      (String, [[AnyHashable: String]], [File])
     case url        (String, String, URL)
     case int        (String, Int, Int)
     case float      (String, Double, Double)
@@ -101,6 +102,11 @@ public enum DataType {
         case is GeoPoint:
             if let value: GeoPoint = value as? GeoPoint {
                 self = .geoPoint(key, value, value)
+                return
+            }
+        case is [File]:
+            if let value: [File] = value as? [File] {
+                self = .files(key, value.map { return $0.value as! [AnyHashable: String] }, value)
                 return
             }
         case is [Any]:
@@ -228,17 +234,23 @@ public enum DataType {
                 return
             }
         } else if subjectType == [Int].self || subjectType == [Int]?.self {
-            if let value: [Int] = data[key] as? [Int], !value.isEmpty {
+            if let value: [Int] = data[key] as? [Int] {
                 self = .array(key, value, value)
                 return
             }
         } else if subjectType == [String].self || subjectType == [String]?.self {
-            if let value: [String] = data[key] as? [String], !value.isEmpty {
+            if let value: [String] = data[key] as? [String] {
                 self = .array(key, value, value)
                 return
             }
+        } else if subjectType == [File].self || subjectType == [File]?.self {
+            if let value: [[AnyHashable: String]] = data[key] as? [[AnyHashable: String]] {
+                let files: [File] = value.flatMap { return File(property: $0) }
+                self = .files(key, value, files)
+                return
+            }
         } else if subjectType == [Any].self || subjectType == [Any]?.self {
-            if let value: [Any] = data[key] as? [Any], !value.isEmpty {
+            if let value: [Any] = data[key] as? [Any] {
                 self = .array(key, value, value)
                 return
             }

@@ -124,6 +124,7 @@ open class Object: NSObject, Document {
                     case .bool          (let key, _, let value):                self.setValue(value, forKey: key)
                     case .binary        (let key, _, let value):                self.setValue(value, forKey: key)
                     case .file          (let key, _, let value):                self.setValue(value, forKey: key); value.setParent(self, forKey: key)
+                    case .files         (let key, _, let value):                self.setValue(value, forKey: key); value.forEach { $0.setParent(self, forKey: key) }
                     case .url           (let key, _, let value):                self.setValue(value, forKey: key)
                     case .int           (let key, _, let value):                self.setValue(value, forKey: key)
                     case .float         (let key, _, let value):                self.setValue(value, forKey: key)
@@ -176,6 +177,7 @@ open class Object: NSObject, Document {
                             case .bool          (let key, _, let value):                self.setValue(value, forKey: key)
                             case .binary        (let key, _, let value):                self.setValue(value, forKey: key)
                             case .file          (let key, _, let value):                self.setValue(value, forKey: key); value.setParent(self, forKey: key)
+                            case .files         (let key, _, let value):                self.setValue(value, forKey: key); value.forEach { $0.setParent(self, forKey: key) }
                             case .url           (let key, _, let value):                self.setValue(value, forKey: key)
                             case .int           (let key, _, let value):                self.setValue(value, forKey: key)
                             case .float         (let key, _, let value):                self.setValue(value, forKey: key)
@@ -241,6 +243,7 @@ open class Object: NSObject, Document {
                     case .bool          (let key, let rawValue, _):   document[key] = rawValue
                     case .binary        (let key, let rawValue, _):   document[key] = rawValue
                     case .file          (let key, let rawValue, _):   document[key] = rawValue
+                    case .files         (let key, let rawValue, _):   document[key] = rawValue
                     case .url           (let key, let rawValue, _):   document[key] = rawValue
                     case .int           (let key, let rawValue, _):   document[key] = rawValue
                     case .float         (let key, let rawValue, _):   document[key] = rawValue
@@ -307,6 +310,23 @@ open class Object: NSObject, Document {
                         currentFile.parent = self
                         currentFile.key = key
                     }
+                case .files         (let key, _, _):
+                    if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
+                        guard let newFiles: [File] = change[.newKey] as? [File] else {
+                            fatalError("[Pring.Document] *** error: The files has been set to nil. If you mean delete, please use File.delete.")
+                        }
+                        guard let oldFiles: [File] = change[.oldKey] as? [File] else {
+                            fatalError("[Pring.Document] *** error: The files has been set to nil. If you mean delete, please use File.delete.")
+                        }
+                        let new: Set<File> = Set(newFiles)
+                        let old: Set<File> = Set(oldFiles)
+                        new.subtracting(old).forEach { file in
+                            file.setParent(self, forKey: key)
+                        }
+                        old.subtracting(new).forEach { file in
+                            file.setParent(self, forKey: key)
+                        }
+                    }
                 case .url           (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .int           (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .float         (let key, let updateValue, _):   update(key: key, value: updateValue)
@@ -326,6 +346,8 @@ open class Object: NSObject, Document {
     }
 
     internal var updateValue: [AnyHashable: Any] = [:]
+
+//    internal var garbages: [File] = []
 
     /**
      Update the data on Firebase.

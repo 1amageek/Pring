@@ -52,6 +52,10 @@ public extension Document {
             if let key: String = child.label {
                 switch DataType(key: key, value: child.value) {
                 case .file(_, _, _): return true
+                case .files(_, _, let files):
+                    if !files.isEmpty {
+                        return true
+                    }
                 case .collection(_, _, let collection):
                     if collection.hasFiles {
                         return true
@@ -93,6 +97,25 @@ public extension Document {
                     }
                 }) {
                     uploadContainer.tasks[key] = task
+                }
+            case .files(_, _, let files):
+                if !files.isEmpty {
+                    files.forEach { file in
+                        file.parent = self as? Object
+                        file.key = key
+                        uploadContainer.group.enter()
+                        if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
+                            defer {
+                                uploadContainer.group.leave()
+                            }
+                            if let error: Error = error {
+                                uploadContainer.error = error
+                                return
+                            }
+                        }) {
+                            uploadContainer.tasks[key] = task
+                        }
+                    }
                 }
             case .collection(_, _, let collection):
                 collection.saveFiles(container: uploadContainer, block: nil)

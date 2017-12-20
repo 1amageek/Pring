@@ -337,3 +337,21 @@ public final class File: NSObject {
         return "\n    File {\n\(base)}"
     }
 }
+
+//extension Array where Element == File {
+//
+//    @discardableResult
+//    public func update(_ block: ((StorageMetadata?, Error?) -> Void)?) -> [StorageUploadTask]? {
+//        var tasks: [StorageUploadTask] = []
+//        self.forEach { (file) in
+//            let task: StorageUploadTask? = file.update { (metadata, error) in
+//
+//                }
+//            if let task: StorageUploadTask = task {
+//                tasks.append(task)
+//            }
+//        }
+//        return tasks
+//    }
+//}
+

@@ -18,6 +18,14 @@ class ViewController: UIViewController {
         user.name = "hoge"
         user.group.set(group)
         user.item = Item()
+
+
+        user.files.append(File(data: UIImageJPEGRepresentation(User.image(), 0.2)!, mimeType: .jpeg))
+        user.files.append(File(data: UIImageJPEGRepresentation(User.image(), 0.2)!, mimeType: .jpeg))
+        user.files.append(File(data: UIImageJPEGRepresentation(User.image(), 0.2)!, mimeType: .jpeg))
+        user.files.append(File(data: UIImageJPEGRepresentation(User.image(), 0.2)!, mimeType: .jpeg)) 
+
+
         user.save()
     }
 
