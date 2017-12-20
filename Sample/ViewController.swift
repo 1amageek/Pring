@@ -15,7 +15,8 @@ class ViewController: UIViewController {
     @IBAction func buttonAction(_ sender: Any) {
         let group: Group = Group()
         let user: User = User()
-//        user.group.set(group)
+        user.name = "hoge"
+        user.group.set(group)
         user.save()
     }
 
@@ -37,11 +38,34 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        User.get("Vveyas6yDJmmUJwBGCi6") { (user, error) in
-            user?.group.get({ (group, error) in
-                print(group)
-            })
+//        Group.get("6MRhrD5IQd62xxrg84RI") { (group, error) in
+//            User.reference.whereField("group", isEqualTo: group!.reference).getDocuments { (snapshot, error) in
+//                print(snapshot?.documents.first)
+//            }
+//        }
+
+
+        let ref = Group(id: "6MRhrD5IQd62xxrg84RI").reference
+
+        User.where("group", isEqualTo: Group(id: "6MRhrD5IQd62xxrg84RI").reference).get { (snapshot, error) in
+            print(snapshot?.documents.first)
         }
+
+//        User.get("nnuqWHOddo640SPbyHXU") { (user, error) in
+//            print(user)
+//            print(user?.group.documentReference)
+//        }
+//
+//        User.reference.document("nnuqWHOddo640SPbyHXU").getDocument { (snapshot, error) in
+//            print(snapshot?.data())
+//        }
+
+
+//        User.get("Vveyas6yDJmmUJwBGCi6") { (user, error) in
+//            user?.group.get({ (group, error) in
+//                print(group)
+//            })
+//        }
 
 //        let group: Group = Group()
 //        let user: User = User()

@@ -200,32 +200,85 @@ public extension Document where Self: Object {
     }
 
     public static func `where`(_ keyPath: PartialKeyPath<Self>, isEqualTo: Any) -> DataSource<Self>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo), reference: self.reference)
+        guard let key: String = keyPath._kvcKeyPathString else {
+            fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
+        }
+        return self.where(key, isEqualTo: isEqualTo)
     }
 
     public static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThan: Any) -> DataSource<Self>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThan: isLessThan), reference: self.reference)
+        guard let key: String = keyPath._kvcKeyPathString else {
+            fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
+        }
+        return self.where(key, isLessThan: isLessThan)
     }
 
     public static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThanOrEqualTo: Any) -> DataSource<Self>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference)
+        guard let key: String = keyPath._kvcKeyPathString else {
+            fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
+        }
+        return self.where(key, isLessThanOrEqualTo: isLessThanOrEqualTo)
     }
 
     public static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThan: Any) -> DataSource<Self>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThan: isGreaterThan), reference: self.reference)
+        guard let key: String = keyPath._kvcKeyPathString else {
+            fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
+        }
+        return self.where(key, isGreaterThan: isGreaterThan)
     }
 
     public static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThanOrEqualTo: Any) -> DataSource<Self>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference)
+        guard let key: String = keyPath._kvcKeyPathString else {
+            fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
+        }
+        return self.where(key, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo)
     }
 
     public static func order(by: PartialKeyPath<Self>) -> DataSource<Self>.Query {
-        return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!), reference: self.reference)
+        guard let key: String = by._kvcKeyPathString else {
+            fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
+        }
+        return self.order(by: key)
     }
 
     public static func order(by: PartialKeyPath<Self>, descending: Bool) -> DataSource<Self>.Query {
-        return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!, descending: descending), reference: self.reference)
+        guard let key: String = by._kvcKeyPathString else {
+            fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
+        }
+        return self.order(by: key, descending: descending)
     }
+
+    // MARK:
+
+    public static func `where`(_ keyPath: String, isEqualTo: Any) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, isEqualTo: isEqualTo), reference: self.reference)
+    }
+
+    public static func `where`(_ keyPath: String, isLessThan: Any) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, isLessThan: isLessThan), reference: self.reference)
+    }
+
+    public static func `where`(_ keyPath: String, isLessThanOrEqualTo: Any) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference)
+    }
+
+    public static func `where`(_ keyPath: String, isGreaterThan: Any) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, isGreaterThan: isGreaterThan), reference: self.reference)
+    }
+
+    public static func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference)
+    }
+
+    public static func order(by: String) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.order(by: by), reference: self.reference)
+    }
+
+    public static func order(by: String, descending: Bool) -> DataSource<Self>.Query {
+        return DataSource.Query(self.reference.order(by: by, descending: descending), reference: self.reference)
+    }
+
+    // MARK: -
 
     public static func limit(to: Int) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.limit(to: to), reference: self.reference)
