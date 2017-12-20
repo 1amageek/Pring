@@ -148,6 +148,7 @@ class User: Object {
     dynamic var dictionary: [AnyHashable: Any]      = ["key": "value"]    
     dynamic var string: String                      = "string"
     
+    let group: Reference<Group>                         = .init()
     let nestedCollection: NestedCollection<Item>   　　　　　　　　　　= []
     let referenceCollection: ReferenceCollection<User>  = []
 }
@@ -165,8 +166,9 @@ class User: Object {
 |Date|It is Date type.|
 |GeoPoint|It is GeoPoint type.|
 |Dictionary|It is a Dictionary type. Save the structural data.|
-|Relation|It is Relation type. Relation type. Holds the count stored in SubCollection.|
+|nestedCollection or referenceCollection|It is SubCollection type. SubCollection type. Holds the count stored in SubCollection.|
 |String|It is String type.|
+|Reference|It is Reference type. It hold `DocumentReference`|
 |Null|It is Null type.|
 |Any|It is custom type. You can specify it as a custom type if it is a class that inherits from NSObject.|
 
@@ -434,4 +436,38 @@ self.dataSource = User.order(by: \User.updatedAt).dataSource()
         debugPrint("completed")
     })
     .listen()
+```
+
+### Query
+
+#### Get documents
+
+```swift
+User.where(\User.name, isEqualTo: "name").get { (snapshot, error) in
+    print(snapshot?.documents)
+}
+```
+
+#### Get SubCollections
+
+```swift
+let user: User = User(id: "user_id")
+user.items.where(\Item.name, isEqualTo: "item_name").get { (snapshot, error) in
+    print(snapshot?.documents)
+}
+```
+
+**Create DataSource from Query**
+
+```swift
+let user: User = User(id: "user_id")
+user.items
+    .where(\Item.name, isEqualTo: "item_name")
+    .dataSource()
+    .on({ (snapshot, change) in
+        // do something
+    })
+    .onCompleted { (snapshot, items) in
+        print(items)
+}
 ```
