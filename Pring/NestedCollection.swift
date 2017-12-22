@@ -203,10 +203,10 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
                     block?(error)
                 })
             })
-            member.set(type(of: member).reference.document())
+            member.set(Element.reference.document())
         } else {
             _self.remove(member)
-            member.set(type(of: member).reference.document())
+            member.set(Element.reference.document())
             block?(nil)
         }
     }
