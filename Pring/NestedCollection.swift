@@ -200,10 +200,10 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
                 let batch: WriteBatch = Firestore.firestore().batch()
                 batch.deleteDocument(reference)
                 batch.commit(completion: {(error) in
+                    member.set(Element.reference.document())
                     block?(error)
                 })
             })
-            member.set(Element.reference.document())
         } else {
             _self.remove(member)
             member.set(Element.reference.document())
