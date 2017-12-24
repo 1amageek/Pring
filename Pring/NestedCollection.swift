@@ -217,6 +217,12 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
         }
     }
 
+    public func delete(id: String, block: ((Error?) -> Void)? = nil) {
+        self.reference.document(id).delete { (error) in
+            block?(error)
+        }
+    }
+
     public var description: String {
         if _self.isEmpty {
             return "Nested([])"

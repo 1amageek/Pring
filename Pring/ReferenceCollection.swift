@@ -236,6 +236,12 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
         }
     }
 
+    public func delete(id: String, block: ((Error?) -> Void)? = nil) {
+        self.reference.document(id).delete { (error) in
+            block?(error)
+        }
+    }
+
     // MARK: -
 
     public var description: String {
