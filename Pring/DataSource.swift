@@ -264,8 +264,8 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                             parseBlock(snapshot, document, { document in
                                 if let i: Int = self.documents.index(of: id) {
                                     self.documents.remove(at: i)
+                                    self.documents.insert(document, at: i)
                                 }
-                                self.documents.append(document)
                                 self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
                                 if let i: Int = self.documents.index(of: document) {
                                     changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
@@ -275,8 +275,8 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                         } else {
                             if let i: Int = self.documents.index(of: id) {
                                 self.documents.remove(at: i)
+                                self.documents.insert(document, at: i)
                             }
-                            self.documents.append(document)
                             self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
                             if let i: Int = self.documents.index(of: document) {
                                 changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
