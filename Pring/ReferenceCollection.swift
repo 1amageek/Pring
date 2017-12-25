@@ -177,19 +177,14 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
     public func update(_ member: Element, block: ((Error?) -> Void)? = nil) {
         if isListening {
             let reference: DocumentReference = self.reference.document(member.id)
+            let parentRef: DocumentReference = self.parent!.reference
 
-            self.contains(member.id) { exists in
-                if exists {
-                    let batch: WriteBatch = Firestore.firestore().batch()
-                    let value = [(\Object.updatedAt)._kvcKeyPathString!: FieldValue.serverTimestamp()]
-                    batch.updateData(value, forDocument: reference)
-                    batch.add(.update, object: member)
-                    batch.commit { error in
-                        block?(error)
-                    }
-                } else {
-                    block?(NSError(domain: "AppErrorDomain", code: -1, userInfo: nil))
-                }
+            let batch: WriteBatch = Firestore.firestore().batch()
+            var value = [(\Object.updatedAt)._kvcKeyPathString!: FieldValue.serverTimestamp()]
+            batch.updateData(value, forDocument: reference)
+            batch.add(.update, object: member)
+            batch.commit { error in
+                block?(error)
             }
         }
     }
