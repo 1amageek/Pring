@@ -134,8 +134,6 @@ class PringTests: XCTestCase {
         document.geoPoint = GeoPoint(latitude: 0, longitude: 0)
         document.dictionary = ["key": "value"]
         document.string = "string"
-
-        print(document)
         
         document.save { (ref, error) in
             TestOptionalDocument.get(ref!.documentID, block: { (document, error) in

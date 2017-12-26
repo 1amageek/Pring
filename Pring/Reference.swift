@@ -65,6 +65,16 @@ public class Reference<T: Document>: AnyReference, Batchable {
         }
     }
 
+    public func delete() {
+        self.object = nil
+        guard let key: String = self.key else {
+            return
+        }
+        if self.parent?.isListening ?? false {
+            self.parent?.update(key: key, value: FieldValue.delete())
+        }
+    }
+
     public func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         switch type {
