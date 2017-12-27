@@ -245,6 +245,7 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                             if let i: Int = self.documents.index(of: document) {
                                 changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                             }
+
                             group.leave()
                         }
                     })
@@ -288,10 +289,12 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                     guard self.documents.flatMap({return $0.id}).contains(id) else {
                         return
                     }
+                    group.enter()
                     if let i: Int = self.documents.index(of: id) {
                         self.documents.remove(at: i)
                         DispatchQueue.main.async {
                             changeBlock?(snapshot, CollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
+                            group.leave()
                         }
                     }
                 }

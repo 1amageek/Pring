@@ -17,10 +17,16 @@ class DataSourceViewController: UITableViewController {
         let user: User = User()
         user.name = UUID().uuidString
         user.save()
-
-//        self.user?.itemIDs.remove(self.item!.id)
-//        self.user?.update()
     }
+
+    @IBAction func cancel(_ sender: Any) {
+        if self.dataSource?.count ?? 0 > 0 {
+            if let user: User = self.dataSource?[0] {
+                user.delete()
+            }
+        }
+    }
+
 
     var user: User?
     var item: Item?
@@ -40,7 +46,6 @@ class DataSourceViewController: UITableViewController {
         self.dataSource = User.where(\User.isDeleted, isEqualTo: false).order(by: \User.updatedAt).dataSource()
             .on({ [weak self] (snapshot, changes) in
                 guard let tableView: UITableView = self?.tableView else { return }
-                debugPrint("On")
                 switch changes {
                 case .initial:
                     tableView.reloadData()
