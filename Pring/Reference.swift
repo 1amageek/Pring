@@ -36,7 +36,7 @@ public class Reference<T: Document>: AnyReference, Batchable {
     /// Property name to save
     public var key: String?
 
-    var object: ContentType?
+    public private(set) var object: ContentType?
 
     public var documentReference: DocumentReference?
 
