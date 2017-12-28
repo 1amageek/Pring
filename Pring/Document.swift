@@ -86,34 +86,41 @@ public extension Document {
             case .file(let key, _, let file):
                 file.parent = self as? Object
                 file.key = key
-                uploadContainer.group.enter()
-                if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
-                    defer {
-                        uploadContainer.group.leave()
+                if !file.isSaved {
+                    uploadContainer.group.enter()
+                    if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
+                        defer {
+                            uploadContainer.group.leave()
+                        }
+                        if let error: Error = error {
+                            uploadContainer.error = error
+                            return
+                        }
+                        file.parent?.update(key: key, value: file.value)
+                    }) {
+                        uploadContainer.tasks[key] = task
                     }
-                    if let error: Error = error {
-                        uploadContainer.error = error
-                        return
-                    }
-                }) {
-                    uploadContainer.tasks[key] = task
                 }
             case .files(_, _, let files):
                 if !files.isEmpty {
-                    files.forEach { file in
-                        file.parent = self as? Object
-                        file.key = key
-                        uploadContainer.group.enter()
-                        if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
-                            defer {
-                                uploadContainer.group.leave()
+                    for (index, file) in files.enumerated() {
+                        if !file.isSaved {
+                            file.parent = self as? Object
+                            file.key = key
+                            uploadContainer.group.enter()
+                            if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
+                                defer {
+                                    uploadContainer.group.leave()
+                                }
+                                if let error: Error = error {
+                                    uploadContainer.error = error
+                                    return
+                                }
+                                file.parent?.update(key: key, value: files.map { return $0.value })
+                            }) {
+                                let path: String = "\(key).\(index)"
+                                uploadContainer.tasks[path] = task
                             }
-                            if let error: Error = error {
-                                uploadContainer.error = error
-                                return
-                            }
-                        }) {
-                            uploadContainer.tasks[key] = task
                         }
                     }
                 }

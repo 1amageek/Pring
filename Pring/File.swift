@@ -117,6 +117,11 @@ public final class File: NSObject {
     /// File metadata
     public var metadata: StorageMetadata?
 
+    /// File is saved
+    public var isSaved: Bool {
+        return self.downloadURL != nil
+    }
+
     /// Parent to hold the location where you want to save
     public weak var parent: Object?
 
@@ -220,39 +225,23 @@ public final class File: NSObject {
         }
 
         if let data: Data = self.data {
-            let parent: Object? = self.parent
             self.uploadTask = self.ref?.putData(data, metadata: metadata) { (metadata, error) in
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
-                if let parent: Object = parent, parent.isListening {
-                    parent.update(key: key, value: self.value)
-                    parent.update { (error) in
-                        completion?(metadata, error)
-                    }
-                } else {
-                    completion?(metadata, error)
-                }
+                completion?(metadata, error)
             }
             return self.uploadTask
         } else if let url: URL = self.url {
-            let parent: Object? = self.parent
             self.uploadTask = self.ref?.putFile(from: url, metadata: metadata, completion: { (metadata, error) in
                 self.metadata = metadata
                 if let error: Error = error as Error? {
                     completion?(metadata, error)
                     return
                 }
-                if let parent: Object = parent, parent.isListening {
-                    parent.update(key: key, value: self.value)
-                    parent.update { (error) in
-                        completion?(metadata, error)
-                    }
-                } else {
-                    completion?(metadata, error)
-                }
+                completion?(metadata, error)
             })
             return self.uploadTask
         } else {
@@ -331,27 +320,10 @@ public final class File: NSObject {
         let base: String =
             "      name: \(self.name)\n" +
             "      url: \(self.url?.absoluteString ?? "")\n" +
+            "      donwloadURL: \(self.downloadURL?.absoluteString ?? "")\n" +
             "      hasParent: \(self.parent != nil ? "true" : "false")\n" +
             "      key: \(self.key ?? "")\n" +
             "    "
         return "\n    File {\n\(base)}"
     }
 }
-
-//extension Array where Element == File {
-//
-//    @discardableResult
-//    public func update(_ block: ((StorageMetadata?, Error?) -> Void)?) -> [StorageUploadTask]? {
-//        var tasks: [StorageUploadTask] = []
-//        self.forEach { (file) in
-//            let task: StorageUploadTask? = file.update { (metadata, error) in
-//
-//                }
-//            if let task: StorageUploadTask = task {
-//                tasks.append(task)
-//            }
-//        }
-//        return tasks
-//    }
-//}
-

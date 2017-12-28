@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		12027CB21FF4BDA800912630 /* FileControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12027CB11FF4BDA800912630 /* FileControlViewController.swift */; };
 		120A17901FC58FC3002767F6 /* Batchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120A178F1FC58FC3002767F6 /* Batchable.swift */; };
 		120A17911FC5AA61002767F6 /* Batchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120A178F1FC58FC3002767F6 /* Batchable.swift */; };
 		122FCCB31FA5C9D8005A069E /* NestedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122FCCB21FA5C9D8005A069E /* NestedItem.swift */; };
@@ -80,6 +81,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		12027CB11FF4BDA800912630 /* FileControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileControlViewController.swift; sourceTree = "<group>"; };
 		120A178F1FC58FC3002767F6 /* Batchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Batchable.swift; sourceTree = "<group>"; };
 		122FCCB21FA5C9D8005A069E /* NestedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedItem.swift; sourceTree = "<group>"; };
 		123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestOptionalDocument.swift; sourceTree = "<group>"; };
@@ -246,6 +248,7 @@
 				129E36911FA34F3200336C4D /* Item.swift */,
 				1281B0F21FE11A6500B8FCEE /* Transcript.swift */,
 				126080411FB991BD001B5DDA /* Collecor.swift */,
+				12027CB11FF4BDA800912630 /* FileControlViewController.swift */,
 				12AF83341F8CD2F400561159 /* Main.storyboard */,
 				12AF83371F8CD2F400561159 /* Assets.xcassets */,
 				12AF83391F8CD2F400561159 /* LaunchScreen.storyboard */,
@@ -646,6 +649,7 @@
 			files = (
 				1288E2291FCE9F2900E72594 /* Media.swift in Sources */,
 				1288E2281FCE928400E72594 /* Photo.swift in Sources */,
+				12027CB21FF4BDA800912630 /* FileControlViewController.swift in Sources */,
 				12AF83331F8CD2F400561159 /* ViewController.swift in Sources */,
 				12E6F5A71FCED42D00347F4C /* Group.swift in Sources */,
 				12AF83311F8CD2F400561159 /* AppDelegate.swift in Sources */,

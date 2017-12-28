@@ -443,15 +443,38 @@ open class Object: NSObject, Document {
     }
 
     // MARK: UPDATE
+//    public func update(_ block: ((Error?) -> Void)? = nil) {
+//
+//        self.update(nil, block: block)
+//    }
 
-    public func update(_ block: ((Error?) -> Void)? = nil) {
-        self.update(nil, block: block)
+    @discardableResult
+    public func update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
+        if !isListening {
+            fatalError("[Pring.Document] *** error: \(type(of: self)) has not been saved yet.")
+        }
+        if self.hasFiles {
+            return self.saveFiles(container: nil) { (error) in
+                if let error = error {
+                    block?(error)
+                    return
+                }
+                self._update(batch, block: block)
+            }
+        } else {
+            _update(batch, block: block)
+            return [:]
+        }
     }
 
-    public func update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) {
+    private func _update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)?) {
         self.pack(.update, batch: batch).commit { (error) in
+            if let error: Error = error {
+                block?(error)
+                return
+            }
             self.updateValue = [:]
-            block?(error)
+            block?(nil)
         }
     }
 
