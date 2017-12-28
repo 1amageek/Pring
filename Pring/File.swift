@@ -160,8 +160,6 @@ public final class File: NSObject {
     /// Firebase downloading task
     public fileprivate(set) weak var downloadTask: StorageDownloadTask?
 
-    internal var garbage: StorageReference?
-
     // MARK: - Initialize
 
     public init(name: String) {
@@ -266,13 +264,7 @@ public final class File: NSObject {
                 block?(nil, error)
                 return
             }
-            if let ref: StorageReference = self.garbage {
-                ref.delete(completion: { (error) in
-                    block?(metadata, error)
-                })
-            } else {
-                block?(metadata, error)
-            }
+            block?(metadata, error)
         })
     }
 

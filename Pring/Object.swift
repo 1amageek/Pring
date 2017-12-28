@@ -302,10 +302,15 @@ open class Object: NSObject, Document {
                         guard let currentFile: File = change[.newKey] as? File else {
                             fatalError("[Pring.Document] *** error: The file has been set to nil. If you mean delete, please use File.delete.")
                         }
+
+                        if let index: Int = self.garbages.index(of: currentFile) {
+                            self.garbages.remove(at: index)
+                        }
+
                         if let previousFile: File = change[.oldKey] as? File {
                             previousFile.parent = self
                             previousFile.key = key
-                            currentFile.garbage = previousFile.ref
+                            self.garbages.append(previousFile)
                         }
                         currentFile.parent = self
                         currentFile.key = key
@@ -322,9 +327,13 @@ open class Object: NSObject, Document {
                         let old: Set<File> = Set(oldFiles)
                         new.subtracting(old).forEach { file in
                             file.setParent(self, forKey: key)
+                            if let index: Int = self.garbages.index(of: file) {
+                                self.garbages.remove(at: index)
+                            }
                         }
                         old.subtracting(new).forEach { file in
                             file.setParent(self, forKey: key)
+                            self.garbages.append(file)
                         }
                     }
                 case .url           (let key, let updateValue, _):   update(key: key, value: updateValue)
@@ -347,7 +356,7 @@ open class Object: NSObject, Document {
 
     internal var updateValue: [AnyHashable: Any] = [:]
 
-//    internal var garbages: [File] = []
+    internal var garbages: [File] = []
 
     /**
      Update the data on Firebase.
@@ -443,10 +452,10 @@ open class Object: NSObject, Document {
     }
 
     // MARK: UPDATE
-//    public func update(_ block: ((Error?) -> Void)? = nil) {
-//
-//        self.update(nil, block: block)
-//    }
+    @discardableResult
+    public func update(_ block: ((Error?) -> Void)? = nil)  -> [String: StorageUploadTask] {
+        return self.update(nil, block: block)
+    }
 
     @discardableResult
     public func update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
@@ -474,6 +483,9 @@ open class Object: NSObject, Document {
                 return
             }
             self.updateValue = [:]
+            self.garbages.forEach({ (file) in
+                file.ref?.delete(completion: nil)
+            })
             block?(nil)
         }
     }
