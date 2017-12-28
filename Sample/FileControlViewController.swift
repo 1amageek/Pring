@@ -96,7 +96,12 @@ class FileControlViewController: UIViewController {
     }
 
     @IBAction func deleteAction(_ sender: Any) {
-
+        guard let object: FileControlObject = self.object else {
+            return
+        }
+        object.file = File.delete()
+        object.files = []
+        object.update()
     }
 
 }

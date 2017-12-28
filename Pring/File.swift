@@ -122,6 +122,10 @@ public final class File: NSObject {
         return self.downloadURL != nil
     }
 
+    public var shouldBeSaved: Bool {
+        return !self.isSaved && !self.deleteRequest
+    }
+
     /// Parent to hold the location where you want to save
     public weak var parent: Object?
 
@@ -154,11 +158,19 @@ public final class File: NSObject {
         return value
     }
 
+    internal var deleteRequest: Bool = false
+
     /// Firebase uploading task
     public fileprivate(set) weak var uploadTask: StorageUploadTask?
 
     /// Firebase downloading task
     public fileprivate(set) weak var downloadTask: StorageDownloadTask?
+
+    public class func delete() -> File {
+        let file: File = File(name: "")
+        file.deleteRequest = true
+        return file
+    }
 
     // MARK: - Initialize
 
@@ -249,43 +261,15 @@ public final class File: NSObject {
         return nil
     }
 
-    // MARK: - UPDATE
-
-    @discardableResult
-    public func update(_ block: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
-        guard let _: Object = self.parent, let key: String = self.key else {
-            let error: DocumentError = DocumentError(kind: .invalidFile, description: "It requires data when you save the file")
-            block?(nil, error)
-            return nil
-        }
-
-        return self.save(key, completion: { (metadata, error) in
-            if let error = error {
-                block?(nil, error)
-                return
-            }
-            block?(metadata, error)
-        })
-    }
-
     // MARK: - DELETE
 
-    public func delete(_ block: ((Error?) -> Void)? = nil) {
+    internal func delete(_ block: ((Error?) -> Void)? = nil) {
         guard let parent: Object = self.parent, let key: String = self.key else {
             fatalError("[Pring.Document] *** error: The necessary elements for deleting the file are insufficient.")
         }
         self.ref?.delete(completion: { (error) in
             parent.update(key: key, value: FieldValue.delete())
-            parent.update { error in
-                if let value = parent[key] {
-                    let mirror: Mirror = Mirror(reflecting: value)
-                    let subjectType: Any.Type = mirror.subjectType
-                    if subjectType != File.self {
-                        parent[key] = nil
-                    }
-                }
-                block?(error)
-            }
+            block?(error)
         })
     }
 

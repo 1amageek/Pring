@@ -86,7 +86,7 @@ public extension Document {
             case .file(let key, _, let file):
                 file.parent = self as? Object
                 file.key = key
-                if !file.isSaved {
+                if file.shouldBeSaved {
                     uploadContainer.group.enter()
                     if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
                         defer {
@@ -104,7 +104,7 @@ public extension Document {
             case .files(_, _, let files):
                 if !files.isEmpty {
                     for (index, file) in files.enumerated() {
-                        if !file.isSaved {
+                        if file.shouldBeSaved {
                             file.parent = self as? Object
                             file.key = key
                             uploadContainer.group.enter()
@@ -130,7 +130,6 @@ public extension Document {
                 document?.saveFiles(container: uploadContainer, block: nil)
             default: break
             }
-
         }
         if container == nil {
             uploadContainer.wait(block)
@@ -159,8 +158,23 @@ public extension Document {
                         return
                     }
                 })
-            case .collection(_, _, let collection):
-                collection.deleteFiles(container: container, block: nil)
+            case .files(let key, _, let files):
+                if !files.isEmpty {
+                    for (index, file) in files.enumerated() {
+                        if !file.isSaved {
+                            deleteContainer.group.enter()
+                            file.delete({ (error) in
+                                defer {
+                                    deleteContainer.group.leave()
+                                }
+                                if let error: Error = error {
+                                    deleteContainer.error = error
+                                    return
+                                }
+                            })
+                        }
+                    }
+                }
             default: break
             }
         }

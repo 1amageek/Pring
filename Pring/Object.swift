@@ -300,7 +300,13 @@ open class Object: NSObject, Document {
                 case .file          (let key, _, _):
                     if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
                         guard let currentFile: File = change[.newKey] as? File else {
-                            fatalError("[Pring.Document] *** error: The file has been set to nil. If you mean delete, please use File.delete.")
+                            return
+                        }
+                        currentFile.parent = self
+                        currentFile.key = key
+
+                        if currentFile.deleteRequest {
+                            self.update(key: key, value: FieldValue.delete())
                         }
 
                         if let index: Int = self.garbages.index(of: currentFile) {
@@ -312,19 +318,23 @@ open class Object: NSObject, Document {
                             previousFile.key = key
                             self.garbages.append(previousFile)
                         }
-                        currentFile.parent = self
-                        currentFile.key = key
                     }
                 case .files         (let key, _, _):
                     if let change: [NSKeyValueChangeKey: Any] = change as [NSKeyValueChangeKey: Any]? {
+                        let oldFiles: [File] = change[.oldKey] as? [File] ?? []
                         guard let newFiles: [File] = change[.newKey] as? [File] else {
-                            fatalError("[Pring.Document] *** error: The files has been set to nil. If you mean delete, please use File.delete.")
+                            self.garbages = self.garbages + oldFiles
+                            self.update(key: key, value: FieldValue.delete())
+                            return
                         }
-                        guard let oldFiles: [File] = change[.oldKey] as? [File] else {
-                            fatalError("[Pring.Document] *** error: The files has been set to nil. If you mean delete, please use File.delete.")
-                        }
+
                         let new: Set<File> = Set(newFiles)
                         let old: Set<File> = Set(oldFiles)
+
+                        if new.isEmpty {
+                            self.update(key: key, value: [])
+                        }
+
                         new.subtracting(old).forEach { file in
                             file.setParent(self, forKey: key)
                             if let index: Int = self.garbages.index(of: file) {
@@ -483,6 +493,22 @@ open class Object: NSObject, Document {
                 return
             }
             self.updateValue = [:]
+            for (_, child) in Mirror(reflecting: self).children.enumerated() {
+
+                guard let key: String = child.label else { break }
+                if self.ignore.contains(key) { break }
+                let value = child.value
+
+                switch DataType(key: key, value: value) {
+                case .file(let key, _, let file):
+                    if file.deleteRequest {
+                        self[key] = nil
+                    }
+                case .files(_, _, let files):
+                    self[key] = files.filter { return !$0.deleteRequest }
+                default: break
+                }
+            }
             self.garbages.forEach({ (file) in
                 file.ref?.delete(completion: nil)
             })
