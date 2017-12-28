@@ -268,18 +268,15 @@ Running update method automatically deletes old files.
 ``` swift
 let newFile: File = File(data: PNG_DATA, mimeType: .png)
 object.thumbnailImage = newFile
-let task: StorageUploadTask = object.thumbnailImage.update { (metadata, error) in
-
-}
+object.update()
 ```
 
 #### Delete
 Delete it with `delete` method.
 
 ``` swift
-object.thumbnailImage.delete { (error) in
-
-}
+object.thumbnailImage = File.delete()
+object.update()
 ```
 
 ### Nested Collection & Reference Collection
