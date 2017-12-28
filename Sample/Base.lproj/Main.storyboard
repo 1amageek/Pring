@@ -160,6 +160,14 @@
                                     <outlet property="delegate" destination="g19-oy-gVN" id="bP1-xh-t7S"/>
                                 </connections>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gbQ-PZ-gv8">
+                                <rect key="frame" x="142" y="434" width="92" height="30"/>
+                                <state key="normal" title="Delete object"/>
+                                <connections>
+                                    <action selector="deleteAction:" destination="g19-oy-gVN" eventType="touchUpInside" id="uRo-tt-K9W"/>
+                                    <action selector="deleteObjectAction:" destination="g19-oy-gVN" eventType="touchUpInside" id="080-Fk-OPc"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -171,9 +179,11 @@
                             <constraint firstItem="yIp-H7-5hK" firstAttribute="leading" secondItem="oyv-3a-rVi" secondAttribute="leading" id="RM7-yj-b8F"/>
                             <constraint firstItem="oyv-3a-rVi" firstAttribute="bottom" secondItem="x9j-E6-Hy9" secondAttribute="bottom" constant="100" id="b33-fq-EHc"/>
                             <constraint firstItem="eid-j3-ARi" firstAttribute="centerX" secondItem="GXk-Bp-ODe" secondAttribute="centerX" id="dhM-u2-ZNq"/>
+                            <constraint firstItem="gbQ-PZ-gv8" firstAttribute="centerX" secondItem="GXk-Bp-ODe" secondAttribute="centerX" id="kgK-2h-UDf"/>
                             <constraint firstItem="tdD-Ef-vdV" firstAttribute="centerX" secondItem="GXk-Bp-ODe" secondAttribute="centerX" id="pkg-Qs-Ou8"/>
                             <constraint firstItem="tdD-Ef-vdV" firstAttribute="top" secondItem="oyv-3a-rVi" secondAttribute="top" constant="100" id="qPO-CL-TpS"/>
                             <constraint firstItem="yIp-H7-5hK" firstAttribute="trailing" secondItem="oyv-3a-rVi" secondAttribute="trailing" id="t7t-Lt-diM"/>
+                            <constraint firstItem="gbQ-PZ-gv8" firstAttribute="top" secondItem="eid-j3-ARi" secondAttribute="bottom" constant="60" id="zYC-ma-Xsg"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="oyv-3a-rVi"/>
                     </view>

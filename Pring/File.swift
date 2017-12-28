@@ -122,6 +122,8 @@ public final class File: NSObject {
         return self.downloadURL != nil
     }
 
+    public var isDeleted: Bool = false
+
     public var shouldBeSaved: Bool {
         return !self.isSaved && !self.deleteRequest
     }
@@ -268,8 +270,13 @@ public final class File: NSObject {
             fatalError("[Pring.Document] *** error: The necessary elements for deleting the file are insufficient.")
         }
         self.ref?.delete(completion: { (error) in
+            if let error: Error = error {
+                block?(error)
+                return
+            }
             parent.update(key: key, value: FieldValue.delete())
-            block?(error)
+            self.isDeleted = false
+            block?(nil)
         })
     }
 

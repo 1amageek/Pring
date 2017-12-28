@@ -104,6 +104,15 @@ class FileControlViewController: UIViewController {
         object.update()
     }
 
+    @IBAction func deleteObjectAction(_ sender: Any) {
+        guard let object: FileControlObject = self.object else {
+            return
+        }
+        object.delete { (error) in
+            self.collectionView.reloadData()
+        }
+    }
+
 }
 
 extension FileControlViewController: UICollectionViewDataSource, UICollectionViewDelegate {

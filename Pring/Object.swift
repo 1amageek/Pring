@@ -492,23 +492,7 @@ open class Object: NSObject, Document {
                 block?(error)
                 return
             }
-            self.updateValue = [:]
-            for (_, child) in Mirror(reflecting: self).children.enumerated() {
-
-                guard let key: String = child.label else { break }
-                if self.ignore.contains(key) { break }
-                let value = child.value
-
-                switch DataType(key: key, value: value) {
-                case .file(let key, _, let file):
-                    if file.deleteRequest {
-                        self[key] = nil
-                    }
-                case .files(_, _, let files):
-                    self[key] = files.filter { return !$0.deleteRequest }
-                default: break
-                }
-            }
+            self.reset()
             self.garbages.forEach({ (file) in
                 file.ref?.delete(completion: nil)
             })
@@ -523,13 +507,37 @@ open class Object: NSObject, Document {
     }
 
     public func delete(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) {
-        self.pack(.delete, batch: batch).commit { (error) in
-            if let error = error {
-                block?(error)
-                return
+        self.deleteFiles(container: nil) { (error) in
+            self.pack(.delete, batch: batch).commit { (error) in
+                if let error = error {
+                    block?(error)
+                    return
+                }
+                self.reset()
+                block?(nil)
             }
-            self.updateValue = [:]
-            self.deleteFiles(container: nil, block: block)
+        }
+    }
+
+    internal func reset() {
+        self.updateValue = [:]
+        for (_, child) in Mirror(reflecting: self).children.enumerated() {
+            guard let key: String = child.label else { break }
+            if self.ignore.contains(key) { break }
+            let value = child.value
+
+            switch DataType(key: key, value: value) {
+            case .file(let key, _, let file):
+                if file.deleteRequest {
+                    self[key] = nil
+                }
+                if file.isDeleted {
+                    self[key] = nil
+                }
+            case .files(_, _, let files):
+                self[key] = files.filter { return !$0.deleteRequest }
+            default: break
+            }
         }
     }
 

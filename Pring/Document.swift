@@ -161,18 +161,16 @@ public extension Document {
             case .files(let key, _, let files):
                 if !files.isEmpty {
                     for (index, file) in files.enumerated() {
-                        if !file.isSaved {
-                            deleteContainer.group.enter()
-                            file.delete({ (error) in
-                                defer {
-                                    deleteContainer.group.leave()
-                                }
-                                if let error: Error = error {
-                                    deleteContainer.error = error
-                                    return
-                                }
-                            })
-                        }
+                        deleteContainer.group.enter()
+                        file.delete({ (error) in
+                            defer {
+                                deleteContainer.group.leave()
+                            }
+                            if let error: Error = error {
+                                deleteContainer.error = error
+                                return
+                            }
+                        })
                     }
                 }
             default: break
