@@ -45,13 +45,17 @@ class FileControlViewController: UIViewController {
                     let image: UIImage = UIImage(data: data)!
                     self.imageView.image = image
                     self.imageView.setNeedsDisplay()
+                    self.collectionView.reloadData()
                 }
             })
+            self.collectionView.reloadData()
         }
     }
 
     @IBOutlet weak var imageView: UIImageView!
     
+    @IBOutlet weak var collectionView: UICollectionView!
+
     @IBAction func uploadAction(_ sender: Any) {
         let object: FileControlObject = FileControlObject()
 
@@ -60,7 +64,13 @@ class FileControlViewController: UIViewController {
             object.file = file
         }
 
-        object.save { _, _ in
+        object.files = [UIColor.blue, UIColor.yellow, UIColor.red].map {
+            return File(data: UIImageJPEGRepresentation(FileControlObject.image($0), 0.2)!, name: UUID().uuidString, mimeType: .jpeg)
+        }
+
+        object.save { _, error in
+            print(object)
+            print(error)
             self.object = object
         }
     }
@@ -75,11 +85,39 @@ class FileControlViewController: UIViewController {
             object.file = file
         }
 
-        object.update()
+        object.files = [UIColor.purple, UIColor.brown, UIColor.orange].map {
+            return File(data: UIImageJPEGRepresentation(FileControlObject.image($0), 0.2)!, name: UUID().uuidString, mimeType: .jpeg)
+        }
+
+        object.update(nil) { (error) in
+            print(object)
+            print(error)
+        }
     }
 
     @IBAction func deleteAction(_ sender: Any) {
 
     }
 
+}
+
+extension FileControlViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.object?.files.count ?? 0
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell: UICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell", for: indexPath)
+        if let file: File = self.object?.files[indexPath.item] {
+            if let url: URL = file.downloadURL {
+                let data: Data = try! Data(contentsOf: url)
+                let image: UIImage = UIImage(data: data)!
+                let imageView: UIImageView = UIImageView(image: image)
+                cell.backgroundView = imageView
+                cell.backgroundView?.setNeedsDisplay()
+            }
+        }
+        return cell
+    }
 }
