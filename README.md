@@ -320,6 +320,19 @@ userA.items.insert(item)
 userA.save()
 ```
 
+Since the SubCollection of the saved document controls the count, it is necessary to describe the insert in the callback.
+
+```swift
+let item: Item = Item()
+userA.items.insert(item) { error in
+  if let error = error {
+    // error handling
+    return
+  }
+  // do something
+}
+```
+
 ### DataSource
 
 DataSource is a class for easy handling of data retrieval from Collection.
