@@ -112,6 +112,12 @@ class Item: Object {
 ```
 
 ``` swift
+// Set an arbitrary ID
+let user: User = User(id: "ID")
+user.save()
+```
+
+``` swift
 let userA: User = User()
 userA.name = "userA"
 userA.thumbnail = File(data: UIImageJPEGRepresentation(IMAGE, 0.3)!, mimeType: .jpeg)
