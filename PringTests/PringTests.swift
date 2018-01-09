@@ -186,27 +186,26 @@ class PringTests: XCTestCase {
                         XCTAssertNotNil(data)
                         ref2?.getData(maxSize: 1000000, completion: { (data, error) in
                             XCTAssertNotNil(data)
-                            document.file0?.delete({ (error) in
-                                document.file1?.delete({ (error) in
-                                    document.file2?.delete({ (error) in
-                                        MultipleFilesDocument.get(ref!.documentID, block: { (doc, error) in
-                                            guard let doc: MultipleFilesDocument = doc else {
-                                                return
-                                            }
-                                            XCTAssertNotNil(doc)
-                                            XCTAssertNil(doc.file0)
-                                            XCTAssertNil(doc.file1)
-                                            XCTAssertNil(doc.file2)
+                            document.file0 = File.delete()
+                            document.file1 = File.delete()
+                            document.file2 = File.delete()
+                            document.update({ (error) in
+                                MultipleFilesDocument.get(ref!.documentID, block: { (doc, error) in
+                                    guard let doc: MultipleFilesDocument = doc else {
+                                        return
+                                    }
+                                    XCTAssertNotNil(doc)
+                                    XCTAssertNil(doc.file0)
+                                    XCTAssertNil(doc.file1)
+                                    XCTAssertNil(doc.file2)
 
-                                            ref0?.getData(maxSize: 1000000, completion: { (data, error) in
+                                    ref0?.getData(maxSize: 1000000, completion: { (data, error) in
+                                        XCTAssertNil(data)
+                                        ref1?.getData(maxSize: 1000000, completion: { (data, error) in
+                                            XCTAssertNil(data)
+                                            ref2?.getData(maxSize: 1000000, completion: { (data, error) in
                                                 XCTAssertNil(data)
-                                                ref1?.getData(maxSize: 1000000, completion: { (data, error) in
-                                                    XCTAssertNil(data)
-                                                    ref2?.getData(maxSize: 1000000, completion: { (data, error) in
-                                                        XCTAssertNil(data)
-                                                        expectation.fulfill()
-                                                    })
-                                                })
+                                                expectation.fulfill()
                                             })
                                         })
                                     })
@@ -265,7 +264,7 @@ class PringTests: XCTestCase {
                 TestDocument.get(ref!.documentID, block: { (document, error) in
                     let file1: File = File(data: UIImagePNGRepresentation(TestDocument.image1())!, mimeType: .png)
                     document?.file = file1
-                    document?.file.update({ (metadata, error) in
+                    document?.update({ (error) in
                         TestDocument.get(ref!.documentID, block: { (document, error) in
                             expectation.fulfill()
                         })

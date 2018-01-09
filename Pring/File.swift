@@ -310,3 +310,38 @@ public final class File: NSObject {
         return "\n    File {\n\(base)}"
     }
 }
+
+extension Array where Element: File {
+
+    internal func _dispose(_ block: @escaping ([Error]) -> Void) {
+        let queue: DispatchQueue = DispatchQueue(label: "Pring.File.disposal.queue")
+        let group: DispatchGroup = DispatchGroup()
+        queue.async {
+            var errors: [Error] = []
+            self.forEach { (file) in
+                group.enter()
+                file.ref?.delete(completion: { (error) in
+                    defer {
+                        group.leave()
+                    }
+                    if let error = error {
+                        errors.append(error)
+                    }
+                })
+            }
+            group.notify(queue: DispatchQueue.main, execute: {
+                block(errors)
+            })
+            switch group.wait(timeout: .now() + .seconds(30)) {
+            case .success: break
+            case .timedOut:
+                let error: DocumentError = DocumentError(kind: .timeout, description: "File deletion processing timed out.")
+                errors.append(error)
+                DispatchQueue.main.async {
+                    block(errors)
+                }
+            }
+        }
+
+    }
+}

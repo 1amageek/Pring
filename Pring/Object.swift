@@ -314,8 +314,7 @@ open class Object: NSObject, Document {
                         }
 
                         if let previousFile: File = change[.oldKey] as? File {
-                            previousFile.parent = self
-                            previousFile.key = key
+                            previousFile.setParent(self, forKey: key)
                             self.garbages.append(previousFile)
                         }
                     }
@@ -492,12 +491,15 @@ open class Object: NSObject, Document {
                 block?(error)
                 return
             }
-            self.reset()
-            self.garbages.forEach({ (file) in
-                file.ref?.delete(completion: nil)
+            self.garbages._dispose({ (error) in
+                self.reset()
+                block?(nil)
             })
-            block?(nil)
         }
+    }
+
+    private func _dispose() {
+
     }
 
     // MARK: DELETE
