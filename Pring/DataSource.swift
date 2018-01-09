@@ -67,7 +67,7 @@ public final class Options {
 
 /// DataSource class.
 /// Observe at a Firebase DataSource location.
-public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
+public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
 
@@ -446,5 +446,9 @@ extension Array where Element: Document {
 
     public func index(of key: String) -> Int? {
         return self.keys.index(of: key)
+    }
+
+    public func sort(sortDescriptors: [NSSortDescriptor]) -> [Element] {
+        return (self as NSArray).sortedArray(using: sortDescriptors) as! [Element]
     }
 }

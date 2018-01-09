@@ -39,9 +39,15 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
     var ignore: [String] { get }
 
+    var updateValue: [AnyHashable: Any] { get }
+
     init(snapshot: DocumentSnapshot)
 
     init(id: String, value: [AnyHashable: Any])
+
+    func set(_ reference: DocumentReference)
+
+    func delete(_ block: ((Error?) -> Void)?)
 }
 
 public extension Document {
@@ -185,6 +191,10 @@ public extension Document {
 
 public extension Document {
 
+    public static var query: DataSource<Self>.Query {
+        return DataSource.Query(self.reference)
+    }
+
     public static func get(_ id: String, block: @escaping (Self?, Error?) -> Void) {
         self.reference.document(id).getDocument { (snapshot, error) in
             guard let snapshot: DocumentSnapshot = snapshot, snapshot.exists else {
@@ -236,10 +246,6 @@ public extension Document {
 }
 
 public extension Document where Self: Object {
-
-    public static var query: DataSource<Self>.Query {
-        return DataSource.Query(self.reference)
-    }
 
     public static func `where`(_ keyPath: PartialKeyPath<Self>, isEqualTo: Any) -> DataSource<Self>.Query {
         guard let key: String = keyPath._kvcKeyPathString else {

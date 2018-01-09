@@ -14,7 +14,7 @@ import FirebaseStorage
  Relation class
  Relation works with the property of Object.
  */
-public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByArrayLiteral {
+public final class ReferenceCollection<T: Document>: SubCollection, ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
 
@@ -181,7 +181,7 @@ public final class ReferenceCollection<T: Object>: SubCollection, ExpressibleByA
             let batch: WriteBatch = Firestore.firestore().batch()
             let value = [(\Object.updatedAt)._kvcKeyPathString!: FieldValue.serverTimestamp()]
             batch.updateData(value, forDocument: reference)
-            batch.add(.update, object: member)
+            batch.add(.update, object: member as! Object)
             batch.commit { error in
                 block?(error)
             }
