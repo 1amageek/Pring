@@ -14,7 +14,7 @@ import FirebaseStorage
  Relation class
  Relation works with the property of Object.
  */
-public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArrayLiteral {
+public final class NestedCollection<T: Document>: SubCollection, ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
 
@@ -122,7 +122,6 @@ public final class NestedCollection<T: Object>: SubCollection, ExpressibleByArra
     public func insert(_ newMember: Element, block: ((Error?) -> Void)? = nil) {
         newMember.set(self.reference.document(newMember.id))
         if isListening {
-
             let reference: DocumentReference = newMember.reference
             let parentRef: DocumentReference = self.parent!.reference
             let key: String = self.key!

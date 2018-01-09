@@ -148,7 +148,7 @@ open class Object: NSObject, Document {
         self.snapshot = snapshot
     }
 
-    internal func set(_ reference: DocumentReference) {
+    public func set(_ reference: DocumentReference) {
         self.reference = reference
     }
 
@@ -363,7 +363,7 @@ open class Object: NSObject, Document {
         }
     }
 
-    internal var updateValue: [AnyHashable: Any] = [:]
+    public var updateValue: [AnyHashable: Any] = [:]
 
     internal var garbages: [File] = []
 
