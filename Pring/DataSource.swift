@@ -286,12 +286,6 @@ public final class DataSource<T: Object>: ExpressibleByArrayLiteral {
                         }
                     })
                 case .removed:
-                    print("docs",self.documents)
-                    self.documents.forEach({ (doc) in
-                        print("doc", doc)
-                    })
-                    print(self.documents.flatMap { return $0.id})
-                    print(id)
                     guard self.documents.flatMap({return $0.id}).contains(id) else {
                         return
                     }
