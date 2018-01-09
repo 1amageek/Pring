@@ -112,6 +112,12 @@ class Item: Object {
 ```
 
 ``` swift
+// Set an arbitrary ID
+let user: User = User(id: "ID")
+user.save()
+```
+
+``` swift
 let userA: User = User()
 userA.name = "userA"
 userA.thumbnail = File(data: UIImageJPEGRepresentation(IMAGE, 0.3)!, mimeType: .jpeg)
@@ -268,18 +274,15 @@ Running update method automatically deletes old files.
 ``` swift
 let newFile: File = File(data: PNG_DATA, mimeType: .png)
 object.thumbnailImage = newFile
-let task: StorageUploadTask = object.thumbnailImage.update { (metadata, error) in
-
-}
+object.update()
 ```
 
 #### Delete
 Delete it with `delete` method.
 
 ``` swift
-object.thumbnailImage.delete { (error) in
-
-}
+object.thumbnailImage = File.delete()
+object.update()
 ```
 
 ### Nested Collection & Reference Collection
@@ -321,6 +324,19 @@ item.thumbnail = File(data: JPEG_DATA, mimeType: .jpeg)
 userA.followers.insert(userB)
 userA.items.insert(item)
 userA.save()
+```
+
+Since the SubCollection of the saved document controls the count, it is necessary to describe the insert in the callback.
+
+```swift
+let item: Item = Item()
+userA.items.insert(item) { error in
+  if let error = error {
+    // error handling
+    return
+  }
+  // do something
+}
 ```
 
 ### DataSource
