@@ -55,12 +55,12 @@ public final class NestedCollection<T: Document>: SubCollection, ExpressibleByAr
     }
 
     /// You can retrieve whether the parent Object is saved.
-    public var isListening: Bool {
-        return self.parent?.isListening ?? false
+    public var isSaved: Bool {
+        return self.parent?.isSaved ?? false
     }
 
     public var count: Int {
-        return self.isListening ? _count : _self.count
+        return self.isSaved ? _count : _self.count
     }
 
     @discardableResult
@@ -75,7 +75,7 @@ public final class NestedCollection<T: Document>: SubCollection, ExpressibleByAr
         case .update:
             self.forEach { (document) in
                 let reference: DocumentReference = self.reference.document(document.id)
-                if document.isListening {
+                if document.isSaved {
                     batch.updateData(document.updateValue as! [String: Any], forDocument: reference)
                 } else {
                     batch.setData(document.updateValue as! [String: Any], forDocument: reference)
@@ -121,7 +121,7 @@ public final class NestedCollection<T: Document>: SubCollection, ExpressibleByAr
     /// Save the new Object.
     public func insert(_ newMember: Element, block: ((Error?) -> Void)? = nil) {
         newMember.set(self.reference.document(newMember.id))
-        if isListening {
+        if isSaved {
             let reference: DocumentReference = newMember.reference
             let parentRef: DocumentReference = self.parent!.reference
             let key: String = self.key!
@@ -160,7 +160,7 @@ public final class NestedCollection<T: Document>: SubCollection, ExpressibleByAr
 
     /// Deletes the Object from the reference destination.
     public func remove(_ member: Element, block: ((Error?) -> Void)? = nil) {
-        if isListening {
+        if isSaved {
             let reference: DocumentReference = member.reference
             let parentRef: DocumentReference = self.parent!.reference
             let key: String = self.key!

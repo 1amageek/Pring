@@ -283,6 +283,8 @@ class PringTests: XCTestCase {
         let nestedItem: NestedItem = NestedItem()
         document.nextedCollection.insert(nestedItem)
         document.save { (ref, error) in
+            XCTAssertEqual(nestedItem.isSaved, true)
+            XCTAssertEqual(document.isSaved, true)
             XCTAssertEqual(document.nextedCollection.first?.string, "nested")
             TestDocument.get(ref!.documentID, block: { (document, error) in
                 document?.nextedCollection.get(nestedItem.id, block: { (item, error) in

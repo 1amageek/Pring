@@ -80,19 +80,23 @@ public class Reference<T: Document>: AnyReference, Batchable {
         switch type {
         case .save:
             if let document: ContentType = self.object {
-                if !document.isListening {
+                if !document.isSaved {
                     batch.setData(document.value as! [String : Any], forDocument: document.reference)
                 }
             }
         case .update:
             if let document = self.object {
-                if !document.isListening {
+                if !document.isSaved {
                     batch.setData(document.value as! [String : Any], forDocument: document.reference)
                 }
             }
         case .delete: break
         }
         return batch
+    }
+
+    public func batchCompletion() {
+        self.object?.batchCompletion()
     }
 
     public func get(_ block: @escaping (ContentType?, Error?) -> Void) {

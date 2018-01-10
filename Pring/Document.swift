@@ -31,7 +31,7 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
     var id: String { get }
 
-    var isListening: Bool { get }
+    var isSaved: Bool { get }
 
     var rawValue: [AnyHashable: Any] { get }
 

@@ -18,6 +18,7 @@ public protocol Batchable {
     
     @discardableResult
     func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch
+    func batchCompletion()
 }
 
 extension WriteBatch {

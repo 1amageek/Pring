@@ -59,7 +59,13 @@ open class Object: NSObject, Document {
 
     @objc private var _updatedAt: Date
 
-    public private(set) var isListening: Bool = false
+    public private(set) var isListening: Bool = false {
+        didSet {
+            self.isSaved = isListening
+        }
+    }
+
+    public private(set) var isSaved: Bool = false
 
     // MARK: - Initialize
 
@@ -416,6 +422,23 @@ open class Object: NSObject, Document {
         return batch
     }
 
+    public func batchCompletion() {
+        self.isSaved = true
+        self.each({ (key, value) in
+            if let value = value {
+                switch DataType(key: key, value: value) {
+                case .collection    (_, _, let collection):
+                    collection.batchCompletion()
+                case .reference     (_, _, let reference):
+                    if reference is Batchable {
+                        (reference as! Batchable).batchCompletion()
+                    }
+                default: break
+                }
+            }
+        })
+    }
+
     // MARK: SAVE
 
     /**
@@ -455,6 +478,7 @@ open class Object: NSObject, Document {
             }
             self.reference.getDocument(completion: { (snapshot, error) in
                 self.snapshot = snapshot
+                self.batchCompletion()
                 block?(snapshot?.reference, error)
             })
         }

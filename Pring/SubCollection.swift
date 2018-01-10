@@ -62,6 +62,12 @@ extension SubCollection where Self: Collection, Self.Element: Document {
             document.deleteFiles(container: deleteContainer, block: nil)
         }
     }
+
+    public func batchCompletion() {
+        self.forEach { (document) in
+            document.batchCompletion()
+        }
+    }
 }
 
 public extension SubCollection where Self: Collection, Self.Element: Document {

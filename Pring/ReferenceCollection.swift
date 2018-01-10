@@ -55,12 +55,12 @@ public final class ReferenceCollection<T: Document>: SubCollection, ExpressibleB
     }
 
     /// You can retrieve whether the parent Object is saved.
-    public var isListening: Bool {
-        return self.parent?.isListening ?? false
+    public var isSaved: Bool {
+        return self.parent?.isSaved ?? false
     }
 
     public var count: Int {
-        return self.isListening ? _count : _self.count
+        return self.isSaved ? _count : _self.count
     }
 
     @discardableResult
@@ -72,7 +72,7 @@ public final class ReferenceCollection<T: Document>: SubCollection, ExpressibleB
             value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             self.forEach { (document) in
-                if !document.isListening {
+                if !document.isSaved {
                     batch = document.pack(.save, batch: batch)
                 }
                 let reference: DocumentReference = self.reference.document(document.id)
@@ -82,7 +82,7 @@ public final class ReferenceCollection<T: Document>: SubCollection, ExpressibleB
             var value: [AnyHashable: Any] = [:]
             value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             self.forEach { (document) in
-                if !document.isListening {
+                if !document.isSaved {
                     batch = document.pack(.save, batch: batch)
                 } else {
                     batch = document.pack(.update, batch: batch)
@@ -129,7 +129,7 @@ public final class ReferenceCollection<T: Document>: SubCollection, ExpressibleB
 
     /// Save the new Object.
     public func insert(_ newMember: Element, block: ((Error?) -> Void)? = nil) {
-        if isListening {
+        if isSaved {
 
             let reference: DocumentReference = self.reference.document(newMember.id)
             let parentRef: DocumentReference = self.parent!.reference
@@ -161,7 +161,7 @@ public final class ReferenceCollection<T: Document>: SubCollection, ExpressibleB
                 value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                 value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                 batch.setData(value as! [String : Any], forDocument: reference)
-                if !newMember.isListening {
+                if !newMember.isSaved {
                     newMember.pack(.save, batch: batch)
                 }
                 batch.commit(completion: { (error) in
@@ -175,7 +175,7 @@ public final class ReferenceCollection<T: Document>: SubCollection, ExpressibleB
 
     /// Update the Object
     public func update(_ member: Element, block: ((Error?) -> Void)? = nil) {
-        if isListening {
+        if isSaved {
             let reference: DocumentReference = self.reference.document(member.id)
 
             let batch: WriteBatch = Firestore.firestore().batch()
@@ -190,7 +190,7 @@ public final class ReferenceCollection<T: Document>: SubCollection, ExpressibleB
 
     /// Deletes the Object from the reference destination.
     public func remove(_ member: Element, hard: Bool = false, block: ((Error?) -> Void)? = nil) {
-        if isListening {
+        if isSaved {
 
             let reference: DocumentReference = self.reference.document(member.id)
             let parentRef: DocumentReference = self.parent!.reference
