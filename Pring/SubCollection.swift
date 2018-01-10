@@ -64,7 +64,7 @@ extension SubCollection where Self: Collection, Self.Element: Document {
     }
 }
 
-public extension SubCollection where Self: Collection, Self.Element: Object {
+public extension SubCollection where Self: Collection, Self.Element: Document {
 
     public var query: DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference)
