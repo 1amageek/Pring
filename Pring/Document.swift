@@ -45,11 +45,23 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
     var updateValue: [AnyHashable: Any] { get }
 
+    init()
+
+    init(id: String)
+
     init(snapshot: DocumentSnapshot)
 
     init(id: String, value: [AnyHashable: Any])
 
+    // MARK:
+
     func set(_ reference: DocumentReference)
+
+    @discardableResult
+    func save(_ block: ((DocumentReference?, Error?) -> Void)?) -> [String: StorageUploadTask]
+
+    @discardableResult
+    func update(_ block: ((Error?) -> Void)?)  -> [String: StorageUploadTask]
 
     func delete(_ block: ((Error?) -> Void)?)
 }

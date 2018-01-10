@@ -77,7 +77,7 @@ open class Object: NSObject, Document {
     }
 
     /// Initialize Object
-    public override init() {
+    public override required init() {
         self.createdAt = Date()
         self.updatedAt = Date()
         self._createdAt = Date()
