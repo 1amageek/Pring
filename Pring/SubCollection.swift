@@ -70,6 +70,8 @@ public extension SubCollection where Self: Collection, Self.Element: Document {
         return DataSource.Query(self.reference)
     }
 
+    // MARK:
+
     public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isEqualTo: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo), reference: self.reference)
     }
@@ -97,6 +99,38 @@ public extension SubCollection where Self: Collection, Self.Element: Document {
     public func order(by: PartialKeyPath<Self.Element>, descending: Bool) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!, descending: descending), reference: self.reference)
     }
+
+    // MARK:
+
+    public func `where`(_ keyPath: String, isEqualTo: Any) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, isEqualTo: isEqualTo), reference: self.reference)
+    }
+
+    public func `where`(_ keyPath: String, isLessThan: Any) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, isLessThan: isLessThan), reference: self.reference)
+    }
+
+    public func `where`(_ keyPath: String, isLessThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference)
+    }
+
+    public func `where`(_ keyPath: String, isGreaterThan: Any) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, isGreaterThan: isGreaterThan), reference: self.reference)
+    }
+
+    public func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference)
+    }
+
+    public func order(by: String) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.order(by: by), reference: self.reference)
+    }
+
+    public func order(by: String, descending: Bool) -> DataSource<Self.Element>.Query {
+        return DataSource.Query(self.reference.order(by: by, descending: descending), reference: self.reference)
+    }
+
+    // MARK:
 
     public func limit(to: Int) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.limit(to: to), reference: self.reference)
