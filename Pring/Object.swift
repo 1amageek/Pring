@@ -492,7 +492,7 @@ open class Object: NSObject, Document {
 
     @discardableResult
     public func update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
-        if !isListening {
+        if !isSaved {
             fatalError("[Pring.Document] *** error: \(type(of: self)) has not been saved yet.")
         }
         if self.hasFiles {

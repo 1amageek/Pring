@@ -119,95 +119,102 @@ public final class NestedCollection<T: Document>: SubCollection, ExpressibleByAr
     // MARK: -
 
     /// Save the new Object.
-    public func insert(_ newMember: Element, block: ((Error?) -> Void)? = nil) {
+    public func insert(_ newMember: Element) {
         newMember.set(self.reference.document(newMember.id))
         if isSaved {
-            let reference: DocumentReference = newMember.reference
-            let parentRef: DocumentReference = self.parent!.reference
-            let key: String = self.key!
-            var count: Int = 0
-            Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
-                let document: DocumentSnapshot
-                do {
-                    try document = transaction.getDocument(parentRef)
-                } catch let fetchError as NSError {
-                    errorPointer?.pointee = fetchError
-                    return nil
-                }
-                let oldParent: [String: Any] = document.data() as [String: Any]
-                let subCollection: [String: Any] = oldParent[key] as? [String: Any] ?? ["count": 0]
-                let oldCount = subCollection["count"] as? Int ?? 0
-                count = oldCount + 1
-                transaction.updateData([key: ["count": count]], forDocument: parentRef)
-                return nil
-            }, completion: { (object, error) in
-                if let error = error {
-                    block?(error)
-                    return
-                }
-                self._count = count
-                let batch: WriteBatch = Firestore.firestore().batch()
-                batch.setData(newMember.value as! [String: Any], forDocument: reference)
-                batch.commit(completion: { (error) in
-                    block?(error)
-                })
-            })
+            fatalError("[Pring.NestedCollection] \(self.parent!) has already been saved. Please use insert(_ newMember: block:)")
         } else {
             _self.insert(newMember)
-            block?(nil)
         }
     }
 
-    /// Deletes the Object from the reference destination.
-    public func remove(_ member: Element, block: ((Error?) -> Void)? = nil) {
-        if isSaved {
-            let reference: DocumentReference = member.reference
-            let parentRef: DocumentReference = self.parent!.reference
-            let key: String = self.key!
-            var count: Int = 0
-            Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
-                let document: DocumentSnapshot
-                do {
-                    try document = transaction.getDocument(parentRef)
-                } catch let fetchError as NSError {
-                    errorPointer?.pointee = fetchError
-                    return nil
-                }
-                let oldParent: [String: Any] = document.data() as [String: Any]
-                guard
-                    let subCollection: [String: Any] = oldParent[key] as? [String: Any],
-                    let oldCount = subCollection["count"] as? Int else {
-                        let error = NSError(
-                            domain: "AppErrorDomain",
-                            code: -1,
-                            userInfo: [
-                                NSLocalizedDescriptionKey: "Unable to retrieve count from snapshot \(document)"
-                            ]
-                        )
-                        errorPointer?.pointee = error
-                        return nil
-                }
-                count = oldCount - 1
-                transaction.updateData([key: ["count": count]], forDocument: parentRef)
+    public func insert(_ newMember: Element, block: ((Error?) -> Void)? = nil) {
+        newMember.set(self.reference.document(newMember.id))
+        let reference: DocumentReference = newMember.reference
+        let parentRef: DocumentReference = self.parent!.reference
+        let key: String = self.key!
+        var count: Int = 0
+        Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
+            let document: DocumentSnapshot
+            do {
+                try document = transaction.getDocument(parentRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
                 return nil
-            }, completion: { (object, error) in
-                if let error = error {
-                    block?(error)
-                    return
-                }
-                self._count = count
-                let batch: WriteBatch = Firestore.firestore().batch()
-                batch.deleteDocument(reference)
-                batch.commit(completion: {(error) in
-                    member.set(Element.reference.document())
-                    block?(error)
-                })
+            }
+            let oldParent: [String: Any] = document.data() as [String: Any]
+            let subCollection: [String: Any] = oldParent[key] as? [String: Any] ?? ["count": 0]
+            let oldCount = subCollection["count"] as? Int ?? 0
+            count = oldCount + 1
+            transaction.updateData([key: ["count": count]], forDocument: parentRef)
+            return nil
+        }, completion: { (object, error) in
+            if let error = error {
+                block?(error)
+                return
+            }
+            self._count = count
+            let batch: WriteBatch = Firestore.firestore().batch()
+            batch.setData(newMember.value as! [String: Any], forDocument: reference)
+            batch.commit(completion: { (error) in
+                block?(error)
             })
+        })
+    }
+
+    /// Deletes the Object from the reference destination.
+    public func remove(_ member: Element) {
+        if isSaved {
+            fatalError("[Pring.NestedCollection] \(self.parent!) has already been saved. Please use remove(_ newMember: block:)")
         } else {
             _self.remove(member)
             member.set(Element.reference.document())
-            block?(nil)
         }
+    }
+
+    public func remove(_ member: Element, block: ((Error?) -> Void)? = nil) {
+        let reference: DocumentReference = member.reference
+        let parentRef: DocumentReference = self.parent!.reference
+        let key: String = self.key!
+        var count: Int = 0
+        Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
+            let document: DocumentSnapshot
+            do {
+                try document = transaction.getDocument(parentRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            let oldParent: [String: Any] = document.data() as [String: Any]
+            guard
+                let subCollection: [String: Any] = oldParent[key] as? [String: Any],
+                let oldCount = subCollection["count"] as? Int else {
+                    let error = NSError(
+                        domain: "AppErrorDomain",
+                        code: -1,
+                        userInfo: [
+                            NSLocalizedDescriptionKey: "Unable to retrieve count from snapshot \(document)"
+                        ]
+                    )
+                    errorPointer?.pointee = error
+                    return nil
+            }
+            count = oldCount - 1
+            transaction.updateData([key: ["count": count]], forDocument: parentRef)
+            return nil
+        }, completion: { (object, error) in
+            if let error = error {
+                block?(error)
+                return
+            }
+            self._count = count
+            let batch: WriteBatch = Firestore.firestore().batch()
+            batch.deleteDocument(reference)
+            batch.commit(completion: {(error) in
+                member.set(Element.reference.document())
+                block?(error)
+            })
+        })
     }
 
     public func contains(_ id: String, block: @escaping (Bool) -> Void) {
