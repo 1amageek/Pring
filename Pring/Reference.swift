@@ -45,7 +45,7 @@ public class Reference<T: Document>: AnyReference, Batchable {
     }
 
     public var value: DocumentReference? {
-        return self.object?.reference
+        return self.object?.reference ?? self.documentReference
     }
 
     public init() { }
