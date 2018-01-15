@@ -61,6 +61,7 @@
 		12C41E871FB336C1002B1526 /* NestedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124757B31FA31A0C00FA517D /* NestedCollection.swift */; };
 		12C41E881FB336C1002B1526 /* ReferenceCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83141F8CAEEC00561159 /* ReferenceCollection.swift */; };
 		12C41E891FB336C1002B1526 /* Disposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF830F1F8CAEEC00561159 /* Disposer.swift */; };
+		12CF86C2200C65300068BF70 /* AnySubCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CF86C1200C65300068BF70 /* AnySubCollection.swift */; };
 		12D14A8B1FB150DA006679B6 /* MultipleFilesDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D14A8A1FB150DA006679B6 /* MultipleFilesDocument.swift */; };
 		12D14A8D1FB19236006679B6 /* MultipleFilesNestedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D14A8C1FB19236006679B6 /* MultipleFilesNestedItem.swift */; };
 		12E6F5A71FCED42D00347F4C /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E6F5A61FCED42D00347F4C /* Group.swift */; };
@@ -125,6 +126,7 @@
 		12BD88511FD165D80087A1C4 /* ReferenceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceItem.swift; sourceTree = "<group>"; };
 		12C41E751FB30FEE002B1526 /* DataSourceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceItem.swift; sourceTree = "<group>"; };
 		12C41E771FB31F41002B1526 /* Query.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
+		12CF86C1200C65300068BF70 /* AnySubCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnySubCollection.swift; sourceTree = "<group>"; };
 		12D14A8A1FB150DA006679B6 /* MultipleFilesDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleFilesDocument.swift; sourceTree = "<group>"; };
 		12D14A8C1FB19236006679B6 /* MultipleFilesNestedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleFilesNestedItem.swift; sourceTree = "<group>"; };
 		12E6F5A61FCED42D00347F4C /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
@@ -203,9 +205,10 @@
 				120A178F1FC58FC3002767F6 /* Batchable.swift */,
 				1288E2211FCD203000E72594 /* Reference.swift */,
 				12AF83111F8CAEEC00561159 /* Document.swift */,
-				12AF83161F8CAEED00561159 /* SubCollection.swift */,
+				12CF86C1200C65300068BF70 /* AnySubCollection.swift */,
 				12AF83121F8CAEEC00561159 /* File.swift */,
 				12AF83131F8CAEEC00561159 /* Object.swift */,
+				12AF83161F8CAEED00561159 /* SubCollection.swift */,
 				124757B31FA31A0C00FA517D /* NestedCollection.swift */,
 				12AF83141F8CAEEC00561159 /* ReferenceCollection.swift */,
 				12AF830F1F8CAEEC00561159 /* Disposer.swift */,
@@ -622,6 +625,7 @@
 				129E368F1FA34EA600336C4D /* NestedCollection.swift in Sources */,
 				12F84CBC1FB054CD00D889BE /* StorageLinkable.swift in Sources */,
 				12AF83581F8CE16900561159 /* SubCollection.swift in Sources */,
+				12CF86C2200C65300068BF70 /* AnySubCollection.swift in Sources */,
 				12AF83591F8CE16900561159 /* ReferenceCollection.swift in Sources */,
 				1288E2221FCD203000E72594 /* Reference.swift in Sources */,
 			);

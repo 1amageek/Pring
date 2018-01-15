@@ -1,5 +1,5 @@
 //
-//  SubCollection.swift
+//  NestedCollection.swift
 //  Pring
 //
 //  Created by 1amageek on 2017/10/27.
@@ -14,7 +14,7 @@ import FirebaseStorage
  Relation class
  Relation works with the property of Object.
  */
-public final class NestedCollection<T: Document>: SubCollection, ExpressibleByArrayLiteral {
+public final class NestedCollection<T: Document>: AnySubCollection, Countable, ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
 
@@ -55,9 +55,7 @@ public final class NestedCollection<T: Document>: SubCollection, ExpressibleByAr
     }
 
     /// You can retrieve whether the parent Object is saved.
-    public var isSaved: Bool {
-        return self.parent?.isSaved ?? false
-    }
+    public var isSaved: Bool = false
 
     public var count: Int {
         return self.isSaved ? _count : _self.count

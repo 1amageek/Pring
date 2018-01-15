@@ -1,8 +1,8 @@
 //
-//  ReferenceCollection.swift
+//  SubCollection.swift
 //  Pring
 //
-//  Created by 1amageek on 2017/10/10.
+//  Created by 1amageek on 2018/01/15.
 //  Copyright © 2017年 Stamp Inc. All rights reserved.
 //
 //  Contact us https://twitter.com/1amageek
@@ -10,167 +10,225 @@
 import FirebaseFirestore
 import FirebaseStorage
 
-public protocol SubCollection: class, StorageLinkable, Batchable {
+open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiteral {
 
-    var path: String { get }
+    public typealias ArrayLiteralElement = T
 
-    var reference: CollectionReference { get }
+    internal var _self: DataSource<T>
 
-    var key: String? { get set }
+    /// Contains the Object holding the property.
+    public weak var parent: Object?
 
-    var parent: Object? { get set }
+    public var key: String?
 
-    var value: [AnyHashable: Any] { get }
-
-    var references: [AnyHashable: Any] { get }
-
-    func setValue(_ value: Any?, forKey key: String)
-
-    func setParent(_ object: Object, forKey key: String)
-}
-
-extension SubCollection {
-
-    public func setParent(_ object: Object, forKey key: String) {
-        self.parent = object
-        self.key = key
+    /// It is a Path stored in Firebase.
+    public var path: String {
+        guard let parent: Object = self.parent else {
+            fatalError("[Pring.SubCollection] It is necessary to set parent.")
+        }
+        guard let key: String = self.key else {
+            fatalError("[Pring.SubCollection] It is necessary to set key.")
+        }
+        return "\(parent.path)/\(key)"
     }
-}
 
-extension SubCollection where Self: Collection, Self.Element: Document {
+    public var reference: CollectionReference {
+        return Firestore.firestore().collection(path)
+    }
 
-    public var hasFiles: Bool {
-        for (_, document) in self.enumerated() {
-            if document.hasFiles {
-                return true
+    /// It is an Object whose ID is Key.
+    public var references: [AnyHashable: Any] {
+        return _self.values()
+    }
+
+    /// You can retrieve whether the parent Object is saved.
+    public var isSaved: Bool {
+        return self.parent?.isSaved ?? false
+    }
+
+    @discardableResult
+    public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
+        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
+        switch type {
+        case .save:
+            self.forEach { (document) in
+                let reference: DocumentReference = self.reference.document(document.id)
+                batch.setData(document.value as! [String : Any], forDocument: reference)
+            }
+        case .update:
+            self.forEach { (document) in
+                let reference: DocumentReference = self.reference.document(document.id)
+                if document.isSaved {
+                    batch.updateData(document.updateValue as! [String: Any], forDocument: reference)
+                } else {
+                    batch.setData(document.updateValue as! [String: Any], forDocument: reference)
+                }
+            }
+        case .delete:
+            self.forEach { (document) in
+                let reference: DocumentReference = self.reference.document(document.id)
+                batch.deleteDocument(reference)
             }
         }
-        return false
+        return batch
     }
 
-    public func saveFiles(container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
-        let uploadContainer: UploadContainer = container ?? UploadContainer()
-        self.forEach { document in
-            document.saveFiles(container: uploadContainer, block: nil)
-        }
-        return uploadContainer.tasks
+    /**
+     Initialize Relation.
+     */
+    public init(_ elements: [ArrayLiteralElement]) {
+        self._self = DataSource(elements)
     }
 
-    public func deleteFiles(container: DeleteContainer? = nil, block: ((Error?) -> Void)?) {
-        let deleteContainer: DeleteContainer = container ?? DeleteContainer()
-        self.forEach { document in
-            document.deleteFiles(container: deleteContainer, block: nil)
+    public required convenience init(arrayLiteral elements: ArrayLiteralElement...) {
+        self.init(elements)
+    }
+
+    public func setValue(_ value: Any?, forKey key: String) {
+        self.key = key
+    }
+
+    /// Returns the Object of the specified indexes.
+    public func objects(at indexes: IndexSet) -> [Element] {
+        return indexes.filter { $0 < self.count }.map { self[$0] }
+    }
+
+    // MARK: -
+
+    /// Save the new Object.
+    public func insert(_ newMember: Element) {
+        newMember.set(self.reference.document(newMember.id))
+        if isSaved {
+            fatalError("[Pring.NestedCollection] \(self.parent!) has already been saved. Please use insert(_ newMember: block:)")
+        } else {
+            _self.insert(newMember)
         }
     }
 
-    public func batchCompletion() {
-        self.forEach { (document) in
-            document.batchCompletion()
+    public func insert(_ newMember: Element, block: ((Error?) -> Void)? = nil) {
+        newMember.set(self.reference.document(newMember.id))
+        let reference: DocumentReference = newMember.reference
+        let batch: WriteBatch = Firestore.firestore().batch()
+        batch.setData(newMember.value as! [String: Any], forDocument: reference)
+        batch.commit(completion: { (error) in
+            block?(error)
+        })
+    }
+
+    /// Deletes the Object from the reference destination.
+    public func remove(_ member: Element) {
+        if isSaved {
+            fatalError("[Pring.NestedCollection] \(self.parent!) has already been saved. Please use remove(_ newMember: block:)")
+        } else {
+            _self.remove(member)
+            member.set(Element.reference.document())
         }
+    }
+
+    public func remove(_ member: Element, block: ((Error?) -> Void)? = nil) {
+        let reference: DocumentReference = member.reference
+        let batch: WriteBatch = Firestore.firestore().batch()
+        batch.deleteDocument(reference)
+        batch.commit(completion: {(error) in
+            member.set(Element.reference.document())
+            block?(error)
+        })
+    }
+
+    public func contains(_ id: String, block: @escaping (Bool) -> Void) {
+        self.reference.document(id).getDocument { (snapshot, error) in
+            return block(snapshot?.exists ?? false)
+        }
+    }
+
+    public func delete(id: String, block: ((Error?) -> Void)? = nil) {
+        self.reference.document(id).delete { (error) in
+            block?(error)
+        }
+    }
+
+    public var description: String {
+        if _self.isEmpty {
+            return "SubCollection([])"
+        }
+        return "\(_self.documents.description)"
     }
 }
 
-public extension SubCollection where Self: Collection, Self.Element: Document {
+// MARK: -
 
-    public var query: DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference)
+public extension SubCollection {
+
+    public func get(_ id: String, block: @escaping (Element?, Error?) -> Void) {
+        self.reference.document(id).getDocument { (snapshot, error) in
+            guard let snapshot: DocumentSnapshot = snapshot, snapshot.exists else {
+                block(nil, error)
+                return
+            }
+            let document: Element = ArrayLiteralElement(snapshot: snapshot)
+            block(document, nil)
+        }
     }
 
-    // MARK:
-
-    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isEqualTo: Any) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo), reference: self.reference)
+    public func listen(_ id: String, block: @escaping (Element?, Error?) -> Void) -> ListenerRegistration {
+        let options: DocumentListenOptions = DocumentListenOptions()
+        return self.reference.document(id).addSnapshotListener(options: options) { (snapshot, error) in
+            guard let snapshot: DocumentSnapshot = snapshot else {
+                block(nil, error)
+                return
+            }
+            let document: Element = ArrayLiteralElement(snapshot: snapshot)
+            block(document, nil)
+        }
     }
 
-    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isLessThan: Any) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThan: isLessThan), reference: self.reference)
-    }
-
-    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isLessThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference)
-    }
-
-    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isGreaterThan: Any) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThan: isGreaterThan), reference: self.reference)
-    }
-
-    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isGreaterThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference)
-    }
-
-    public func order(by: PartialKeyPath<Self.Element>) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!), reference: self.reference)
-    }
-
-    public func order(by: PartialKeyPath<Self.Element>, descending: Bool) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!, descending: descending), reference: self.reference)
-    }
-
-    // MARK:
-
-    public func `where`(_ keyPath: String, isEqualTo: Any) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath, isEqualTo: isEqualTo), reference: self.reference)
-    }
-
-    public func `where`(_ keyPath: String, isLessThan: Any) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath, isLessThan: isLessThan), reference: self.reference)
-    }
-
-    public func `where`(_ keyPath: String, isLessThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference)
-    }
-
-    public func `where`(_ keyPath: String, isGreaterThan: Any) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath, isGreaterThan: isGreaterThan), reference: self.reference)
-    }
-
-    public func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.whereField(keyPath, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference)
-    }
-
-    public func order(by: String) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.order(by: by), reference: self.reference)
-    }
-
-    public func order(by: String, descending: Bool) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.order(by: by, descending: descending), reference: self.reference)
-    }
-
-    // MARK:
-
-    public func limit(to: Int) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.limit(to: to), reference: self.reference)
-    }
-
-    public func start(at: [Any]) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.start(at: at), reference: self.reference)
-    }
-
-    public func start(after: [Any]) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.start(after: after), reference: self.reference)
-    }
-
-    public func start(atDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.start(atDocument: atDocument), reference: self.reference)
-    }
-
-    public func start(afterDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.start(afterDocument: afterDocument), reference: self.reference)
-    }
-
-    public func end(at: [Any]) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.end(at: at), reference: self.reference)
-    }
-
-    public func end(atDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.end(atDocument: atDocument), reference: self.reference)
-    }
-
-    public func end(before: [Any]) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.end(before: before), reference: self.reference)
-    }
-
-    public func end(beforeDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
-        return DataSource.Query(self.reference.end(beforeDocument: beforeDocument), reference: self.reference)
+    public func listen(_ id: String, block: @escaping (Element?, Error?) -> Void) -> Disposer<Element> {
+        return .init(.value(listen(id, block: block)))
     }
 }
+
+extension SubCollection: Collection {
+
+    public var startIndex: Int {
+        return _self.startIndex
+    }
+
+    public var endIndex: Int {
+        return _self.endIndex
+    }
+
+    public var first: T? {
+        return _self.first
+    }
+
+    public subscript(i: Int) -> T {
+        return _self[i]
+    }
+
+    public func index(of element: T) -> Int? {
+        return _self.index(of: element)
+    }
+
+    public func index(where predicate: (T) throws -> Bool) rethrows -> Int? {
+        return try _self.index(where: predicate)
+    }
+
+    public func index(after i: Int) -> Int {
+        return _self.index(after: i)
+    }
+
+    public func index(_ i: Int, offsetBy n: Int) -> Int {
+        return _self.index(i, offsetBy: n)
+    }
+
+    public func index(_ i: Int, offsetBy n: Int, limitedBy limit: Int) -> Int? {
+        return _self.index(i, offsetBy: n, limitedBy: limit)
+    }
+}
+
+fileprivate extension Collection where Iterator.Element: Document {
+    func values() -> [String: Any] {
+        return reduce(into: [:]) { $0[$1.id] = $1.value }
+    }
+}
+

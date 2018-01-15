@@ -14,7 +14,7 @@ import FirebaseStorage
  Relation class
  Relation works with the property of Object.
  */
-public final class ReferenceCollection<T: Document>: SubCollection, ExpressibleByArrayLiteral {
+public final class ReferenceCollection<T: Document>: AnySubCollection, Countable, ExpressibleByArrayLiteral {
 
     public typealias ArrayLiteralElement = T
 

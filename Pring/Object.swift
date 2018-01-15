@@ -489,8 +489,8 @@ open class Object: NSObject, Document {
                 return
             }
             self.reference.getDocument(completion: { (snapshot, error) in
-                self.snapshot = snapshot
                 self.batchCompletion()
+                self.snapshot = snapshot
                 block?(snapshot?.reference, error)
             })
         }
