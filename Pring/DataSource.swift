@@ -93,7 +93,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     /// Options
     private(set) var options: Options
 
-    private let fetchQueue: DispatchQueue = DispatchQueue(label: "Pring.datasource.fetch.queue")
+    private let fetchQueue: DispatchQueue = DispatchQueue(label: "Pring.datasource.fetch.queue", attributes: .concurrent)
 
     private var listenr: ListenerRegistration?
 
@@ -175,9 +175,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     /// Monitor changes in the DataSource.
     @discardableResult
     public func listen() -> Self {
-        guard let block: ChangeBlock = self.changedBlock else {
-            fatalError("[Pring.DataSource] *** error: You need to define Changeblock to start observe.")
-        }
+        let block: ChangeBlock? = self.changedBlock
         var isFirst: Bool = true
         let options: QueryListenOptions = QueryListenOptions()
         options.includeDocumentMetadataChanges(self.options.includeDocumentMetadataChanges)
@@ -185,11 +183,10 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
         self.listenr = self.query.listen(options: options, listener: { [weak self] (snapshot, error) in
             guard let `self` = self else { return }
             guard let snapshot: QuerySnapshot = snapshot else {
-                block(nil, CollectionChange(change: nil, error: error))
+                block?(nil, CollectionChange(change: nil, error: error))
                 return
             }
 
-            self.operate(with: snapshot, error: error)
             if isFirst {
                 guard let lastSnapshot = snapshot.documents.last else {
                     // The collection is empty.
@@ -198,11 +195,12 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                 self.query = self.query.start(atDocument: lastSnapshot)
                 isFirst = false
             }
+            self._operate(with: snapshot, error: error)
         })
         return self
     }
 
-    private func operate(with snapshot: QuerySnapshot?, error: Error?) {
+    private func _operate(with snapshot: QuerySnapshot?, error: Error?) {
         let changeBlock: ChangeBlock? = self.changedBlock
         let parseBlock: ParseBlock? = self.parseBlock
         let completedBlock: CompletedBlock? = self.completedBlock
@@ -314,7 +312,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     }
 
     private func get(with change: DocumentChange, block: @escaping (Element?, Error?) -> Void) {
-        if change.document.data().count > 2 {
+        if self.query.hasRealities {
             let document: Element = Element(snapshot: change.document)
             DispatchQueue.main.async {
                 block(document, nil)
@@ -334,7 +332,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     @discardableResult
     public func next() -> Self {
         self.query.get(completion: { (snapshot, error) in
-            self.operate(with: snapshot, error: error)
+            self._operate(with: snapshot, error: error)
             guard let lastSnapshot = snapshot?.documents.last else {
                 // The collection is empty.
                 return
