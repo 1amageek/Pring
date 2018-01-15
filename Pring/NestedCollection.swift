@@ -55,7 +55,9 @@ public final class NestedCollection<T: Document>: AnySubCollection, Countable, E
     }
 
     /// You can retrieve whether the parent Object is saved.
-    public var isSaved: Bool = false
+    public var isSaved: Bool {
+        return self.parent?.isSaved ?? false
+    }
 
     public var count: Int {
         return self.isSaved ? _count : _self.count

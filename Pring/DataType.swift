@@ -124,11 +124,13 @@ public enum DataType {
                 self = .file(key, value.value, value)
                 return
             }
-        case is AnySubCollection:
+        case is CountableSubCollection:
             if let value: CountableSubCollection = value as? CountableSubCollection {
                 self = .collection(key, value.value, value)
                 return
-            } else if let value: AnySubCollection = value as? AnySubCollection {
+            }
+        case is AnySubCollection:
+            if let value: AnySubCollection = value as? AnySubCollection {
                 self = .collection(key, [:], value)
                 return
             }
@@ -298,7 +300,13 @@ public enum DataType {
             }
         }
 
-        if value is AnySubCollection {
+        if value is CountableSubCollection {
+            let collection: CountableSubCollection = value as! CountableSubCollection
+            if let value: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
+                self = .collection(key, value, collection)
+                return
+            }
+        } else if value is AnySubCollection {
             let collection: AnySubCollection = value as! AnySubCollection
             if let value: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
                 self = .collection(key, value, collection)

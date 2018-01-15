@@ -371,6 +371,7 @@ class PringTests: XCTestCase {
                     })
                     group.notify(queue: .main, execute: {
                         CollectionObject.get(ref!.documentID, block: { (object, _) in
+
                             guard let object: CollectionObject = object else {
                                 return
                             }
