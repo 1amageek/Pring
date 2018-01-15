@@ -59,12 +59,17 @@ open class Object: NSObject, Document {
 
     @objc private var _updatedAt: Date
 
-    public private(set) var isListening: Bool = false {
+    /// isPacked is a flag that indicates that data has been converted to JSON.
+    public private(set) var isPacked: Bool = false
+
+    /// isListening is a flag that indicates that Document is concerned with my Field.
+    internal private(set) var isListening: Bool = false {
         didSet {
             self.isSaved = isListening
         }
     }
 
+    /// isSaved is a flag that indicates that this Document has already been saved.
     public private(set) var isSaved: Bool = false
 
     // MARK: - Initialize
@@ -384,9 +389,13 @@ open class Object: NSObject, Document {
         updateValue[key] = value
     }
 
+    /**
+     Pack will pass data to Batch to save the data.
+     */
     @discardableResult
     public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
+        if isPacked { return batch }
         switch type {
         case .save:
             batch.setData(self.value as! [String : Any], forDocument: self.reference)
@@ -419,10 +428,13 @@ open class Object: NSObject, Document {
         case .delete:
             batch.deleteDocument(self.reference)
         }
+        self.isPacked = true
         return batch
     }
 
     public func batchCompletion() {
+        self.isPacked = false
+        if isSaved { return }
         self.isSaved = true
         self.each({ (key, value) in
             if let value = value {
@@ -546,6 +558,7 @@ open class Object: NSObject, Document {
     }
 
     internal func reset() {
+        self.isPacked = false
         self.updateValue = [:]
         for (_, child) in Mirror(reflecting: self).children.enumerated() {
             guard let key: String = child.label else { break }
