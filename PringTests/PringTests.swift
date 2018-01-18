@@ -277,6 +277,69 @@ class PringTests: XCTestCase {
         XCTAssertNil(weakDocument)
     }
 
+    func testSubCollectionInsetBeforeSave() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test SubCollection")
+        let document: TestDocument = TestDocument()
+        let nestedItem: NestedItem = NestedItem()
+        document.subCollection.insert(nestedItem)
+        document.save { (ref, error) in
+            XCTAssertEqual(nestedItem.isSaved, true)
+            XCTAssertEqual(document.isSaved, true)
+            XCTAssertEqual(document.subCollection.first?.string, "nested")
+            TestDocument.get(ref!.documentID, block: { (document, error) in
+                document?.subCollection.get(nestedItem.id, block: { (item, error) in
+                    XCTAssertEqual(item?.array.first, "nested")
+                    XCTAssertEqual(item?.set.first, "nested")
+                    XCTAssertEqual(item?.bool, true)
+                    XCTAssertEqual(String(data: item!.binary, encoding: .utf8), "nested")
+                    XCTAssertEqual(item?.url.absoluteString, "https://firebase.google.com/nested")
+                    XCTAssertEqual(item?.int, Int.max)
+                    XCTAssertEqual(item?.float, Double.infinity)
+                    XCTAssertEqual(item?.date, Date(timeIntervalSince1970: 100))
+                    XCTAssertEqual(item?.geoPoint, GeoPoint(latitude: 0, longitude: 0))
+                    XCTAssertEqual(item?.dictionary.keys.first, "key")
+                    XCTAssertEqual(item?.dictionary.values.first as! String, "nested")
+                    XCTAssertEqual(item?.string, "nested")
+                    expectation.fulfill()
+                })
+            })
+
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testSubCollectionInsetAfterSave() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test SubCollection")
+        let document: TestDocument = TestDocument()
+        let nestedItem: NestedItem = NestedItem()
+        document.save { (ref, error) in
+            XCTAssertEqual(document.isSaved, true)
+            document.subCollection.insert(nestedItem, block: { (error) in
+                print(error)
+                XCTAssertEqual(nestedItem.isSaved, true)
+                XCTAssertEqual(document.subCollection.first?.string, "nested")
+                TestDocument.get(ref!.documentID, block: { (document, error) in
+                    document?.subCollection.get(nestedItem.id, block: { (item, error) in
+                        XCTAssertEqual(item?.array.first, "nested")
+                        XCTAssertEqual(item?.set.first, "nested")
+                        XCTAssertEqual(item?.bool, true)
+                        XCTAssertEqual(String(data: item!.binary, encoding: .utf8), "nested")
+                        XCTAssertEqual(item?.url.absoluteString, "https://firebase.google.com/nested")
+                        XCTAssertEqual(item?.int, Int.max)
+                        XCTAssertEqual(item?.float, Double.infinity)
+                        XCTAssertEqual(item?.date, Date(timeIntervalSince1970: 100))
+                        XCTAssertEqual(item?.geoPoint, GeoPoint(latitude: 0, longitude: 0))
+                        XCTAssertEqual(item?.dictionary.keys.first, "key")
+                        XCTAssertEqual(item?.dictionary.values.first as! String, "nested")
+                        XCTAssertEqual(item?.string, "nested")
+                        expectation.fulfill()
+                    })
+                })
+            })
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testNestedCollection() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test NestedCollection")
         let document: TestDocument = TestDocument()

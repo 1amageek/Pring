@@ -111,6 +111,12 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         let batch: WriteBatch = Firestore.firestore().batch()
         batch.setData(newMember.value as! [String: Any], forDocument: reference)
         batch.commit(completion: { (error) in
+            if let error: Error = error {
+                block?(error)
+                return
+            }
+            self._self.insert(newMember)
+            self.batchCompletion()
             block?(error)
         })
     }
