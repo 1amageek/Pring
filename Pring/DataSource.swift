@@ -93,7 +93,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     /// Options
     private(set) var options: Options
 
-    private let fetchQueue: DispatchQueue = DispatchQueue(label: "Pring.datasource.fetch.queue", attributes: .concurrent)
+    private let fetchQueue: DispatchQueue = DispatchQueue(label: "Pring.datasource.fetch.queue")
 
     private var listenr: ListenerRegistration?
 
