@@ -150,7 +150,9 @@ public final class ReferenceCollection<T: Document>: AnySubCollection, Countable
                 errorPointer?.pointee = fetchError
                 return nil
             }
-            let oldParent: [String: Any] = document.data() as [String: Any]
+            guard let oldParent: [String: Any] = document.data() else {
+                return nil
+            }
             let subCollection: [String: Any] = oldParent[key] as? [String: Any] ?? ["count": 0]
             let oldCount = subCollection["count"] as? Int ?? 0
             count = oldCount + 1
@@ -221,7 +223,9 @@ public final class ReferenceCollection<T: Document>: AnySubCollection, Countable
                 errorPointer?.pointee = fetchError
                 return nil
             }
-            let oldParent: [String: Any] = document.data() as [String: Any]
+            guard let oldParent: [String: Any] = document.data() else {
+                return nil
+            }
             guard
                 let subCollection: [String: Any] = oldParent[key] as? [String: Any],
                 let oldCount = subCollection["count"] as? Int else {

@@ -1,27 +1,27 @@
 PODS:
-  - BoringSSL (9.1):
-    - BoringSSL/Implementation (= 9.1)
-    - BoringSSL/Interface (= 9.1)
-  - BoringSSL/Implementation (9.1):
-    - BoringSSL/Interface (= 9.1)
-  - BoringSSL/Interface (9.1)
-  - Firebase/Core (4.8.0):
-    - FirebaseAnalytics (= 4.0.5)
-    - FirebaseCore (= 4.0.13)
-  - Firebase/Firestore (4.8.0):
+  - BoringSSL (9.2):
+    - BoringSSL/Implementation (= 9.2)
+    - BoringSSL/Interface (= 9.2)
+  - BoringSSL/Implementation (9.2):
+    - BoringSSL/Interface (= 9.2)
+  - BoringSSL/Interface (9.2)
+  - Firebase/Core (4.8.1):
+    - FirebaseAnalytics (= 4.0.7)
+    - FirebaseCore (= 4.0.14)
+  - Firebase/Firestore (4.8.1):
     - Firebase/Core
-    - FirebaseFirestore (= 0.9.4)
-  - Firebase/Storage (4.8.0):
+    - FirebaseFirestore (= 0.10.0)
+  - Firebase/Storage (4.8.1):
     - Firebase/Core
-    - FirebaseStorage (= 2.1.1)
-  - FirebaseAnalytics (4.0.5):
+    - FirebaseStorage (= 2.1.2)
+  - FirebaseAnalytics (4.0.7):
     - FirebaseCore (~> 4.0)
     - FirebaseInstanceID (~> 2.0)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
     - nanopb (~> 0.3)
-  - FirebaseCore (4.0.13):
+  - FirebaseCore (4.0.14):
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-  - FirebaseFirestore (0.9.4):
+  - FirebaseFirestore (0.10.0):
     - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
     - gRPC-ProtoRPC (~> 1.0)
@@ -29,32 +29,32 @@ PODS:
     - Protobuf (~> 3.1)
   - FirebaseInstanceID (2.0.8):
     - FirebaseCore (~> 4.0)
-  - FirebaseStorage (2.1.1):
+  - FirebaseStorage (2.1.2):
     - FirebaseAnalytics (~> 4.0)
     - FirebaseCore (~> 4.0)
     - GTMSessionFetcher/Core (~> 1.1)
   - GoogleToolboxForMac/Defines (2.1.3)
   - GoogleToolboxForMac/NSData+zlib (2.1.3):
     - GoogleToolboxForMac/Defines (= 2.1.3)
-  - gRPC (1.8.0):
-    - gRPC-RxLibrary (= 1.8.0)
-    - gRPC/Main (= 1.8.0)
-  - gRPC-Core (1.8.0):
-    - gRPC-Core/Implementation (= 1.8.0)
-    - gRPC-Core/Interface (= 1.8.0)
-  - gRPC-Core/Implementation (1.8.0):
+  - gRPC (1.8.4):
+    - gRPC-RxLibrary (= 1.8.4)
+    - gRPC/Main (= 1.8.4)
+  - gRPC-Core (1.8.4):
+    - gRPC-Core/Implementation (= 1.8.4)
+    - gRPC-Core/Interface (= 1.8.4)
+  - gRPC-Core/Implementation (1.8.4):
     - BoringSSL (~> 9.0)
-    - gRPC-Core/Interface (= 1.8.0)
+    - gRPC-Core/Interface (= 1.8.4)
     - nanopb (~> 0.3)
-  - gRPC-Core/Interface (1.8.0)
-  - gRPC-ProtoRPC (1.8.0):
-    - gRPC (= 1.8.0)
-    - gRPC-RxLibrary (= 1.8.0)
+  - gRPC-Core/Interface (1.8.4)
+  - gRPC-ProtoRPC (1.8.4):
+    - gRPC (= 1.8.4)
+    - gRPC-RxLibrary (= 1.8.4)
     - Protobuf (~> 3.0)
-  - gRPC-RxLibrary (1.8.0)
-  - gRPC/Main (1.8.0):
-    - gRPC-Core (= 1.8.0)
-    - gRPC-RxLibrary (= 1.8.0)
+  - gRPC-RxLibrary (1.8.4)
+  - gRPC/Main (1.8.4):
+    - gRPC-Core (= 1.8.4)
+    - gRPC-RxLibrary (= 1.8.4)
   - GTMSessionFetcher/Core (1.1.12)
   - leveldb-library (1.20)
   - nanopb (0.3.8):
@@ -70,18 +70,18 @@ DEPENDENCIES:
   - Firebase/Storage
 
 SPEC CHECKSUMS:
-  BoringSSL: 84318770d120503ab1a6aaf1df777c5ca053697e
-  Firebase: 710decbbc6d9d48530e9a5dba3209740c3532e05
-  FirebaseAnalytics: 5b02a63ead2c3f0259cfc7f15e053e440587ecf8
-  FirebaseCore: 3c02ec652db3d03fdc8bc6d9154af3e20d64b6f5
-  FirebaseFirestore: 0fb0301657759bdd7a4bc37a436e543a86b189ad
+  BoringSSL: f3d6b8ce199b9c450a8cfc14895d07a2627fc232
+  Firebase: 2721056b8885eef90233b03f37be64358d35d262
+  FirebaseAnalytics: 617afa8c26b57a0c3f11361b248bc9e17bfd8dfd
+  FirebaseCore: 2e0b98fb2d64ca8140136beff15772bdd14d2dd7
+  FirebaseFirestore: 713f0c555e7af5ac03d0fec0e2477c48857f4977
   FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
-  FirebaseStorage: ab08d1c93a2feffa038fdd6693088b310ab1e6c6
+  FirebaseStorage: 181bb543d39ee3c53e0558de7ba86b1286a0427f
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
-  gRPC: cc3f797b97bf221a9e535e8e012a6f99b1d7f797
-  gRPC-Core: 250fd60016c4e4c413279f4002679b0e14e7df26
-  gRPC-ProtoRPC: 5b934b29a95b94b0f871d4fc361ff52269476765
-  gRPC-RxLibrary: 7c57a1b2ff2f9cafb0face35bbfa0a326281295d
+  gRPC: 572520c17b794362388d5c95396329592a3c199b
+  gRPC-Core: af0d4f0a53735e335fccc815c50c0a03da695287
+  gRPC-ProtoRPC: 6596fde8d27e0718d7de1de1dc99a951d832a809
+  gRPC-RxLibrary: f6b1432a667c3354c7b345affed9886c0d4ff549
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3

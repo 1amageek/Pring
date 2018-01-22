@@ -170,7 +170,9 @@ open class Object: NSObject, Document {
                 self.reference = snapshot.reference
                 self.id = snapshot.documentID
 
-                let data: [String: Any] = snapshot.data()
+                guard let data: [String: Any] = snapshot.data() else  {
+                    return
+                }
 
                 self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Date ?? _createdAt
                 self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as? Date ?? _updatedAt
