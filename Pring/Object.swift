@@ -107,7 +107,11 @@ open class Object: NSObject, Document {
     }
 
     /// Initialize Object from snapshot.
-    public convenience required init(snapshot: DocumentSnapshot) {
+    public convenience required init?(snapshot: DocumentSnapshot) {
+        let snapshotOptions: SnapshotOptions = SnapshotOptions.serverTimestampBehavior(.estimate)
+        guard let _ = snapshot.data(with: snapshotOptions) else {
+            return nil
+        }
         self.init()
         _setSnapshot(snapshot)
     }
@@ -170,7 +174,8 @@ open class Object: NSObject, Document {
                 self.reference = snapshot.reference
                 self.id = snapshot.documentID
 
-                guard let data: [String: Any] = snapshot.data() else  {
+                let snapshotOptions: SnapshotOptions = SnapshotOptions.serverTimestampBehavior(.estimate)
+                guard let data: [String: Any] = snapshot.data(with: snapshotOptions) else  {
                     return
                 }
 

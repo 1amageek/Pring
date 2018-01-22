@@ -49,7 +49,7 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
     init(id: String)
 
-    init(snapshot: DocumentSnapshot)
+    init?(snapshot: DocumentSnapshot)
 
     init(id: String, value: [AnyHashable: Any])
 
@@ -217,7 +217,10 @@ public extension Document {
                 block(nil, error)
                 return
             }
-            let document: Self = Self(snapshot: snapshot)
+            guard let document: Self = Self(snapshot: snapshot) else {
+                block(nil, error)
+                return
+            }
             block(document, nil)
         }
     }
@@ -229,7 +232,10 @@ public extension Document {
                 block(nil, error)
                 return
             }
-            let document: Self = Self(snapshot: snapshot)
+            guard let document: Self = Self(snapshot: snapshot) else {
+                block(nil, error)
+                return
+            }
             block(document, nil)
         }
     }
@@ -251,7 +257,10 @@ public extension Document {
                 block(nil, error)
                 return
             }
-            let document: Self = Self(snapshot: snapshot)
+            guard let document: Self = Self(snapshot: snapshot) else {
+                block(nil, error)
+                return
+            }
             block(document, nil)
         }
     }

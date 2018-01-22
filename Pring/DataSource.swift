@@ -313,7 +313,10 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
 
     private func get(with change: DocumentChange, block: @escaping (Element?, Error?) -> Void) {
         if self.query.hasRealities {
-            let document: Element = Element(snapshot: change.document)
+            guard let document: Element = Element(snapshot: change.document) else {
+                block(nil, nil)
+                return
+            }
             DispatchQueue.main.async {
                 block(document, nil)
             }

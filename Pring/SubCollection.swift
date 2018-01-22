@@ -171,7 +171,10 @@ public extension SubCollection {
                 block(nil, error)
                 return
             }
-            let document: Element = ArrayLiteralElement(snapshot: snapshot)
+            guard let document: Element = ArrayLiteralElement(snapshot: snapshot) else {
+                block(nil, error)
+                return
+            }
             block(document, nil)
         }
     }
@@ -183,7 +186,10 @@ public extension SubCollection {
                 block(nil, error)
                 return
             }
-            let document: Element = ArrayLiteralElement(snapshot: snapshot)
+            guard let document: Element = ArrayLiteralElement(snapshot: snapshot) else {
+                block(nil, error)
+                return
+            }
             block(document, nil)
         }
     }
