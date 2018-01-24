@@ -60,7 +60,7 @@ public class Reference<T: Document>: AnyReference, Batchable {
         guard let key: String = self.key, let value: DocumentReference = self.value else {
             return
         }
-        if self.parent?.isListening ?? false {
+        if self.parent?.isObserving ?? false {
             self.parent?.update(key: key, value: value)
         }
     }
@@ -70,7 +70,7 @@ public class Reference<T: Document>: AnyReference, Batchable {
         guard let key: String = self.key else {
             return
         }
-        if self.parent?.isListening ?? false {
+        if self.parent?.isObserving ?? false {
             self.parent?.update(key: key, value: FieldValue.delete())
         }
     }
