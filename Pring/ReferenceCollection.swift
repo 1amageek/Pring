@@ -27,6 +27,8 @@ public final class ReferenceCollection<T: Document>: AnySubCollection, Countable
 
     public var key: String?
 
+    public var batchID: String?
+
     /// It is a Path stored in Firebase.
     public var path: String {
         guard let parent: Object = self.parent else {
@@ -178,7 +180,7 @@ public final class ReferenceCollection<T: Document>: AnySubCollection, Countable
                     return
                 }
                 self._self.insert(newMember)
-                self.batchCompletion()
+//                self.batchCompletion(.update)
                 block?(error)
             })
         })

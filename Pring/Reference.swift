@@ -36,6 +36,8 @@ public class Reference<T: Document>: AnyReference, Batchable {
     /// Property name to save
     public var key: String?
 
+    public var batchID: String?
+
     public private(set) var object: ContentType?
 
     public var documentReference: DocumentReference?
@@ -95,8 +97,9 @@ public class Reference<T: Document>: AnyReference, Batchable {
         return batch
     }
 
-    public func batchCompletion() {
-        self.object?.batchCompletion()
+    
+    public func batch(_ type: BatchType, completion ID: String) {
+        self.object?.batch(type, completion: ID)
     }
 
     public func get(_ block: @escaping (ContentType?, Error?) -> Void) {

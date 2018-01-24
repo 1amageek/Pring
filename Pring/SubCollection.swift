@@ -25,6 +25,8 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
 
     public var key: String?
 
+    public var batchID: String?
+
     /// It is a Path stored in Firebase.
     public var path: String {
         guard let parent: Object = self.parent else {
@@ -76,14 +78,6 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
             }
         }
         return batch
-    }
-
-    public func batchCompletion() {
-        print("aaaaa", _self)
-        self.forEach { (document) in
-            print(document)
-            document.batchCompletion()
-        }
     }
 
     /**

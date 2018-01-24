@@ -27,6 +27,8 @@ public final class NestedCollection<T: Document>: AnySubCollection, Countable, E
 
     public var key: String?
 
+    public var batchID: String?
+
     /// It is a Path stored in Firebase.
     public var path: String {
         guard let parent: Object = self.parent else {
@@ -164,7 +166,7 @@ public final class NestedCollection<T: Document>: AnySubCollection, Countable, E
                     return
                 }
                 self._self.insert(newMember)
-                self.batchCompletion()
+//                self.batch(.update, completion: batchID)
                 block?(error)
             })
         })

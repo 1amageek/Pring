@@ -68,9 +68,9 @@ extension AnySubCollection where Self: Collection, Self.Element: Document {
         }
     }
     
-    public func batchCompletion() {
+    public func batch(_ type: BatchType, completion batchID: String) {
         self.forEach { (document) in
-            document.batchCompletion()
+            document.batch(type, completion: batchID)
         }
     }
 }

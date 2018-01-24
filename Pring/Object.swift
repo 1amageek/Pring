@@ -59,6 +59,8 @@ open class Object: NSObject, Document {
 
     @objc private var _updatedAt: Date
 
+    public var batchID: String?
+
     /// isPacked is a flag that indicates that data has been converted to JSON.
     public private(set) var isPacked: Bool = false
 
@@ -445,18 +447,21 @@ open class Object: NSObject, Document {
         return batch
     }
 
-    public func batchCompletion() {
+    public func batch(_ type: BatchType, completion batchID: String) {
         self.isPacked = false
-        if isSaved { return }
+        if batchID == self.batchID {
+            return
+        }
+        self.batchID = batchID
         self.isSaved = true
         self.each({ (key, value) in
             if let value = value {
                 switch DataType(key: key, value: value) {
                 case .collection    (_, _, let collection):
-                    collection.batchCompletion()
+                    collection.batch(type, completion: batchID)
                 case .reference     (_, _, let reference):
                     if reference is Batchable {
-                        (reference as! Batchable).batchCompletion()
+                        (reference as! Batchable).batch(type, completion: batchID)
                     }
                 default: break
                 }
@@ -501,11 +506,14 @@ open class Object: NSObject, Document {
                 block?(nil, error)
                 return
             }
-            self.reference.getDocument(completion: { (snapshot, error) in
-                self.batchCompletion()
-                self.snapshot = snapshot
-                block?(snapshot?.reference, error)
-            })
+            self.batch(.save, completion: UUID().uuidString)
+            self.isObserving = true
+            block?(self.reference, nil)
+//            self.reference.getDocument(completion: { (snapshot, error) in
+//                self.batchCompletion()
+//                self.snapshot = snapshot
+//                block?(snapshot?.reference, error)
+//            })
         }
     }
 
@@ -540,7 +548,7 @@ open class Object: NSObject, Document {
                 block?(error)
                 return
             }
-            self.batchCompletion()
+            self.batch(.update, completion: UUID().uuidString)
             self.garbages._dispose({ (error) in
                 self.reset()
                 block?(nil)
