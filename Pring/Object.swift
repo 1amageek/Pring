@@ -431,7 +431,8 @@ open class Object: NSObject, Document {
             self.each({ (key, value) in
                 if let value = value {
                     switch DataType(key: key, value: value) {
-                    case .collection    (_, _, let collection):     collection.pack(.update, batch: batch)
+                    case .collection    (_, _, let collection):
+                        collection.pack(.update, batch: batch)
                     case .reference     (_, _, let reference):
                         if reference is Batchable {
                             (reference as! Batchable).pack(.update, batch: batch)
@@ -509,11 +510,6 @@ open class Object: NSObject, Document {
             self.batch(.save, completion: UUID().uuidString)
             self.isObserving = true
             block?(self.reference, nil)
-//            self.reference.getDocument(completion: { (snapshot, error) in
-//                self.batchCompletion()
-//                self.snapshot = snapshot
-//                block?(snapshot?.reference, error)
-//            })
         }
     }
 

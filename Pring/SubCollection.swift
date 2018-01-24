@@ -122,16 +122,6 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         member.set(Element.reference.document(member.id))
     }
 
-    public func remove(_ member: Element, block: ((Error?) -> Void)? = nil) {
-        let reference: DocumentReference = member.reference
-        let batch: WriteBatch = Firestore.firestore().batch()
-        batch.deleteDocument(reference)
-        batch.commit(completion: {(error) in
-            member.set(Element.reference.document())
-            block?(error)
-        })
-    }
-
     public func contains(_ id: String, block: @escaping (Bool) -> Void) {
         self.reference.document(id).getDocument { (snapshot, error) in
             return block(snapshot?.exists ?? false)
