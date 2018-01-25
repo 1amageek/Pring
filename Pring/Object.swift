@@ -59,13 +59,24 @@ open class Object: NSObject, Document {
 
     @objc private var _updatedAt: Date
 
+    public var batchID: String?
+
     /// isPacked is a flag that indicates that data has been converted to JSON.
     public private(set) var isPacked: Bool = false
 
-    /// isListening is a flag that indicates that Document is concerned with my Field.
-    internal private(set) var isListening: Bool = false {
+    /// isObserving is a flag that indicates that Document is concerned with my Field.
+    internal private(set) var isObserving: Bool = false {
         didSet {
-            self.isSaved = isListening
+            self.isSaved = isObserving
+            if isObserving {
+                Mirror(reflecting: self).children.forEach { (key, value) in
+                    if let key: String = key {
+                        if !self.ignore.contains(key) {
+                            self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -130,7 +141,6 @@ open class Object: NSObject, Document {
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     if self.decode(key, value: data[key]) {
-                        self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                         return
                     }
                     switch DataType(key: key, value: value, data: data) {
@@ -152,11 +162,10 @@ open class Object: NSObject, Document {
                     case .string        (let key, _, let value):                self.setValue(value, forKey: key)
                     case .null: break
                     }
-                    self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                 }
             }
         }
-        self.isListening = true
+        self.isObserving = true
     }
 
     func _setSnapshot(_ snapshot: DocumentSnapshot) {
@@ -186,7 +195,6 @@ open class Object: NSObject, Document {
                     if let key: String = key {
                         if !self.ignore.contains(key) {
                             if self.decode(key, value: data[key]) {
-                                self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                                 return
                             }
                             switch DataType(key: key, value: value, data: data) {
@@ -208,11 +216,10 @@ open class Object: NSObject, Document {
                             case .string        (let key, _, let value):                self.setValue(value, forKey: key)
                             case .null: break
                             }
-                            self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                         }
                     }
                 }
-                self.isListening = true
+                self.isObserving = true
             }
         }
     }
@@ -283,7 +290,7 @@ open class Object: NSObject, Document {
     /// Object value
     public var value: [AnyHashable: Any] {
         var value: [AnyHashable: Any] = self.rawValue
-        if isListening {
+        if isSaved {
             value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
         } else {
             value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
@@ -424,6 +431,8 @@ open class Object: NSObject, Document {
             self.each({ (key, value) in
                 if let value = value {
                     switch DataType(key: key, value: value) {
+                    case .collection    (_, _, let collection):
+                        collection.pack(.update, batch: batch)
                     case .reference     (_, _, let reference):
                         if reference is Batchable {
                             (reference as! Batchable).pack(.update, batch: batch)
@@ -439,18 +448,21 @@ open class Object: NSObject, Document {
         return batch
     }
 
-    public func batchCompletion() {
+    public func batch(_ type: BatchType, completion batchID: String) {
         self.isPacked = false
-        if isSaved { return }
+        if batchID == self.batchID {
+            return
+        }
+        self.batchID = batchID
         self.isSaved = true
         self.each({ (key, value) in
             if let value = value {
                 switch DataType(key: key, value: value) {
                 case .collection    (_, _, let collection):
-                    collection.batchCompletion()
+                    collection.batch(type, completion: batchID)
                 case .reference     (_, _, let reference):
                     if reference is Batchable {
-                        (reference as! Batchable).batchCompletion()
+                        (reference as! Batchable).batch(type, completion: batchID)
                     }
                 default: break
                 }
@@ -471,7 +483,7 @@ open class Object: NSObject, Document {
 
     @discardableResult
     public func save(_ batch: WriteBatch? = nil, block: ((DocumentReference?, Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
-        if isListening {
+        if isObserving {
             fatalError("[Pring.Document] *** error: \(type(of: self)) has already been saved.")
         }
         let ref: DocumentReference = self.reference
@@ -495,11 +507,9 @@ open class Object: NSObject, Document {
                 block?(nil, error)
                 return
             }
-            self.reference.getDocument(completion: { (snapshot, error) in
-                self.batchCompletion()
-                self.snapshot = snapshot
-                block?(snapshot?.reference, error)
-            })
+            self.batch(.save, completion: UUID().uuidString)
+            self.isObserving = true
+            block?(self.reference, nil)
         }
     }
 
@@ -534,6 +544,7 @@ open class Object: NSObject, Document {
                 block?(error)
                 return
             }
+            self.batch(.update, completion: UUID().uuidString)
             self.garbages._dispose({ (error) in
                 self.reset()
                 block?(nil)
@@ -627,7 +638,7 @@ open class Object: NSObject, Document {
     // MARK: Deinit
 
     deinit {
-        if self.isListening {
+        if self.isObserving {
             Mirror(reflecting: self).children.forEach { (key, value) in
                 if let key: String = key {
                     if !self.ignore.contains(key) {

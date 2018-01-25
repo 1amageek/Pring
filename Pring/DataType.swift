@@ -369,6 +369,11 @@ public enum DataType {
         guard let _: Mirror.DisplayStyle = mirror.displayStyle else {
             return value
         }
+
+        if value is AnySubCollection {
+            return value
+        }
+
         if let (label, v) = mirror.children.first {
             if label == "some" {
                 return v

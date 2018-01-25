@@ -14,12 +14,18 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
 
     public typealias ArrayLiteralElement = T
 
-    internal var _self: DataSource<T>
+    internal var _self: [T] = []
+
+    internal var _insertions: Set<T> = []
+
+    internal var _deletions: Set<T> = []
 
     /// Contains the Object holding the property.
     public weak var parent: Object?
 
     public var key: String?
+
+    public var batchID: String?
 
     /// It is a Path stored in Firebase.
     public var path: String {
@@ -46,24 +52,25 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         return self.parent?.isSaved ?? false
     }
 
+    /**
+
+    */
     @discardableResult
     public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         switch type {
         case .save:
-            self.forEach { (document) in
+            _self.forEach { (document) in
                 let reference: DocumentReference = self.reference.document(document.id)
                 batch.setData(document.value as! [String : Any], forDocument: reference)
             }
         case .update:
-            self.forEach { (document) in
-                let reference: DocumentReference = self.reference.document(document.id)
-                if document.isSaved {
-                    batch.updateData(document.updateValue as! [String: Any], forDocument: reference)
-                } else {
-                    batch.setData(document.updateValue as! [String: Any], forDocument: reference)
-                }
-            }
+            _insertions.subtracting(_deletions).forEach({ (document) in
+                batch.setData(document.updateValue as! [String: Any], forDocument: document.reference)
+            })
+            _deletions.subtracting(_insertions).forEach({ (document) in
+                batch.deleteDocument(document.reference)
+            })
         case .delete:
             self.forEach { (document) in
                 let reference: DocumentReference = self.reference.document(document.id)
@@ -77,7 +84,7 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
      Initialize Relation.
      */
     public init(_ elements: [ArrayLiteralElement]) {
-        self._self = DataSource(elements)
+        self._self = elements
     }
 
     public required convenience init(arrayLiteral elements: ArrayLiteralElement...) {
@@ -98,47 +105,21 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
     /// Save the new Object.
     public func insert(_ newMember: Element) {
         newMember.set(self.reference.document(newMember.id))
+        _self.append(newMember)
         if isSaved {
-            fatalError("[Pring.NestedCollection] \(self.parent!) has already been saved. Please use insert(_ newMember: block:)")
-        } else {
-            _self.insert(newMember)
+            _insertions.insert(newMember)
         }
-    }
-
-    public func insert(_ newMember: Element, block: ((Error?) -> Void)? = nil) {
-        newMember.set(self.reference.document(newMember.id))
-        let reference: DocumentReference = newMember.reference
-        let batch: WriteBatch = Firestore.firestore().batch()
-        batch.setData(newMember.value as! [String: Any], forDocument: reference)
-        batch.commit(completion: { (error) in
-            if let error: Error = error {
-                block?(error)
-                return
-            }
-            self._self.insert(newMember)
-            self.batchCompletion()
-            block?(error)
-        })
     }
 
     /// Deletes the Object from the reference destination.
     public func remove(_ member: Element) {
-        if isSaved {
-            fatalError("[Pring.NestedCollection] \(self.parent!) has already been saved. Please use remove(_ newMember: block:)")
-        } else {
-            _self.remove(member)
-            member.set(Element.reference.document())
+        if let index: Int = _self.index(of: member) {
+            _self.remove(at: index)
         }
-    }
-
-    public func remove(_ member: Element, block: ((Error?) -> Void)? = nil) {
-        let reference: DocumentReference = member.reference
-        let batch: WriteBatch = Firestore.firestore().batch()
-        batch.deleteDocument(reference)
-        batch.commit(completion: {(error) in
-            member.set(Element.reference.document())
-            block?(error)
-        })
+        if isSaved {
+            _deletions.insert(member)
+        }
+        member.set(Element.reference.document(member.id))
     }
 
     public func contains(_ id: String, block: @escaping (Bool) -> Void) {
@@ -157,7 +138,7 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         if _self.isEmpty {
             return "SubCollection([])"
         }
-        return "\(_self.documents.description)"
+        return "\(_self.description)"
     }
 }
 

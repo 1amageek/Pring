@@ -314,8 +314,8 @@ class PringTests: XCTestCase {
         let nestedItem: NestedItem = NestedItem()
         document.save { (ref, error) in
             XCTAssertEqual(document.isSaved, true)
-            document.subCollection.insert(nestedItem, block: { (error) in
-                print(error)
+            document.subCollection.insert(nestedItem)
+            document.update({ (error) in
                 XCTAssertEqual(nestedItem.isSaved, true)
                 XCTAssertEqual(document.subCollection.first?.string, "nested")
                 TestDocument.get(ref!.documentID, block: { (document, error) in
@@ -344,13 +344,13 @@ class PringTests: XCTestCase {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test NestedCollection")
         let document: TestDocument = TestDocument()
         let nestedItem: NestedItem = NestedItem()
-        document.nextedCollection.insert(nestedItem)
+        document.countableNestedCollection.insert(nestedItem)
         document.save { (ref, error) in
             XCTAssertEqual(nestedItem.isSaved, true)
             XCTAssertEqual(document.isSaved, true)
-            XCTAssertEqual(document.nextedCollection.first?.string, "nested")
+            XCTAssertEqual(document.countableNestedCollection.first?.string, "nested")
             TestDocument.get(ref!.documentID, block: { (document, error) in
-                document?.nextedCollection.get(nestedItem.id, block: { (item, error) in
+                document?.countableNestedCollection.get(nestedItem.id, block: { (item, error) in
                     XCTAssertEqual(item?.array.first, "nested")
                     XCTAssertEqual(item?.set.first, "nested")
                     XCTAssertEqual(item?.bool, true)
@@ -408,8 +408,32 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 20)
     }
 
-    func testNestedCollectionsCount() {
-        let expectation: XCTestExpectation = XCTestExpectation(description: "Test NestedCollection")
+    func testReferenceCollection() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test ReferenceCollection")
+        let object: CollectionObject = CollectionObject()
+
+        object.save { (ref, _) in
+            CollectionObject.get(ref!.documentID, block: { (object, _) in
+                let obj: CollectionObject = CollectionObject()
+                object?.referenceCollection.insert(obj)
+                object?.update({ (_) in
+                    CollectionObject.get(ref!.documentID, block: { (object, _) in
+                        guard let object: CollectionObject = object else {
+                            return
+                        }
+                        object.referenceCollection.query.dataSource().onCompleted({ (_, items) in
+                            XCTAssertEqual(items.count, 1)
+                            expectation.fulfill()
+                        }).get()
+                    })
+                })
+            })
+        }
+        self.wait(for: [expectation], timeout: 20)
+    }
+
+    func testCountableNestedCollectionsCount() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test CountableNestedCollection")
 
         let group: DispatchGroup = DispatchGroup()
         let queue: DispatchQueue = DispatchQueue(label: "Dispatch.Queue")
@@ -428,7 +452,7 @@ class PringTests: XCTestCase {
                     (0..<count).forEach({ (index) in
                         group.enter()
                         let item: NestedItem = NestedItem()
-                        object.nestedCollection.insert(item, block: { (error) in
+                        object.countableNestedCollection.insert(item, block: { (error) in
                             group.leave()
                         })
                     })
@@ -438,12 +462,12 @@ class PringTests: XCTestCase {
                             guard let object: CollectionObject = object else {
                                 return
                             }
-                            XCTAssertEqual(object.nestedCollection.count, count)
-                            object.nestedCollection.query.dataSource().onCompleted({ (_, items) in
+                            XCTAssertEqual(object.countableNestedCollection.count, count)
+                            object.countableNestedCollection.query.dataSource().onCompleted({ (_, items) in
                                 queue.async {
                                     items.forEach({ (item) in
                                         group.enter()
-                                        object.nestedCollection.remove(item, block: { (error) in
+                                        object.countableNestedCollection.remove(item, block: { (error) in
                                             group.leave()
                                         })
                                     })
@@ -452,7 +476,7 @@ class PringTests: XCTestCase {
                                             guard let object: CollectionObject = object else {
                                                 return
                                             }
-                                            XCTAssertEqual(object.nestedCollection.count, 0)
+                                            XCTAssertEqual(object.countableNestedCollection.count, 0)
                                             expectation.fulfill()
                                         })
                                     })
@@ -468,8 +492,8 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 20)
     }
 
-    func testReferenceCollectionsCount() {
-        let expectation: XCTestExpectation = XCTestExpectation(description: "Test ReferenceCollection")
+    func testCountableReferenceCollectionsCount() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test CountableReferenceCollection")
 
         let group: DispatchGroup = DispatchGroup()
         let queue: DispatchQueue = DispatchQueue(label: "Dispatch.Queue")
@@ -488,7 +512,7 @@ class PringTests: XCTestCase {
                     (0..<count).forEach({ (index) in
                         group.enter()
                         let obj: CollectionObject = CollectionObject()
-                        object.referenceCollection.insert(obj, block: { (error) in
+                        object.countableReferenceCollection.insert(obj, block: { (error) in
                             group.leave()
                         })
                     })
@@ -497,15 +521,15 @@ class PringTests: XCTestCase {
                             guard let object: CollectionObject = object else {
                                 return
                             }
-                            XCTAssertEqual(object.referenceCollection.count, count)
+                            XCTAssertEqual(object.countableReferenceCollection.count, count)
                             let limit: Int = 2
-                            object.referenceCollection.limit(to: limit).dataSource().onCompleted({ (_, items) in
+                            object.countableReferenceCollection.limit(to: limit).dataSource().onCompleted({ (_, items) in
                                 XCTAssertEqual(items.count, limit)
-                                object.referenceCollection.query.dataSource().onCompleted({ (_, items) in
+                                object.countableReferenceCollection.query.dataSource().onCompleted({ (_, items) in
                                     queue.async {
                                         items.forEach({ (item) in
                                             group.enter()
-                                            object.referenceCollection.remove(item, hard: true, block: { (error) in
+                                            object.countableReferenceCollection.remove(item, hard: true, block: { (error) in
                                                 group.leave()
                                             })
                                         })
@@ -514,7 +538,7 @@ class PringTests: XCTestCase {
                                                 guard let object: CollectionObject = object else {
                                                     return
                                                 }
-                                                XCTAssertEqual(object.referenceCollection.count, 0)
+                                                XCTAssertEqual(object.countableReferenceCollection.count, 0)
                                                 expectation.fulfill()
                                             })
                                         })
