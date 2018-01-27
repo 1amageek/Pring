@@ -20,6 +20,8 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
 
     internal var _deletions: Set<T> = []
 
+    internal var _deleteIDs: [String] = []
+
     /// Contains the Object holding the property.
     public weak var parent: Object?
 
@@ -65,6 +67,10 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
                 batch.setData(document.value as! [String : Any], forDocument: reference)
             }
         case .update:
+            _deleteIDs.forEach({ (id) in
+                let reference: DocumentReference = self.reference.document(id)
+                batch.deleteDocument(reference)
+            })
             _insertions.subtracting(_deletions).forEach({ (document) in
                 batch.setData(document.updateValue as! [String: Any], forDocument: document.reference)
             })
@@ -122,6 +128,16 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         member.set(Element.reference.document(member.id))
     }
 
+    /// Deletes the Document contained in SubCollection from ID.
+    public func remove(_ id: String) {
+        if let index: Int = _self.index(of: id) {
+            _self.remove(at: index)
+        }
+        if isSaved {
+            _deleteIDs.append(id)
+        }
+    }
+
     public func contains(_ id: String, block: @escaping (Bool) -> Void) {
         self.reference.document(id).getDocument { (snapshot, error) in
             return block(snapshot?.exists ?? false)
@@ -138,7 +154,9 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         if _self.isEmpty {
             return "SubCollection([])"
         }
-        return "\(_self.description)"
+        return """
+            \(_self.description)
+        """
     }
 }
 

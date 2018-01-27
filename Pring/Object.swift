@@ -275,7 +275,7 @@ open class Object: NSObject, Document {
                     case .date          (let key, let rawValue, _):   document[key] = rawValue
                     case .geoPoint      (let key, let rawValue, _):   document[key] = rawValue
                     case .dictionary    (let key, let rawValue, _):   document[key] = rawValue
-                    case .collection    (let key, let rawValue, _):   document[key] = rawValue
+                    case .collection    (let key, let rawValue, _):   if !rawValue.isEmpty { document[key] = rawValue }
                     case .reference     (let key, let rawValue, _):   document[key] = rawValue
                     case .string        (let key, let rawValue, _):   document[key] = rawValue
                     case .document      (let key, let rawValue, _):   document[key] = rawValue

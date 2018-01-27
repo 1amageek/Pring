@@ -42,6 +42,10 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
                 let reference: DocumentReference = self.reference.document(document.id)
                 batch.deleteDocument(reference)
             })
+            _deleteIDs.forEach({ (id) in
+                let reference: DocumentReference = self.reference.document(id)
+                batch.deleteDocument(reference)
+            })
         case .delete:
             self.forEach { (document) in
                 let reference: DocumentReference = self.reference.document(document.id)
