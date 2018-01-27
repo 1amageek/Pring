@@ -12,6 +12,8 @@ import FirebaseStorage
 
 public class ReferenceCollection<T: Document>: SubCollection<T> {
 
+    internal var _hardDeletions: Set<T> = []
+
     @discardableResult
     public override func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
@@ -42,9 +44,8 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
                 let reference: DocumentReference = self.reference.document(document.id)
                 batch.deleteDocument(reference)
             })
-            _deleteIDs.forEach({ (id) in
-                let reference: DocumentReference = self.reference.document(id)
-                batch.deleteDocument(reference)
+            _hardDeletions.forEach({ (document) in
+                batch.deleteDocument(document.reference)
             })
         case .delete:
             self.forEach { (document) in
@@ -59,20 +60,31 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
 
     /// Save the new Object.
     public override func insert(_ newMember: Element) {
-        _self.append(newMember)
+        if !_self.contains(newMember) {
+            _self.append(newMember)
+        }
         if isSaved {
             _insertions.insert(newMember)
         }
     }
 
     /// Deletes the Object from the reference destination.
-    public override func remove(_ member: Element) {
+    public func remove(_ member: Element, hard: Bool = false) {
         if let index: Int = _self.index(of: member) {
             _self.remove(at: index)
         }
         if isSaved {
             _deletions.insert(member)
         }
+        if hard {
+            _hardDeletions.insert(member)
+        }
+    }
+
+    /// Deletes the Document contained in SubCollection from ID.
+    public func remove(_ id: String, hard: Bool = false) {
+        let document: Element = Element(id: id)
+        self.remove(document, hard: hard)
     }
 }
 

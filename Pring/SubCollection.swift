@@ -20,8 +20,6 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
 
     internal var _deletions: Set<T> = []
 
-    internal var _deleteIDs: [String] = []
-
     /// Contains the Object holding the property.
     public weak var parent: Object?
 
@@ -54,6 +52,10 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         return self.parent?.isSaved ?? false
     }
 
+    public var count: Int {
+        return self._self.count
+    }
+
     /**
 
     */
@@ -67,15 +69,16 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
                 batch.setData(document.value as! [String : Any], forDocument: reference)
             }
         case .update:
-            _deleteIDs.forEach({ (id) in
-                let reference: DocumentReference = self.reference.document(id)
-                batch.deleteDocument(reference)
-            })
             _insertions.subtracting(_deletions).forEach({ (document) in
-                batch.setData(document.updateValue as! [String: Any], forDocument: document.reference)
+                if document.isSaved {
+                    batch.setData(document.updateValue as! [String: Any], forDocument: document.reference)
+                } else {
+                    batch.setData(document.value as! [String: Any], forDocument: document.reference)
+                }
             })
             _deletions.subtracting(_insertions).forEach({ (document) in
-                batch.deleteDocument(document.reference)
+                let reference: DocumentReference = self.reference.document(document.id)
+                batch.deleteDocument(reference)
             })
         case .delete:
             self.forEach { (document) in
@@ -111,7 +114,9 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
     /// Save the new Object.
     public func insert(_ newMember: Element) {
         newMember.set(self.reference.document(newMember.id))
-        _self.append(newMember)
+        if !_self.contains(newMember) {
+            _self.append(newMember)
+        }
         if isSaved {
             _insertions.insert(newMember)
         }
@@ -130,12 +135,8 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
 
     /// Deletes the Document contained in SubCollection from ID.
     public func remove(_ id: String) {
-        if let index: Int = _self.index(of: id) {
-            _self.remove(at: index)
-        }
-        if isSaved {
-            _deleteIDs.append(id)
-        }
+        let document: Element = Element(id: id)
+        self.remove(document)
     }
 
     public func contains(_ id: String, block: @escaping (Bool) -> Void) {

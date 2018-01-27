@@ -404,8 +404,13 @@ extension DataSource: Collection {
     }
 
     public func index(where predicate: (T) throws -> Bool) rethrows -> Int? {
-        if self.documents.isEmpty { return nil}
+        if self.documents.isEmpty { return nil }
         return try self.documents.index(where: predicate)
+    }
+
+    public func index(of element: T) -> Int? {
+        if self.documents.isEmpty { return nil }
+        return self.documents.index(of: element.id)
     }
 
     public var first: Element? {
@@ -447,6 +452,10 @@ extension Array where Element: Document {
 
     public func index(of key: String) -> Int? {
         return self.keys.index(of: key)
+    }
+
+    public func index(of document: Element) -> Int? {
+        return self.keys.index(of: document.id)
     }
 
     public func sort(sortDescriptors: [NSSortDescriptor]) -> [Element] {
