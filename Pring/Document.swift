@@ -270,6 +270,22 @@ public extension Document {
     }
 }
 
+extension DocumentReference {
+    public func get<T: Document>(_ document: T, block: @escaping (T?, Error?) -> Void) {
+        self.getDocument { (snapshot, error) in
+            guard let snapshot: DocumentSnapshot = snapshot, snapshot.exists else {
+                block(nil, error)
+                return
+            }
+            guard let document: T = T(snapshot: snapshot) else {
+                block(nil, error)
+                return
+            }
+            block(document, nil)
+        }
+    }
+}
+
 public extension Document where Self: Object {
 
     public static func `where`(_ keyPath: PartialKeyPath<Self>, isEqualTo: Any) -> DataSource<Self>.Query {
