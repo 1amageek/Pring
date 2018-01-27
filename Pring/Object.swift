@@ -117,7 +117,6 @@ open class Object: NSObject, Document {
         self.init()
         self.id = id
         self.reference = type(of: self).reference.document(id)
-        self.isSaved = true
     }
 
     /// Initialize Object from snapshot.
@@ -512,7 +511,6 @@ open class Object: NSObject, Document {
                 return
             }
             self.batch(.save, completion: UUID().uuidString)
-//            self.isObserving = true
             block?(self.reference, nil)
         }
     }
@@ -525,9 +523,6 @@ open class Object: NSObject, Document {
 
     @discardableResult
     public func update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
-        if !isSaved {
-            fatalError("[Pring.Document] *** error: \(type(of: self)) has not been saved yet.")
-        }
         if self.hasFiles {
             return self.saveFiles(container: nil) { (error) in
                 if let error = error {

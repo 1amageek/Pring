@@ -14,6 +14,9 @@
 		1224CB8A201B9B42002DA245 /* SubColletionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1224CB89201B9B42002DA245 /* SubColletionTests.swift */; };
 		1224CB8D201B9C71002DA245 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1224CB8C201B9C71002DA245 /* User.swift */; };
 		1224CB8F201B9C80002DA245 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1224CB8E201B9C80002DA245 /* Item.swift */; };
+		1224CB90201CA789002DA245 /* AnySubCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CF86C1200C65300068BF70 /* AnySubCollection.swift */; };
+		1224CB91201CA789002DA245 /* NestedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F5D3201845F5001D635E /* NestedCollection.swift */; };
+		1224CB92201CA789002DA245 /* ReferenceCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F5D5201846C3001D635E /* ReferenceCollection.swift */; };
 		122FCCB31FA5C9D8005A069E /* NestedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122FCCB21FA5C9D8005A069E /* NestedItem.swift */; };
 		123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */; };
 		1249ABED1FB45DB400E78EA6 /* DataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */; };
@@ -683,10 +686,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1224CB91201CA789002DA245 /* NestedCollection.swift in Sources */,
 				1288E2291FCE9F2900E72594 /* Media.swift in Sources */,
 				1288E2281FCE928400E72594 /* Photo.swift in Sources */,
 				12027CB21FF4BDA800912630 /* FileControlViewController.swift in Sources */,
 				12AF83331F8CD2F400561159 /* ViewController.swift in Sources */,
+				1224CB92201CA789002DA245 /* ReferenceCollection.swift in Sources */,
 				12E6F5A71FCED42D00347F4C /* Group.swift in Sources */,
 				12AF83311F8CD2F400561159 /* AppDelegate.swift in Sources */,
 				129E36921FA34F3200336C4D /* Item.swift in Sources */,
@@ -702,6 +707,7 @@
 				12C41E841FB336C1002B1526 /* SubCollection.swift in Sources */,
 				12AF83511F8CD4A400561159 /* User.swift in Sources */,
 				120A17911FC5AA61002767F6 /* Batchable.swift in Sources */,
+				1224CB90201CA789002DA245 /* AnySubCollection.swift in Sources */,
 				12C41E811FB336C1002B1526 /* DataType.swift in Sources */,
 				12C41E871FB336C1002B1526 /* CountableNestedCollection.swift in Sources */,
 				12C41E851FB336C1002B1526 /* File.swift in Sources */,
