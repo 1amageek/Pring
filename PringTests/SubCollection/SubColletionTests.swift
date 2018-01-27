@@ -183,5 +183,35 @@ class SubColletionTests: XCTestCase {
         }
         self.wait(for: [expectation], timeout: 10)
     }
+
+    func testNestedCollectionUpdate() {
+        let expectation: XCTestExpectation = XCTestExpectation()
+        let user0: User = User()
+        let item0: Item = Item()
+
+        user0.name = "user0"
+        item0.name = "item0"
+
+        user0.items.insert(item0)
+        user0.save { (ref, error) in
+            item0.name = "update"
+            item0.update({ (_) in
+                user0.items.query.dataSource().onCompleted({ (_, items) in
+                    XCTAssertEqual(items.count, 1)
+                    XCTAssertEqual(items.first!.name, "update")
+                    user0.items.remove(item0)
+                    user0.update({ (_) in
+                        user0.items.query.dataSource().onCompleted({ (_, items) in
+                            XCTAssertEqual(items.count, 0)
+                            user0.delete({ (_) in
+                                expectation.fulfill()
+                            })
+                        }).get()
+                    })
+                }).get()
+            })
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
     
 }

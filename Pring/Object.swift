@@ -65,19 +65,20 @@ open class Object: NSObject, Document {
     public private(set) var isPacked: Bool = false
 
     /// isObserving is a flag that indicates that Document is concerned with my Field.
-    internal private(set) var isObserving: Bool = false {
-        didSet {
-            self.isSaved = isObserving
-            if isObserving {
-                Mirror(reflecting: self).children.forEach { (key, value) in
-                    if let key: String = key {
-                        if !self.ignore.contains(key) {
-                            self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
-                        }
-                    }
+    internal private(set) var isObserving: Bool = false
+
+    private func _observe() {
+        if isObserving {
+            return
+        }
+        Mirror(reflecting: self).children.forEach { (key, value) in
+            if let key: String = key {
+                if !self.ignore.contains(key) {
+                    self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                 }
             }
         }
+        self.isObserving = true
     }
 
     /// isSaved is a flag that indicates that this Document has already been saved.
@@ -108,6 +109,7 @@ open class Object: NSObject, Document {
         self.id = self.reference.documentID
         super.init()
         self._init()
+        self._observe()
     }
 
     /// Initialize the object with the specified ID.
@@ -115,6 +117,7 @@ open class Object: NSObject, Document {
         self.init()
         self.id = id
         self.reference = type(of: self).reference.document(id)
+        self.isSaved = true
     }
 
     /// Initialize Object from snapshot.
@@ -125,6 +128,7 @@ open class Object: NSObject, Document {
         }
         self.init()
         _setSnapshot(snapshot)
+        self.isSaved = true
     }
 
     public convenience required init(id: String, value: [AnyHashable: Any]) {
@@ -165,10 +169,10 @@ open class Object: NSObject, Document {
                 }
             }
         }
-        self.isObserving = true
+        self.isSaved = true
     }
 
-    func _setSnapshot(_ snapshot: DocumentSnapshot) {
+    private func _setSnapshot(_ snapshot: DocumentSnapshot) {
         self.snapshot = snapshot
     }
 
@@ -483,7 +487,7 @@ open class Object: NSObject, Document {
 
     @discardableResult
     public func save(_ batch: WriteBatch? = nil, block: ((DocumentReference?, Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
-        if isObserving {
+        if isSaved {
             fatalError("[Pring.Document] *** error: \(type(of: self)) has already been saved.")
         }
         let ref: DocumentReference = self.reference
@@ -508,7 +512,7 @@ open class Object: NSObject, Document {
                 return
             }
             self.batch(.save, completion: UUID().uuidString)
-            self.isObserving = true
+//            self.isObserving = true
             block?(self.reference, nil)
         }
     }
