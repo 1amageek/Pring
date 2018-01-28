@@ -172,7 +172,7 @@ class User: Object {
 |Date|It is Date type.|
 |GeoPoint|It is GeoPoint type.|
 |Dictionary|It is a Dictionary type. Save the structural data.|
-|nestedCollection or referenceCollection|It is SubCollection type. SubCollection type. Holds the count stored in SubCollection.|
+|nestedCollection or referenceCollection|It is SubCollection type.|
 |String|It is String type.|
 |Reference|It is Reference type. It hold `DocumentReference`|
 |Null|It is Null type.|
