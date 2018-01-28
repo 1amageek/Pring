@@ -61,8 +61,7 @@ open class Object: NSObject, Document {
 
     public var batchID: String?
 
-    /// isPacked is a flag that indicates that data has been converted to JSON.
-    public private(set) var isPacked: Bool = false
+    private var _hash: Int?
 
     /// isObserving is a flag that indicates that Document is concerned with my Field.
     internal private(set) var isObserving: Bool = false
@@ -412,7 +411,9 @@ open class Object: NSObject, Document {
     @discardableResult
     public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
-        if isPacked { return batch }
+        if self._hash == batch.hash {
+            return batch
+        }
         switch type {
         case .save:
             batch.setData(self.value as! [String : Any], forDocument: self.reference)
@@ -447,12 +448,10 @@ open class Object: NSObject, Document {
         case .delete:
             batch.deleteDocument(self.reference)
         }
-        self.isPacked = true
         return batch
     }
 
     public func batch(_ type: BatchType, completion batchID: String) {
-        self.isPacked = false
         if batchID == self.batchID {
             return
         }
@@ -575,7 +574,6 @@ open class Object: NSObject, Document {
     }
 
     internal func reset() {
-        self.isPacked = false
         self.updateValue = [:]
         for (_, child) in Mirror(reflecting: self).children.enumerated() {
             guard let key: String = child.label else { break }
