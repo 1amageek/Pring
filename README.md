@@ -326,11 +326,10 @@ userA.items.insert(item)
 userA.save()
 ```
 
-Since the SubCollection of the saved document controls the count, it is necessary to describe the insert in the callback.
-
 ```swift
 let item: Item = Item()
-userA.items.insert(item) { error in
+userA.items.insert(item)
+userA.update() { error in
   if let error = error {
     // error handling
     return
