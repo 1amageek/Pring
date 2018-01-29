@@ -465,9 +465,18 @@ User.where(\User.name, isEqualTo: "name").get { (snapshot, error) in
 
 #### Get SubCollections
 
+__WHERE__
 ```swift
 let user: User = User(id: "user_id")
 user.items.where(\Item.name, isEqualTo: "item_name").get { (snapshot, error) in
+    print(snapshot?.documents)
+}
+```
+
+__ORDER__
+```swift
+let user: User = User(id: "user_id")
+user.items.order(by: \Item.updatedAt).get { (snapshot, error) in
     print(snapshot?.documents)
 }
 ```
