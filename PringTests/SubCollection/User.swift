@@ -15,6 +15,7 @@ import Pring
 class User: Object {
 
     dynamic var name: String = "user"
+    dynamic var file: File?
 
     let followers: ReferenceCollection<User>  = []
     let followees: ReferenceCollection<User>  = []
