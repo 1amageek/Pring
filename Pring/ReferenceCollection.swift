@@ -33,7 +33,9 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
             var value: [AnyHashable: Any] = [:]
             value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             _insertions.subtracting(_deletions).forEach({ (document) in
-                if !document.isSaved {
+                if document.isSaved {
+                    value[(\Object.createdAt)._kvcKeyPathString!] = document.createdAt
+                } else {
                     value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                     document.pack(.save, batch: batch)
                 }
