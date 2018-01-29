@@ -67,7 +67,6 @@ public final class CountableReferenceCollection<T: Document>: AnySubCollection, 
 
     @discardableResult
     public func pack(_ type: BatchType, batch: WriteBatch) -> WriteBatch {
-        var batch: WriteBatch = batch ?? Firestore.firestore().batch()
         switch type {
         case .save:
             var value: [AnyHashable: Any] = [:]

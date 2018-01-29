@@ -61,7 +61,6 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
     */
     @discardableResult
     public func pack(_ type: BatchType, batch: WriteBatch) -> WriteBatch {
-        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         switch type {
         case .save:
             _self.forEach { (document) in
