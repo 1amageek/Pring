@@ -149,6 +149,75 @@ class SubColletionTests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testReferneceCollectionLoopRefBeforeSaved() {
+        let expectation: XCTestExpectation = XCTestExpectation()
+        let user0: User = User()
+        let user1: User = User()
+        user0.name = "user0"
+        user1.name = "user1"
+        user0.followers.insert(user1)
+        user1.followees.insert(user0)
+        user0.save { (ref, error) in
+            XCTAssertEqual(user0.followers.count, 1)
+            user0.followers.query.dataSource().onCompleted({ (_, users) in
+                XCTAssertEqual(users.count, 1)
+                user1.followees.query.dataSource().onCompleted({ (_, users) in
+                    XCTAssertEqual(users.count, 1)
+                    expectation.fulfill()
+                }).get()
+            }).get()
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testReferneceCollectionLoopRefAfterSaved0() {
+        let expectation: XCTestExpectation = XCTestExpectation()
+        let user0: User = User()
+        let user1: User = User()
+        user0.name = "user0"
+        user1.name = "user1"
+        user0.save { _, _ in
+            user1.save { _,_ in
+                user0.followers.insert(user1)
+                user1.followees.insert(user0)
+                user0.update { _ in
+                    user0.followers.query.dataSource().onCompleted({ (_, users) in
+                        XCTAssertEqual(users.count, 1)
+                        user1.followees.query.dataSource().onCompleted({ (_, users) in
+                            XCTAssertEqual(users.count, 1)
+                            expectation.fulfill()
+                        }).get()
+                    }).get()
+                }
+            }
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testReferneceCollectionLoopRefAfterSaved1() {
+        let expectation: XCTestExpectation = XCTestExpectation()
+        let user0: User = User()
+        let user1: User = User()
+        user0.name = "user0"
+        user1.name = "user1"
+        user0.save { _, _ in
+            user1.save { _,_ in
+                user0.followers.insert(user1)
+                user1.followees.insert(user0)
+                user1.update { _ in
+                    user0.followers.query.dataSource().onCompleted({ (_, users) in
+                        XCTAssertEqual(users.count, 1)
+                        user1.followees.query.dataSource().onCompleted({ (_, users) in
+                            XCTAssertEqual(users.count, 1)
+                            expectation.fulfill()
+                        }).get()
+                    }).get()
+                }
+            }
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testNestedCollectionInsert() {
         let expectation: XCTestExpectation = XCTestExpectation()
         let user0: User = User()
@@ -213,5 +282,4 @@ class SubColletionTests: XCTestCase {
         }
         self.wait(for: [expectation], timeout: 10)
     }
-    
 }

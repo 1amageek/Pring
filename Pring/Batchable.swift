@@ -19,7 +19,7 @@ public protocol Batchable {
     var batchID: String? { get set }
 
     @discardableResult
-    func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch
+    func pack(_ type: BatchType, batch: WriteBatch) -> WriteBatch
 
     func batch(_ type: BatchType, completion batchID: String)
 }

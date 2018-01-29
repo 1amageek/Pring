@@ -66,8 +66,7 @@ public final class CountableNestedCollection<T: Document>: AnySubCollection, Cou
     }
 
     @discardableResult
-    public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
-        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
+    public func pack(_ type: BatchType, batch: WriteBatch) -> WriteBatch {
         switch type {
         case .save:
             self.forEach { (document) in

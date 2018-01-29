@@ -411,11 +411,11 @@ open class Object: NSObject, Document {
      Pack will pass data to Batch to save the data.
      */
     @discardableResult
-    public func pack(_ type: BatchType, batch: WriteBatch? = nil) -> WriteBatch {
-        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
+    public func pack(_ type: BatchType, batch: WriteBatch) -> WriteBatch {
         if self._hash == batch.hash {
             return batch
         }
+        self._hash = batch.hash
         switch type {
         case .save:
             batch.setData(self.value as! [String : Any], forDocument: self.reference)
@@ -506,6 +506,7 @@ open class Object: NSObject, Document {
     }
 
     private func _save(_ batch: WriteBatch? = nil, block: ((DocumentReference?, Error?) -> Void)?) {
+        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         self.pack(.save, batch: batch).commit { (error) in
             if let error: Error = error {
                 block?(nil, error)
@@ -539,6 +540,7 @@ open class Object: NSObject, Document {
     }
 
     private func _update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)?) {
+        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         self.pack(.update, batch: batch).commit { (error) in
             if let error: Error = error {
                 block?(error)
@@ -563,6 +565,7 @@ open class Object: NSObject, Document {
     }
 
     public func delete(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) {
+        let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         self.deleteFiles(container: nil) { (error) in
             self.pack(.delete, batch: batch).commit { (error) in
                 if let error = error {

@@ -77,7 +77,7 @@ public class Reference<T: Document>: AnyReference, Batchable {
         }
     }
 
-    public func pack(_ type: BatchType, batch: WriteBatch?) -> WriteBatch {
+    public func pack(_ type: BatchType, batch: WriteBatch) -> WriteBatch {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         switch type {
         case .save:

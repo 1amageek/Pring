@@ -25,6 +25,8 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
             _self.forEach { (document) in
                 if !document.isSaved {
                     document.pack(.save, batch: batch)
+                } else {
+                    document.pack(.update, batch: batch)
                 }
                 let reference: DocumentReference = self.reference.document(document.id)
                 batch.setData(value as! [String : Any], forDocument: reference)
@@ -35,6 +37,7 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
             _insertions.subtracting(_deletions).forEach({ (document) in
                 if document.isSaved {
                     value[(\Object.createdAt)._kvcKeyPathString!] = document.createdAt
+                    document.pack(.update, batch: batch)
                 } else {
                     value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                     document.pack(.save, batch: batch)
