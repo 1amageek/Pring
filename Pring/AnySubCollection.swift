@@ -43,10 +43,10 @@ extension AnySubCollection {
 }
 
 extension AnySubCollection where Self: Collection, Self.Element: Document {
-    
-    public var hasFiles: Bool {
+
+    public func shouldUploadFiles(_ id: String) -> Bool {
         for (_, document) in self.enumerated() {
-            if document.hasFiles {
+            if document.shouldUploadFiles(id) {
                 return true
             }
         }

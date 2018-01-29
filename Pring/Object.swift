@@ -61,6 +61,8 @@ open class Object: NSObject, Document {
 
     public var batchID: String?
 
+    public var uploadID: String?
+
     private var _hash: Int?
 
     /// isObserving is a flag that indicates that Document is concerned with my Field.
@@ -489,7 +491,7 @@ open class Object: NSObject, Document {
             fatalError("[Pring.Document] *** error: \(type(of: self)) has already been saved.")
         }
         let ref: DocumentReference = self.reference
-        if self.hasFiles {
+        if self.shouldUploadFiles(UUID().uuidString) {
             return self.saveFiles(container: nil) { (error) in
                 if let error = error {
                     block?(ref, error)
@@ -522,7 +524,7 @@ open class Object: NSObject, Document {
 
     @discardableResult
     public func update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
-        if self.hasFiles {
+        if self.shouldUploadFiles(UUID().uuidString) {
             return self.saveFiles(container: nil) { (error) in
                 if let error = error {
                     block?(error)

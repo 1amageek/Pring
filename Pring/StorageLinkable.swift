@@ -85,7 +85,7 @@ public struct DeleteContainer {
 
 public protocol StorageLinkable {
 
-    var hasFiles: Bool { get }
+    func shouldUploadFiles(_ id: String) -> Bool
 
     @discardableResult
     func saveFiles(container: UploadContainer?, block: ((Error?) -> Void)?) -> [String: StorageUploadTask]

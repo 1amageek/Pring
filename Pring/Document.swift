@@ -66,9 +66,13 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
     func delete(_ block: ((Error?) -> Void)?)
 }
 
-public extension Document {
-    
-    public var hasFiles: Bool {
+public extension Document where Self: Object {
+
+    public func shouldUploadFiles(_ id: String) -> Bool {
+        if id == self.uploadID {
+            return false
+        }
+        self.uploadID = id
         let mirror = Mirror(reflecting: self)
         for (_, child) in mirror.children.enumerated() {
             if let key: String = child.label {
@@ -79,11 +83,11 @@ public extension Document {
                         return true
                     }
                 case .collection(_, _, let collection):
-                    if collection.hasFiles {
+                    if collection.shouldUploadFiles(id) {
                         return true
                     }
                 case .document(_, _, let document):
-                    if document!.hasFiles {
+                    if document!.shouldUploadFiles(id) {
                         return true
                     }
                 default: break
@@ -106,7 +110,7 @@ public extension Document {
 
             switch DataType(key: key, value: value) {
             case .file(let key, _, let file):
-                file.parent = self as? Object
+                file.parent = self
                 file.key = key
                 if file.shouldBeSaved {
                     uploadContainer.group.enter()
@@ -127,7 +131,7 @@ public extension Document {
                 if !files.isEmpty {
                     for (index, file) in files.enumerated() {
                         if file.shouldBeSaved {
-                            file.parent = self as? Object
+                            file.parent = self
                             file.key = key
                             uploadContainer.group.enter()
                             if let task: StorageUploadTask = file.save(key, completion: { (meta, error) in
