@@ -67,12 +67,6 @@ extension AnySubCollection where Self: Collection, Self.Element: Document {
             document.deleteFiles(container: deleteContainer, block: nil)
         }
     }
-    
-    public func batch(_ type: BatchType, completion batchID: String) {
-        self.forEach { (document) in
-            document.batch(type, completion: batchID)
-        }
-    }
 }
 
 public extension AnySubCollection where Self: Collection, Self.Element: Document {

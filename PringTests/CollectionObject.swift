@@ -15,6 +15,4 @@ class CollectionObject: Object {
 
     let nestedCollection: NestedCollection<NestedItem> = []
     let referenceCollection: ReferenceCollection<CollectionObject> = []
-    let countableNestedCollection: CountableNestedCollection<NestedItem> = []
-    let countableReferenceCollection: CountableReferenceCollection<CollectionObject> = []
 }

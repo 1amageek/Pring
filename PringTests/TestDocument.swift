@@ -37,8 +37,6 @@ class TestDocument: Object {
     let subCollection: SubCollection<NestedItem>                = []
     let referenceCollection: ReferenceCollection<TestDocument>  = []
     let nestedCollection: NestedCollection<NestedItem>          = []
-    let countableReferenceCollection: CountableReferenceCollection<TestDocument>  = []
-    let countableNestedCollection: CountableNestedCollection<NestedItem>          = []
 
     override func encode(_ key: String, value: Any?) -> Any? {
         if key == "type" {

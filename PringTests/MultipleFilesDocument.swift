@@ -18,7 +18,7 @@ class MultipleFilesDocument: Object {
     dynamic var file1: File?
     dynamic var file2: File?
 
-    let files: CountableNestedCollection<MultipleFilesNestedItem> = []
+    let files: NestedCollection<MultipleFilesNestedItem> = []
 
     static func image() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)

@@ -88,6 +88,14 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         return batch
     }
 
+    public func batch(_ type: BatchType, completion batchID: String) {
+        self.forEach { (document) in
+            document.batch(type, completion: batchID)
+        }
+        _deletions = []
+        _insertions = []
+    }
+
     /**
      Initialize Relation.
      */
