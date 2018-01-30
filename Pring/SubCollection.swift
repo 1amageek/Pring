@@ -124,9 +124,7 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         if !_self.contains(newMember) {
             _self.append(newMember)
         }
-        if isSaved {
-            _insertions.insert(newMember)
-        }
+        _insertions.insert(newMember)
     }
 
     /// Deletes the Object from the reference destination.
@@ -134,9 +132,7 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         if let index: Int = _self.index(of: member) {
             _self.remove(at: index)
         }
-        if isSaved {
-            _deletions.insert(member)
-        }
+        _deletions.insert(member)
         member.set(Element.reference.document(member.id))
     }
 
