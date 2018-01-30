@@ -68,9 +68,7 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
         if !_self.contains(newMember) {
             _self.append(newMember)
         }
-        if isSaved {
-            _insertions.insert(newMember)
-        }
+        _insertions.insert(newMember)
     }
 
     /// Deletes the Object from the reference destination.
@@ -78,9 +76,7 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
         if let index: Int = _self.index(of: member) {
             _self.remove(at: index)
         }
-        if isSaved {
-            _deletions.insert(member)
-        }
+        _deletions.insert(member)
         if hard {
             _hardDeletions.insert(member)
         }
