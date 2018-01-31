@@ -29,6 +29,25 @@ class PringTests: XCTestCase {
         _ = FirebaseTest.shared
     }
 
+    func testCustomDocument() {
+        let expectation: XCTestExpectation = XCTestExpectation()
+        let document: CustomDocument = CustomDocument()
+        document.save { _, _ in
+            CustomDocument.get(document.id, block: { (document, _) in
+                XCTAssertTrue(document!.reference.path.contains("custom"))
+                XCTAssertTrue(document!.reference.path.contains("2"))
+                document?.delete({ (_) in
+                    CustomDocument.get(document!.id, block: { (document, _) in
+                        XCTAssertNil(document)
+                        expectation.fulfill()
+                    })
+                })
+                expectation.fulfill()
+            })
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testFiles() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test Files")
         let document: MultipleFilesDocument = MultipleFilesDocument()
