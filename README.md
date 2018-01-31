@@ -15,10 +15,13 @@ https://github.com/1amageek/pring.ts
 Firestore model framework.
 The concept of Document and Collection has been added to Firestore. Pring defines the Scheme of the Document and enables type - safe programming. SubCollection can also be defined in Scheme.
 
+[Deep Dive into the Firebase](https://github.com/1amageek/Pring/wiki/Deep-Dive-into-the-Firebase)
+
 <b> ⚠️ This code still contains bugs.</b><br>
 Please see TODO for details.
 
 Please report issues [here](https://github.com/1amageek/Pring/issues/new)
+
 
 ## Requirements ❗️
 - iOS 10 or later
