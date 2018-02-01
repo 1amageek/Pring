@@ -243,7 +243,6 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                             if let i: Int = self.documents.index(of: document) {
                                 changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
                             }
-
                             group.leave()
                         }
                     })
@@ -322,7 +321,15 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
             }
         } else {
             let id: String = change.document.documentID
-            Element.get(id, block: block)
+            Element.get(id, block: { (document, error) in
+                if let error = error {
+                    block(nil, error)
+                    return
+                }
+                document?.createdAt = change.document.data()["createdAt"] as! Date
+                document?.updatedAt = change.document.data()["updatedAt"] as! Date
+                block(document, nil)
+            })
         }
     }
 

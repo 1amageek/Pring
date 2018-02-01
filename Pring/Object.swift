@@ -104,8 +104,8 @@ open class Object: NSObject, Document {
     public override required init() {
         self.createdAt = Date()
         self.updatedAt = Date()
-        self._createdAt = Date()
-        self._updatedAt = Date()
+        self._createdAt = self.createdAt
+        self._updatedAt = self.updatedAt
         self.reference = type(of: self).reference.document()
         self.id = self.reference.documentID
         super.init()

@@ -37,9 +37,9 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
     var value: [AnyHashable: Any] { get }
 
-    var createdAt: Date { get }
+    var createdAt: Date { set get }
 
-    var updatedAt: Date { get }
+    var updatedAt: Date { set get }
 
     var ignore: [String] { get }
 
