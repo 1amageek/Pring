@@ -17,6 +17,9 @@ class User: Object {
     dynamic var name: String = "user"
     dynamic var file: File?
 
+    dynamic var followerCount: Int = 0
+    dynamic var followeeCount: Int = 0
+
     let followers: ReferenceCollection<User>  = []
     let followees: ReferenceCollection<User>  = []
     let items: NestedCollection<Item> = []
