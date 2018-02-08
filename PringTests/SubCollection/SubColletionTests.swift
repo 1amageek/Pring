@@ -222,6 +222,7 @@ class SubColletionTests: XCTestCase {
     func testReferneceCollectionLoopRefAfterSaveWithCount() {
         let expectation: XCTestExpectation = XCTestExpectation()
 
+        let waitQueue: DispatchQueue = DispatchQueue(label: "test.wait.queue")
         let queue: DispatchQueue = DispatchQueue(label: "test.queue", attributes: .concurrent)
         let group: DispatchGroup = DispatchGroup()
         let count: Int = 5
@@ -229,47 +230,47 @@ class SubColletionTests: XCTestCase {
         let user: User = User()
         user.name = "main"
         user.save { (_, _) in
-
-            queue.async {
+            waitQueue.async {
                 (0..<count).forEach({ (index) in
                     group.enter()
-
-                    let follwer: User = User()
-                    follwer.name = "follow_\(index)"
-                    follwer.save { _, _ in
-                        Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
-                            let userDocument: DocumentSnapshot
-                            let follwerDocument: DocumentSnapshot
-                            do {
-                                try userDocument = transaction.getDocument(user.reference)
-                                try follwerDocument = transaction.getDocument(follwer.reference)
-                            } catch let fetchError as NSError {
-                                errorPointer?.pointee = fetchError
+                    queue.async {
+                        let follwer: User = User()
+                        follwer.name = "follow_\(index)"
+                        follwer.save { _, _ in
+                            Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
+                                let userDocument: DocumentSnapshot
+                                let follwerDocument: DocumentSnapshot
+                                do {
+                                    try userDocument = transaction.getDocument(user.reference)
+                                    try follwerDocument = transaction.getDocument(follwer.reference)
+                                } catch let fetchError as NSError {
+                                    errorPointer?.pointee = fetchError
+                                    return nil
+                                }
+                                guard let userData: [String: Any] = userDocument.data() else {
+                                    return nil
+                                }
+                                guard let follwerData: [String: Any] = follwerDocument.data() else {
+                                    return nil
+                                }
+                                let followerCount: Int = (userData["followerCount"] as? Int ?? 0) + 1
+                                let followeeCount: Int = (follwerData["followeeCount"] as? Int ?? 0) + 1
+                                transaction.updateData(["followerCount": followerCount], forDocument: user.reference)
+                                transaction.updateData(["followeeCount": followeeCount], forDocument: follwer.reference)
                                 return nil
-                            }
-                            guard let userData: [String: Any] = userDocument.data() else {
-                                return nil
-                            }
-                            guard let follwerData: [String: Any] = follwerDocument.data() else {
-                                return nil
-                            }
-                            let followerCount: Int = (userData["followerCount"] as? Int ?? 0) + 1
-                            let followeeCount: Int = (follwerData["followeeCount"] as? Int ?? 0) + 1
-                            transaction.updateData(["followerCount": followerCount], forDocument: user.reference)
-                            transaction.updateData(["followeeCount": followeeCount], forDocument: follwer.reference)
-                            return nil
-                        }, completion: { (_, _) in
-                            user.followers.insert(follwer)
-                            follwer.followees.insert(user)
-                            follwer.update { _ in
-                                user.followers.query.dataSource().onCompleted({ (_, users) in
-                                    follwer.followees.query.dataSource().onCompleted({ (_, users) in
-                                        XCTAssertEqual(users.count, 1)
-                                        group.leave()
+                            }, completion: { (_, _) in
+                                user.followers.insert(follwer)
+                                follwer.followees.insert(user)
+                                follwer.update { _ in
+                                    user.followers.query.dataSource().onCompleted({ (_, users) in
+                                        follwer.followees.query.dataSource().onCompleted({ (_, users) in
+                                            XCTAssertEqual(users.count, 1)
+                                            group.leave()
+                                        }).get()
                                     }).get()
-                                }).get()
-                            }
-                        })
+                                }
+                            })
+                        }
                     }
                 })
                 group.notify(queue: .main, execute: {
@@ -280,7 +281,6 @@ class SubColletionTests: XCTestCase {
                 })
                 group.wait()
             }
-
         }
         self.wait(for: [expectation], timeout: 15)
     }
