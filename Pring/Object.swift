@@ -135,7 +135,8 @@ open class Object: NSObject, Document {
         self.init()
 
         self.id = id
-
+        self.reference = type(of: self).reference.document(id)
+        
         let data: [String: Any] = value as! [String: Any]
 
         self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Date ?? _createdAt
