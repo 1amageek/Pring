@@ -329,8 +329,6 @@ class SubColletionTests: XCTestCase {
                             }, completion: { (_, _) in
                                 user.followers.insert(follwer)
                                 follwer.followees.insert(user)
-                                print(user.updateValue)
-                                print(follwer.updateValue)
                                 follwer.update { _ in
                                     user.followers.query.dataSource().onCompleted({ (_, users) in
                                         follwer.followees.query.dataSource().onCompleted({ (_, users) in

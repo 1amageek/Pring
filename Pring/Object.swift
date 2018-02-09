@@ -224,7 +224,8 @@ open class Object: NSObject, Document {
                         }
                     }
                 }
-                self.isObserving = true
+                self.updateValue = [:]
+                _observe()
             }
         }
     }
