@@ -27,7 +27,7 @@ public protocol Batchable {
 extension WriteBatch {
 
     @discardableResult
-    public func add(_ type: BatchType, object: Object) -> WriteBatch {
+    public func add<T: Document>(_ type: BatchType, object: T) -> WriteBatch {
         return object.pack(type, batch: self)
     }
 }
