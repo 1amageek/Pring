@@ -297,11 +297,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                     }
                     group.enter()
                     if let i: Int = self.documents.index(of: id) {
+                        changeBlock?(snapshot, CollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                         self.documents.remove(at: i)
-                        DispatchQueue.main.async {
-                            changeBlock?(snapshot, CollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
-                            group.leave()
-                        }
+                        group.leave()
                     }
                 }
             })
