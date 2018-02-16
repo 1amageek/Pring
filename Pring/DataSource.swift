@@ -11,13 +11,21 @@ import FirebaseFirestore
 import FirebaseStorage
 
 public struct DataSourceError: Error {
-    enum ErrorKind {
+    public enum ErrorKind {
         case invalidReference
         case empty
         case timeout
     }
-    let kind: ErrorKind
-    let description: String
+
+    public let kind: ErrorKind
+
+    public var description: String {
+        switch self.kind {
+        case .invalidReference: return "The value you are trying to reference is invalid."
+        case .empty: return "There was no value."
+        case .timeout: return "DataSource fetch timed out."
+        }
+    }
 }
 
 
@@ -253,7 +261,8 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                     group.enter()
                     self.get(with: change, block: { (document, error) in
                         guard let document: Element = document else {
-                            let collectionChange: CollectionChange = CollectionChange.error(error!)
+                            let error: Error = error ?? DataSourceError(kind: .invalidReference)
+                            let collectionChange: CollectionChange = CollectionChange.error(error)
                             changeBlock?(snapshot, collectionChange)
                             group.leave()
                             return
@@ -302,7 +311,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
             switch group.wait(timeout: .now() + .seconds(self.options.timeout)) {
             case .success: break
             case .timedOut:
-                let error: DataSourceError = DataSourceError(kind: .timeout, description: "DataSource fetch timed out.")
+                let error: DataSourceError = DataSourceError(kind: .timeout)
                 DispatchQueue.main.async {
                     errorBlock?(snapshot, error)
                 }
