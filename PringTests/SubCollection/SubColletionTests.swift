@@ -353,6 +353,26 @@ class SubColletionTests: XCTestCase {
         self.wait(for: [expectation], timeout: 20)
     }
 
+    func testReplicatedReferenceCollectionInsert() {
+        let expectation: XCTestExpectation = XCTestExpectation()
+        let user: User = User()
+        let item: ReplicatedItem = ReplicatedItem()
+
+        user.replicatedItems.insert(item)
+        user.save { (ref, error) in
+            let user: User = User(id: user.id, value: [:])
+            user.replicatedItems.query.dataSource().onCompleted({ (snapshot, items) in
+                snapshot?.documents.forEach({ (snapshot) in
+                    let itemName: String = snapshot.data()["name"] as! String
+                    XCTAssertEqual(itemName, "item")
+                })
+                expectation.fulfill()
+            }).get()
+
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testNestedCollectionInsert() {
         let expectation: XCTestExpectation = XCTestExpectation()
         let user0: User = User()

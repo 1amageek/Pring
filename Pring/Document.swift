@@ -25,6 +25,8 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
     static var storageRef: StorageReference { get }
 
+    static var shouldBeReplicated: Bool { get }
+
     var reference: DocumentReference { get }
 
     var path: String { get }

@@ -22,5 +22,6 @@ class User: Object {
 
     let followers: ReferenceCollection<User>  = []
     let followees: ReferenceCollection<User>  = []
+    let replicatedItems: ReferenceCollection<ReplicatedItem> = []
     let items: NestedCollection<Item> = []
 }

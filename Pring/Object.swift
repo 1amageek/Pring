@@ -32,6 +32,11 @@ open class Object: NSObject, Document {
         return Storage.storage().reference().child(self.path)
     }
 
+    /// If you have a relationship in ReferenceCollection, the value is duplicated.
+    open class var shouldBeReplicated: Bool {
+        return false
+    }
+
     public private(set) var reference: DocumentReference
 
     public var path: String {

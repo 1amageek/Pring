@@ -20,9 +20,12 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
         switch type {
         case .save:
             var value: [AnyHashable: Any] = [:]
-            value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
-            value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             _self.forEach { (document) in
+                if T.shouldBeReplicated {
+                    value = document.value
+                }
+                value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+                value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                 if !document.isSaved {
                     document.pack(.save, batch: batch)
                 } else {
@@ -33,12 +36,19 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
             }
         case .update:
             var value: [AnyHashable: Any] = [:]
-            value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
             _insertions.subtracting(_deletions).forEach({ (document) in
                 if document.isSaved {
+                    if T.shouldBeReplicated {
+                        value = document.value
+                    }
+                    value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                     value[(\Object.createdAt)._kvcKeyPathString!] = document.createdAt
                     document.pack(.update, batch: batch)
                 } else {
+                    if T.shouldBeReplicated {
+                        value = document.value
+                    }
+                    value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                     value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                     document.pack(.save, batch: batch)
                 }

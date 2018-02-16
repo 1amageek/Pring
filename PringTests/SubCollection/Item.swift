@@ -14,6 +14,18 @@ import Pring
 @objcMembers
 class Item: Object {
 
-    dynamic var name: String = "user"
+    dynamic var name: String = "item"
+
+}
+
+
+@objcMembers
+class ReplicatedItem: Object {
+
+    dynamic var name: String = "item"
+
+    override class var shouldBeReplicated: Bool {
+        return true
+    }
 
 }
