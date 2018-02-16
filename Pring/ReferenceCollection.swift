@@ -80,7 +80,7 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
         }
         _insertions.insert(newMember)
     }
-
+    
     /// Deletes the Object from the reference destination.
     public func remove(_ member: Element, hard: Bool = false) {
         if let index: Int = _self.index(of: member) {

@@ -129,6 +129,12 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         _insertions.insert(newMember)
     }
 
+    public func insert(_ newMembers: [Element]) {
+        newMembers.forEach { (newMemeber) in
+            insert(newMemeber)
+        }
+    }
+
     /// Deletes the Object from the reference destination.
     public func remove(_ member: Element) {
         if let index: Int = _self.index(of: member) {
