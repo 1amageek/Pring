@@ -498,3 +498,11 @@ user.items
         print(items)
 }
 ```
+
+
+## Full-text search
+
+Please use ElasticSearch or Algolia when performing full-text search on Firebase.
+There is a library when implementing with Swift.
+
+https://github.com/miuP/Algent
