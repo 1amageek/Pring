@@ -231,7 +231,8 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                     group.enter()
                     self.get(with: change, block: { (document, error) in
                         guard let document: Element = document else {
-                            let collectionChange: CollectionChange = CollectionChange.error(error!)
+                            let error: Error = error ?? DataSourceError(kind: .invalidReference)
+                            let collectionChange: CollectionChange = CollectionChange.error(error)
                             changeBlock?(snapshot, collectionChange)
                             group.leave()
                             return
