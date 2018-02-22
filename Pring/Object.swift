@@ -439,8 +439,10 @@ open class Object: NSObject, Document {
                 }
             })
         case .update:
-            updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
-            batch.updateData(updateValue, forDocument: self.reference)
+            if !updateValue.isEmpty {
+                updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+                batch.updateData(updateValue, forDocument: self.reference)
+            }
             self.each({ (key, value) in
                 if let value = value {
                     switch DataType(key: key, value: value) {

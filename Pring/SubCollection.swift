@@ -71,7 +71,7 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
             _insertions.subtracting(_deletions).forEach({ (document) in
                 if document.isSaved {
                     if let updateValue: [String: Any] = document.updateValue as? [String : Any], !updateValue.isEmpty {
-                        batch.setData(updateValue, forDocument: document.reference)
+                        batch.updateData(updateValue, forDocument: document.reference)
                     }
                 } else {
                     batch.setData(document.value as! [String: Any], forDocument: document.reference)
