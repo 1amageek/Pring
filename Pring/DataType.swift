@@ -325,6 +325,13 @@ public enum DataType {
                 self = .reference(key, documentReference, reference)
                 return
             }
+        } else if value is AnyRelation {
+            if let id: String = data[key] as? String {
+                var relation: AnyRelation = value as! AnyRelation
+                relation.id = id
+                self = .relation(key, id, relation)
+                return
+            }
         } else if value is Object {
             if let rawValue: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
                 self = .document(key, rawValue, nil)

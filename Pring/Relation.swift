@@ -10,7 +10,7 @@ import FirebaseFirestore
 
 public protocol AnyRelation: HasParent {
 
-    var id: String? { get }
+    var id: String? { get set }
 
     var value: String? { get }
 }
@@ -30,8 +30,15 @@ public class Relation<T: Document>: AnyRelation, Batchable {
 
     public private(set) var object: ContentType?
 
+    private var _id: String?
+
     public var id: String? {
-        return self.object?.id
+        get {
+            return self.object?.id ?? _id
+        }
+        set(newValue) {
+            _id = newValue
+        }
     }
 
     public var value: String? {
@@ -50,8 +57,11 @@ public class Relation<T: Document>: AnyRelation, Batchable {
         guard let key: String = self.key, let value: String = self.value else {
             return
         }
-        if self.parent?.isObserving ?? false {
-            self.parent?.update(key: key, value: value)
+        guard let parent = self.parent else {
+            return
+        }
+        if parent.isSaved {
+            parent.update(key: key, value: value)
         }
     }
 

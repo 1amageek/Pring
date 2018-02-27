@@ -33,6 +33,7 @@ class TestDocument: Object {
     dynamic var string: String                      = "string"
     dynamic var file: File                          = File(data: UIImagePNGRepresentation(TestDocument.image0())!, mimeType: .png)
     dynamic var refItem: Reference<ReferenceItem>   = Reference()
+    dynamic var relationItem: Relation<ReferenceItem>   = Relation()
 
     let subCollection: SubCollection<NestedItem>                = []
     let referenceCollection: ReferenceCollection<TestDocument>  = []

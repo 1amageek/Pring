@@ -168,6 +168,7 @@ open class Object: NSObject, Document {
                     case .dictionary    (let key, _, let value):                self.setValue(value, forKey: key)
                     case .collection    (let key, let value, let collection):   collection.setValue(value, forKey: key)
                     case .reference     (let key, _, let reference):            reference.setParent(self, forKey: key)
+                    case .relation      (let key, _, let relation):             relation.setParent(self, forKey: key)
                     case .document      (_, _, _):                              break
                     case .string        (let key, _, let value):                self.setValue(value, forKey: key)
                     case .null: break
@@ -222,6 +223,7 @@ open class Object: NSObject, Document {
                             case .dictionary    (let key, _, let value):                self.setValue(value, forKey: key)
                             case .collection    (let key, let value, let collection):   collection.setValue(value, forKey: key)
                             case .reference     (let key, _, let reference):            reference.setParent(self, forKey: key)
+                            case .relation      (let key, _, let relation):             relation.setParent(self, forKey: key)
                             case .document      (_, _, _):                              break
                             case .string        (let key, _, let value):                self.setValue(value, forKey: key)
                             case .null: break
@@ -288,6 +290,7 @@ open class Object: NSObject, Document {
                     case .dictionary    (let key, let rawValue, _):   document[key] = rawValue
                     case .collection    (let key, let rawValue, _):   if !rawValue.isEmpty { document[key] = rawValue }
                     case .reference     (let key, let rawValue, _):   document[key] = rawValue
+                    case .relation      (let key, let rawValue, _):   document[key] = rawValue
                     case .string        (let key, let rawValue, _):   document[key] = rawValue
                     case .document      (let key, let rawValue, _):   document[key] = rawValue
                     case .null: break
@@ -389,6 +392,7 @@ open class Object: NSObject, Document {
                 case .dictionary    (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .collection    (_, _, _):   break
                 case .reference     (_, _, _):   break
+                case .relation      (_, _, _):   break
                 case .document      (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .string        (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .null: break

@@ -22,7 +22,9 @@ class DocumentCRUDTests: XCTestCase {
     func testCreateDocument() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test document properties")
         let document: TestDocument = TestDocument(id: "hoge")
-
+        let item: ReferenceItem = ReferenceItem()
+        document.relationItem.set(item)
+        document.refItem.set(item)
         document.save { (ref, error) in
 
             TestDocument.get(ref!.documentID, block: { (document, error) in
@@ -41,7 +43,10 @@ class DocumentCRUDTests: XCTestCase {
                 XCTAssertEqual(document?.dictionary.keys.first, "key")
                 XCTAssertEqual(document?.dictionary.values.first as! String, "value")
                 XCTAssertEqual(document?.string, "string")
+                XCTAssertEqual(document?.refItem.id, item.id)
+                XCTAssertEqual(document?.relationItem.id, item.id)
 
+                let item: ReferenceItem = ReferenceItem()
 
                 document?.type = .update
                 document?.array = ["update"]
@@ -55,6 +60,8 @@ class DocumentCRUDTests: XCTestCase {
                 document?.geoPoint = GeoPoint(latitude: 1, longitude: 1)
                 document?.dictionary = ["key": "update"]
                 document?.string = "update"
+                document?.relationItem.set(item)
+                document?.refItem.set(item)
 
                 document?.update({ (error) in
                     TestDocument.get(document!.id, block: { (document, error) in
@@ -72,6 +79,8 @@ class DocumentCRUDTests: XCTestCase {
                         XCTAssertEqual(document?.dictionary.keys.first, "key")
                         XCTAssertEqual(document?.dictionary.values.first as! String, "update")
                         XCTAssertEqual(document?.string, "update")
+                        XCTAssertEqual(document?.refItem.id, item.id)
+                        XCTAssertEqual(document?.relationItem.id, item.id)
                         document?.delete { (error) in
                             TestDocument.get(document!.id, block: { (document, error) in
                                 XCTAssertNil(document)
