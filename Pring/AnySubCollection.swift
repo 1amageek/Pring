@@ -27,13 +27,6 @@ public protocol AnySubCollection: class, StorageLinkable, Batchable {
     func setParent(_ object: Object, forKey key: String)
 }
 
-public protocol Countable {
-
-    var value: [AnyHashable: Any] { get }
-}
-
-public typealias CountableSubCollection = AnySubCollection & Countable
-
 extension AnySubCollection {
     
     public func setParent(_ object: Object, forKey key: String) {

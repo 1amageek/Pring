@@ -12,6 +12,10 @@ import Pring
 @objcMembers
 class CustomDocument: Object {
 
+    open override class var path: String {
+        return "version/\(self.modelVersion)/\(self.modelName)"
+    }
+
     open override class var modelVersion: Int {
         return 2
     }
