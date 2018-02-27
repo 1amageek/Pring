@@ -27,6 +27,7 @@ public enum DataType {
     case dictionary (String, [AnyHashable: Any], [AnyHashable: Any])
     case collection (String, [AnyHashable: Any], AnySubCollection)
     case reference  (String, DocumentReference?, AnyReference)
+    case relation   (String, String?, AnyRelation)
     case string     (String, String, String)
     case document   (String, [AnyHashable: Any], Object?)
     case null
@@ -137,6 +138,11 @@ public enum DataType {
         case is AnyReference:
             if let value: AnyReference = value as? AnyReference {
                 self = .reference(key, value.value, value)
+                return
+            }
+        case is AnyRelation:
+            if let value: AnyRelation = value as? AnyRelation {
+                self = .relation(key, value.value, value)
                 return
             }
         case is Object:
