@@ -397,6 +397,8 @@ open class Object: NSObject, Document {
                 case .string        (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .null: break
                 }
+            } else {
+                update(key: keyPath, value: NSNull())
             }
         } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
