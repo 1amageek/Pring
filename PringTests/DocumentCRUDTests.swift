@@ -231,5 +231,32 @@ class DocumentCRUDTests: XCTestCase {
         }
         self.wait(for: [expectation], timeout: 10)
     }
+
+    func testOptionalDocumentFieldValue() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test optional document properties")
+        let document: TestOptionalDocument = TestOptionalDocument()
+        document.string = "string"
+
+        document.save { (ref, error) in
+            TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
+
+                XCTAssertEqual(document?.string, "string")
+                document?.string = nil
+
+                document?.update({ (error) in
+                    TestOptionalDocument.get(document!.id, block: { (document, error) in
+                        XCTAssertEqual(document?.string, nil)
+                        document?.delete { (error) in
+                            TestOptionalDocument.get(document!.id, block: { (document, error) in
+                                XCTAssertNil(document)
+                                expectation.fulfill()
+                            })
+                        }
+                    })
+                })
+            })
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
     
 }
