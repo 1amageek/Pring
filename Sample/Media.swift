@@ -8,17 +8,9 @@
 
 import Foundation
 
-//class Media: Relation {
-//
-//    enum ContentType: String, AnyContentType {
-//        case photo
-//        case video
-//    }
-//
-//    var object: Object?
-//
-//    init(_ object: Object) {
-//        self.object = object
-//    }
-//}
+@objcMembers
+class Media: Object {
+
+    dynamic var name: String?
+}
 

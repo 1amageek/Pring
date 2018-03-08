@@ -31,6 +31,7 @@ class User: Object {
     let friends: ReferenceCollection<User> = []
     let items: NestedCollection<Item> = []
     let group: Reference<Group> = Reference()
+    let media: ReferenceCollection<Media> = []
 
     static func image() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)

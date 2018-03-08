@@ -31,8 +31,8 @@ extension DataSource {
             self.hasRealities = hasRealities
         }
 
-        public func dataSource() -> DataSource<Element> {
-            return DataSource(reference: self)
+        public func dataSource(options: Options = Options()) -> DataSource<Element> {
+            return DataSource(reference: self, options: options)
         }
 
         // MARK: -

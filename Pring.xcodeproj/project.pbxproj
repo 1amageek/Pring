@@ -25,6 +25,9 @@
 		126080421FB991BD001B5DDA /* Collecor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126080411FB991BD001B5DDA /* Collecor.swift */; };
 		1266EB2120215664005F5F41 /* CustomDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1266EB2020215664005F5F41 /* CustomDocument.swift */; };
 		1281B0F31FE11A6500B8FCEE /* Transcript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1281B0F21FE11A6500B8FCEE /* Transcript.swift */; };
+		1281D2AB204E955A00F5A89A /* MediaDataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1281D2AA204E955A00F5A89A /* MediaDataSourceViewController.swift */; };
+		1281D2AC204E98D000F5A89A /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AFC0212045912600E19B6D /* Relation.swift */; };
+		1281D2AE204E9A9F00F5A89A /* MediaDataSourceViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1281D2AD204E9A9F00F5A89A /* MediaDataSourceViewCell.swift */; };
 		1288E2221FCD203000E72594 /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1288E2211FCD203000E72594 /* Reference.swift */; };
 		1288E2231FCD203400E72594 /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1288E2211FCD203000E72594 /* Reference.swift */; };
 		1288E2281FCE928400E72594 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1288E2261FCE8C0900E72594 /* Photo.swift */; };
@@ -104,6 +107,8 @@
 		12649F021F9F6567004C6130 /* Pring.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pring.podspec; sourceTree = "<group>"; };
 		1266EB2020215664005F5F41 /* CustomDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDocument.swift; sourceTree = "<group>"; };
 		1281B0F21FE11A6500B8FCEE /* Transcript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transcript.swift; sourceTree = "<group>"; };
+		1281D2AA204E955A00F5A89A /* MediaDataSourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDataSourceViewController.swift; sourceTree = "<group>"; };
+		1281D2AD204E9A9F00F5A89A /* MediaDataSourceViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDataSourceViewCell.swift; sourceTree = "<group>"; };
 		1288E2211FCD203000E72594 /* Reference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reference.swift; sourceTree = "<group>"; };
 		1288E2241FCE894C00E72594 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
 		1288E2261FCE8C0900E72594 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
@@ -269,6 +274,8 @@
 				12AF83301F8CD2F400561159 /* AppDelegate.swift */,
 				12AF83321F8CD2F400561159 /* ViewController.swift */,
 				1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */,
+				1281D2AA204E955A00F5A89A /* MediaDataSourceViewController.swift */,
+				1281D2AD204E9A9F00F5A89A /* MediaDataSourceViewCell.swift */,
 				1249ABEE1FB45ED800E78EA6 /* DataSourceViewCell.swift */,
 				12AF83501F8CD4A400561159 /* User.swift */,
 				12E6F5A61FCED42D00347F4C /* Group.swift */,
@@ -688,6 +695,7 @@
 				1288E2291FCE9F2900E72594 /* Media.swift in Sources */,
 				1288E2281FCE928400E72594 /* Photo.swift in Sources */,
 				12027CB21FF4BDA800912630 /* FileControlViewController.swift in Sources */,
+				1281D2AB204E955A00F5A89A /* MediaDataSourceViewController.swift in Sources */,
 				12AF83331F8CD2F400561159 /* ViewController.swift in Sources */,
 				1224CB92201CA789002DA245 /* ReferenceCollection.swift in Sources */,
 				12E6F5A71FCED42D00347F4C /* Group.swift in Sources */,
@@ -697,10 +705,12 @@
 				1249ABED1FB45DB400E78EA6 /* DataSourceViewController.swift in Sources */,
 				12C41E7F1FB336C1002B1526 /* DataSource.swift in Sources */,
 				1288E2231FCD203400E72594 /* Reference.swift in Sources */,
+				1281D2AE204E9A9F00F5A89A /* MediaDataSourceViewCell.swift in Sources */,
 				12C41E801FB336C1002B1526 /* Query.swift in Sources */,
 				126080421FB991BD001B5DDA /* Collecor.swift in Sources */,
 				1249ABEF1FB45ED800E78EA6 /* DataSourceViewCell.swift in Sources */,
 				12C41E831FB336C1002B1526 /* Document.swift in Sources */,
+				1281D2AC204E98D000F5A89A /* Relation.swift in Sources */,
 				1288E22B1FCEA46A00E72594 /* Video.swift in Sources */,
 				12C41E841FB336C1002B1526 /* SubCollection.swift in Sources */,
 				12AF83511F8CD4A400561159 /* User.swift in Sources */,

@@ -245,7 +245,7 @@ class DocumentCRUDTests: XCTestCase {
 
                 document?.update({ (error) in
                     TestOptionalDocument.get(document!.id, block: { (document, error) in
-                        XCTAssertEqual(document?.string, nil)
+                        XCTAssertNil(document?.string)
                         document?.delete { (error) in
                             TestOptionalDocument.get(document!.id, block: { (document, error) in
                                 XCTAssertNil(document)

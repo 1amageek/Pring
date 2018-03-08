@@ -100,7 +100,6 @@ class DataSourceViewController: UITableViewController {
         let group: Group = Group()
         group.name = "update"
 //        user.group.set(group)
-        user.update(group.pack(.save, batch: nil))
     }
 
     override func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {

@@ -96,6 +96,82 @@ class SubColletionTests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testReferenceCollectionDataSourceOrder() {
+        let expectation: XCTestExpectation = XCTestExpectation()
+        let waitQueue: DispatchQueue = DispatchQueue(label: "test.wait.queue")
+        let group: DispatchGroup = DispatchGroup()
+        let count: Int = 4
+
+        let user: User = User()
+        user.name = "main"
+        user.save { (_, _) in
+            waitQueue.async {
+                (0..<count).forEach({ (index) in
+                    let follwer: User = User()
+                    follwer.name = "follow_\(index)"
+                    user.followers.insert(follwer)
+                })
+                group.enter()
+                user.update({ (_) in
+                    group.leave()
+                })
+                group.notify(queue: .main, execute: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+                        let user: User = User(id: user.id, value: [:])
+                        user.followers.order(by: "name").dataSource().onCompleted({ (_, users) in
+                            print(users)
+                            for (index, user) in users.enumerated() {
+                                print(user)
+                                XCTAssertEqual(user.name, "follow_\(index)")
+                            }
+                            expectation.fulfill()
+                        }).get()
+                    })
+                })
+                group.wait()
+            }
+        }
+        self.wait(for: [expectation], timeout: 15)
+    }
+
+    func testReferenceCollectionDataSourceOrderDescending() {
+        let expectation: XCTestExpectation = XCTestExpectation()
+        let waitQueue: DispatchQueue = DispatchQueue(label: "test.wait.queue")
+        let group: DispatchGroup = DispatchGroup()
+        let count: Int = 4
+
+        let user: User = User()
+        user.name = "main"
+        user.save { (_, _) in
+            waitQueue.async {
+                (0..<count).forEach({ (index) in
+                    let follwer: User = User()
+                    follwer.name = "follow_\(index)"
+                    user.followers.insert(follwer)
+                })
+                group.enter()
+                user.update({ (_) in
+                    group.leave()
+                })
+                group.notify(queue: .main, execute: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+                        let user: User = User(id: user.id, value: [:])
+                        user.followers.order(by: "name", descending: false).dataSource().onCompleted({ (_, users) in
+                            print(users)
+                            for (index, user) in users.enumerated() {
+                                print(user)
+                                XCTAssertEqual(user.name, "follow_\(index)")
+                            }
+                            expectation.fulfill()
+                        }).get()
+                    })
+                })
+                group.wait()
+            }
+        }
+        self.wait(for: [expectation], timeout: 15)
+    }
+
 
     func testReferenceCollectionDelete() {
         let expectation: XCTestExpectation = XCTestExpectation()
