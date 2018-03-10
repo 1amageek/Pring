@@ -1,5 +1,5 @@
 <div style="text-align: center; width: 100%">
-<img src="https://github.com/1amageek/Pring/blob/master/Pring.png", width="100%">
+<img src="https://github.com/1amageek/Pring/blob/master/Pring.png" width="100%">
 
  [![Version](http://img.shields.io/cocoapods/v/Pring.svg)](http://cocoapods.org/?q=Pring)
  [![Platform](http://img.shields.io/cocoapods/p/Pring.svg)](http://cocoapods.org/?q=Pring)
@@ -8,6 +8,8 @@
 </div>
 
 [Please donate to continue development.](https://gum.co/lNNIn)
+
+<img src="https://github.com/1amageek/pls_donate/blob/master/kyash.jpg" width="180">
 
 https://github.com/1amageek/pring.ts
 
