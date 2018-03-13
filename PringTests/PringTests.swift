@@ -140,6 +140,39 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testShallowFiles() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test Shallow File delete")
+
+        let document: MultipleFilesDocument = MultipleFilesDocument()
+        let item: MultipleFilesShallowPathItem = MultipleFilesShallowPathItem()
+        item.file = File(data: UIImagePNGRepresentation(MultipleFilesShallowPathItem.image())!, mimeType: .png)
+        document.shallowFiles.insert(item)
+        let id: String = item.id
+
+        document.save { (ref, error) in
+            MultipleFilesDocument.get(ref!.documentID, block: { (document, error) in
+                guard let document: MultipleFilesDocument = document else {
+                    return
+                }
+                XCTAssertNotNil(document)
+                document.shallowFiles.get(id, block: { (item, error) in
+                    let ref = item?.file?.ref
+                    ref?.getData(maxSize: 1000000, completion: { (data, error) in
+                        XCTAssertNotNil(data)
+                        item?.file?.delete({ (error) in
+                            ref?.getData(maxSize: 1000000, completion: { (data, error) in
+                                XCTAssertNil(data)
+                                expectation.fulfill()
+                            })
+                        })
+                    })
+                })
+            })
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testMemory() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test File")
         weak var weakDocument: TestDocument?

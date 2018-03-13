@@ -97,7 +97,7 @@ public final class File: NSObject {
     /// Save location
     public var ref: StorageReference? {
         if let parent: Object = self.parent, let key: String = self.key {
-            return Storage.storage().reference().child(parent.path).child(key).child(self.name)
+            return parent.storageRef.child(key).child(self.name)
         }
         return nil
     }

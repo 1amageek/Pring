@@ -39,6 +39,10 @@ open class Object: NSObject, Document {
 
     public private(set) var reference: DocumentReference
 
+    open var storageRef: StorageReference {
+        return Storage.storage().reference().child(self.path)
+    }
+
     public var path: String {
         return self.reference.path
     }

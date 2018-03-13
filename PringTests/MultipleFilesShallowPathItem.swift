@@ -1,26 +1,24 @@
 //
-//  MultipleFilesObject.swift
+//  MultipleFilesShallowPathItem.swift
 //  PringTests
 //
-//  Created by 1amageek on 2017/11/07.
-//  Copyright © 2017年 Stamp Inc. All rights reserved.
+//  Created by 1amageek on 2018/03/13.
+//  Copyright © 2018年 Stamp Inc. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import Pring
 import Firebase
 import FirebaseFirestore
 
 @objcMembers
-class MultipleFilesDocument: Object {
+class MultipleFilesShallowPathItem: Object {
 
-    dynamic var file0: File?
-    dynamic var file1: File?
-    dynamic var file2: File?
+    dynamic var file: File?
 
-    let files: NestedCollection<MultipleFilesNestedItem> = []
-
-    let shallowFiles: NestedCollection<MultipleFilesShallowPathItem> = []
+    override var storageRef: StorageReference {
+        return Storage.storage().reference().child(MultipleFilesShallowPathItem.path).child(self.id)
+    }
 
     static func image() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)
