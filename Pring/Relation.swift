@@ -7,16 +7,34 @@
 //
 
 import FirebaseFirestore
+import FirebaseStorage
 
-public protocol AnyRelation: HasParent {
+public protocol AnyRelation: HasParent, StorageLinkable {
 
     var id: String? { get set }
 
     var value: String? { get }
 }
 
+extension AnyRelation where Self: HasDocument {
 
-public class Relation<T: Document>: AnyRelation, Batchable {
+    public func shouldUploadFiles(_ id: String) -> Bool {
+        return self.object?.shouldUploadFiles(id) ?? false
+    }
+
+    public func saveFiles(container: UploadContainer?, block: ((Error?) -> Void)?) -> [String : StorageUploadTask] {
+        let uploadContainer: UploadContainer = container ?? UploadContainer()
+        self.object?.saveFiles(container: uploadContainer, block: nil)
+        return uploadContainer.tasks
+    }
+
+    public func deleteFiles(container: DeleteContainer?, block: ((Error?) -> Void)?) {
+        let deleteContainer: DeleteContainer = container ?? DeleteContainer()
+        self.deleteFiles(container: deleteContainer, block: nil)
+    }
+}
+
+public class Relation<T: Document>: AnyRelation, HasDocument, Batchable {
 
     public typealias ContentType = T
 
@@ -28,7 +46,7 @@ public class Relation<T: Document>: AnyRelation, Batchable {
 
     public var batchID: String?
 
-    public private(set) var object: ContentType?
+    public var object: ContentType?
 
     private var _id: String?
 
@@ -78,7 +96,13 @@ public class Relation<T: Document>: AnyRelation, Batchable {
         }
     }
 
+    private var _hash: Int?
+
     public func pack(_ type: BatchType, batch: WriteBatch) -> WriteBatch {
+        if self._hash == batch.hash {
+            return batch
+        }
+        self._hash = batch.hash
         switch type {
         case .save:
             if let document: ContentType = self.object {

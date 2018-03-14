@@ -22,10 +22,16 @@ class DocumentCRUDTests: XCTestCase {
     func testCreateDocument() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test document properties")
         let document: TestDocument = TestDocument(id: "hoge")
-        let item: ReferenceItem = ReferenceItem()
-        document.relationItem.set(item)
-        document.refItem.set(item)
+        let referenceItem0: ReferenceItem = ReferenceItem()
+        let referenceItem1: ReferenceItem = ReferenceItem()
+
+        document.refItem.set(referenceItem0)
+        document.relationItem.set(referenceItem1)
         document.save { (ref, error) in
+
+            if let error = error {
+                print(error)
+            }
 
             TestDocument.get(ref!.documentID, block: { (document, error) in
                 XCTAssertNotNil(document)
@@ -43,10 +49,13 @@ class DocumentCRUDTests: XCTestCase {
                 XCTAssertEqual(document?.dictionary.keys.first, "key")
                 XCTAssertEqual(document?.dictionary.values.first as! String, "value")
                 XCTAssertEqual(document?.string, "string")
-                XCTAssertEqual(document?.refItem.id, item.id)
-                XCTAssertEqual(document?.relationItem.id, item.id)
+                XCTAssertEqual(document?.refItem.id, referenceItem0.id)
+                XCTAssertEqual(document?.relationItem.id, referenceItem1.id)
 
-                let item: ReferenceItem = ReferenceItem()
+                let updateItem0: ReferenceItem = ReferenceItem()
+                updateItem0.name = "updated"
+                let updateItem1: ReferenceItem = ReferenceItem()
+                updateItem1.name = "updated"
 
                 document?.type = .update
                 document?.array = ["update"]
@@ -60,10 +69,15 @@ class DocumentCRUDTests: XCTestCase {
                 document?.geoPoint = GeoPoint(latitude: 1, longitude: 1)
                 document?.dictionary = ["key": "update"]
                 document?.string = "update"
-                document?.relationItem.set(item)
-                document?.refItem.set(item)
+                document?.refItem.set(updateItem0)
+                document?.relationItem.set(updateItem1)
 
                 document?.update({ (error) in
+
+                    if let error = error {
+                        print(error)
+                    }
+
                     TestDocument.get(document!.id, block: { (document, error) in
                         XCTAssertNotNil(document)
                         XCTAssertEqual(document?.type, .update)
@@ -79,8 +93,8 @@ class DocumentCRUDTests: XCTestCase {
                         XCTAssertEqual(document?.dictionary.keys.first, "key")
                         XCTAssertEqual(document?.dictionary.values.first as! String, "update")
                         XCTAssertEqual(document?.string, "update")
-                        XCTAssertEqual(document?.refItem.id, item.id)
-                        XCTAssertEqual(document?.relationItem.id, item.id)
+                        XCTAssertEqual(document?.refItem.id, updateItem0.id)
+                        XCTAssertEqual(document?.relationItem.id, updateItem1.id)
                         document?.delete { (error) in
                             TestDocument.get(document!.id, block: { (document, error) in
                                 XCTAssertNil(document)

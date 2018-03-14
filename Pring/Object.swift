@@ -439,10 +439,15 @@ open class Object: NSObject, Document {
             self.each({ (key, value) in
                 if let value = value {
                     switch DataType(key: key, value: value) {
-                    case .collection    (_, _, let collection):     collection.pack(.save, batch: batch)
-                    case .reference     (_, _, let reference):
+                    case .collection(_, _, let collection):
+                        collection.pack(.save, batch: batch)
+                    case .reference(_, _, let reference):
                         if reference is Batchable {
                             (reference as! Batchable).pack(.save, batch: batch)
+                        }
+                    case .relation(_, _, let relation):
+                        if relation is Batchable {
+                            (relation as! Batchable).pack(.save, batch: batch)
                         }
                     default: break
                     }
@@ -456,11 +461,15 @@ open class Object: NSObject, Document {
             self.each({ (key, value) in
                 if let value = value {
                     switch DataType(key: key, value: value) {
-                    case .collection    (_, _, let collection):
+                    case .collection(_, _, let collection):
                         collection.pack(.update, batch: batch)
-                    case .reference     (_, _, let reference):
+                    case .reference(_, _, let reference):
                         if reference is Batchable {
                             (reference as! Batchable).pack(.update, batch: batch)
+                        }
+                    case .relation(_, _, let relation):
+                        if relation is Batchable {
+                            (relation as! Batchable).pack(.update, batch: batch)
                         }
                     default: break
                     }
@@ -481,11 +490,15 @@ open class Object: NSObject, Document {
         self.each({ (key, value) in
             if let value = value {
                 switch DataType(key: key, value: value) {
-                case .collection    (_, _, let collection):
+                case .collection(_, _, let collection):
                     collection.batch(type, completion: batchID)
-                case .reference     (_, _, let reference):
+                case .reference(_, _, let reference):
                     if reference is Batchable {
                         (reference as! Batchable).batch(type, completion: batchID)
+                    }
+                case .relation(_, _, let relation):
+                    if relation is Batchable {
+                        (relation as! Batchable).batch(type, completion: batchID)
                     }
                 default: break
                 }

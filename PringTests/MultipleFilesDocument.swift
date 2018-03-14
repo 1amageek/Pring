@@ -22,6 +22,10 @@ class MultipleFilesDocument: Object {
 
     let shallowFiles: NestedCollection<MultipleFilesShallowPathItem> = []
 
+    let referenceShallowFile: Reference<MultipleFilesShallowPathItem> = .init()
+
+    let relationShallowFile: Relation<MultipleFilesShallowPathItem> = .init()
+
     static func image() -> UIImage {
         let frame: CGRect = CGRect(x: 0, y: 0, width: 100, height: 100)
         UIGraphicsBeginImageContext(frame.size)

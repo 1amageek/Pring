@@ -140,6 +140,70 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testReferenceShallowFile() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test Reference Shallow File")
+
+        let document: MultipleFilesDocument = MultipleFilesDocument()
+        let item: MultipleFilesShallowPathItem = MultipleFilesShallowPathItem()
+        item.file = File(data: UIImagePNGRepresentation(MultipleFilesShallowPathItem.image())!, mimeType: .png)
+        document.referenceShallowFile.set(item)
+
+        document.save { (ref, error) in
+            MultipleFilesDocument.get(ref!.documentID, block: { (document, error) in
+                guard let document: MultipleFilesDocument = document else {
+                    return
+                }
+                XCTAssertNotNil(document)
+                document.referenceShallowFile.get({ (item, error) in
+                    let ref = item?.file?.ref
+                    ref?.getData(maxSize: 1000000, completion: { (data, error) in
+                        XCTAssertNotNil(data)
+                        item?.file?.delete({ (error) in
+                            ref?.getData(maxSize: 1000000, completion: { (data, error) in
+                                XCTAssertNil(data)
+                                expectation.fulfill()
+                            })
+                        })
+                    })
+                })
+            })
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testRelationShallowFile() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test Relation Shallow File")
+
+        let document: MultipleFilesDocument = MultipleFilesDocument()
+        let item: MultipleFilesShallowPathItem = MultipleFilesShallowPathItem()
+        item.file = File(data: UIImagePNGRepresentation(MultipleFilesShallowPathItem.image())!, mimeType: .png)
+        document.relationShallowFile.set(item)
+
+        document.save { (ref, error) in
+            MultipleFilesDocument.get(ref!.documentID, block: { (document, error) in
+                guard let document: MultipleFilesDocument = document else {
+                    return
+                }
+                XCTAssertNotNil(document)
+                document.relationShallowFile.get({ (item, error) in
+                    let ref = item?.file?.ref
+                    ref?.getData(maxSize: 1000000, completion: { (data, error) in
+                        XCTAssertNotNil(data)
+                        item?.file?.delete({ (error) in
+                            ref?.getData(maxSize: 1000000, completion: { (data, error) in
+                                XCTAssertNil(data)
+                                expectation.fulfill()
+                            })
+                        })
+                    })
+                })
+            })
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testShallowFiles() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test Shallow File delete")
 

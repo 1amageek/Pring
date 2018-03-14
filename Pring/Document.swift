@@ -88,6 +88,14 @@ public extension Document where Self: Object {
                     if collection.shouldUploadFiles(id) {
                         return true
                     }
+                case .reference(_, _, let reference):
+                    if reference.shouldUploadFiles(id) {
+                        return true
+                    }
+                case .relation(_, _, let relation):
+                    if relation.shouldUploadFiles(id) {
+                        return true
+                    }
                 case .document(_, _, let document):
                     if document!.shouldUploadFiles(id) {
                         return true
@@ -154,6 +162,10 @@ public extension Document where Self: Object {
                 }
             case .collection(_, _, let collection):
                 collection.saveFiles(container: uploadContainer, block: nil)
+            case .reference(_, _, let reference):
+                reference.saveFiles(container: uploadContainer, block: nil)
+            case .relation(_, _, let relation):
+                relation.saveFiles(container: uploadContainer, block: nil)
             case .document(_, _, let document):
                 document?.saveFiles(container: uploadContainer, block: nil)
             default: break

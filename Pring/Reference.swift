@@ -7,6 +7,7 @@
 //
 
 import FirebaseFirestore
+import FirebaseStorage
 
 public protocol HasParent {
 
@@ -17,7 +18,14 @@ public protocol HasParent {
     func setParent(_ object: Object, forKey key: String)
 }
 
-public protocol AnyReference: HasParent {
+public protocol HasDocument {
+
+    associatedtype ContentType: Document
+
+    var object: ContentType? { get set }
+}
+
+public protocol AnyReference: HasParent, StorageLinkable {
 
     var id: String? { get }
 
@@ -26,7 +34,25 @@ public protocol AnyReference: HasParent {
     var value: DocumentReference? { get }
 }
 
-public class Reference<T: Document>: AnyReference, Batchable {
+extension AnyReference where Self: HasDocument {
+    
+    public func shouldUploadFiles(_ id: String) -> Bool {
+        return self.object?.shouldUploadFiles(id) ?? false
+    }
+
+    public func saveFiles(container: UploadContainer?, block: ((Error?) -> Void)?) -> [String : StorageUploadTask] {
+        let uploadContainer: UploadContainer = container ?? UploadContainer()
+        self.object?.saveFiles(container: uploadContainer, block: nil)
+        return uploadContainer.tasks
+    }
+
+    public func deleteFiles(container: DeleteContainer?, block: ((Error?) -> Void)?) {
+        let deleteContainer: DeleteContainer = container ?? DeleteContainer()
+        self.deleteFiles(container: deleteContainer, block: nil)
+    }
+}
+
+public class Reference<T: Document>: AnyReference, HasDocument, Batchable {
 
     public typealias ContentType = T
 
@@ -38,7 +64,7 @@ public class Reference<T: Document>: AnyReference, Batchable {
 
     public var batchID: String?
 
-    public private(set) var object: ContentType?
+    public var object: ContentType?
 
     public var documentReference: DocumentReference?
 
@@ -77,7 +103,13 @@ public class Reference<T: Document>: AnyReference, Batchable {
         }
     }
 
+    private var _hash: Int?
+
     public func pack(_ type: BatchType, batch: WriteBatch) -> WriteBatch {
+        if self._hash == batch.hash {
+            return batch
+        }
+        self._hash = batch.hash
         switch type {
         case .save:
             if let document: ContentType = self.object {
@@ -112,3 +144,4 @@ public class Reference<T: Document>: AnyReference, Batchable {
         }
     }
 }
+
