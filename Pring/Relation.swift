@@ -107,13 +107,17 @@ public class Relation<T: Document>: AnyRelation, HasDocument, Batchable {
         case .save:
             if let document: ContentType = self.object {
                 if !document.isSaved {
-                    batch.setData(document.value as! [String : Any], forDocument: document.reference)
+                    document.pack(.save, batch: batch)
+                } else {
+                    document.pack(.update, batch: batch)
                 }
             }
         case .update:
             if let document = self.object {
                 if !document.isSaved {
-                    batch.setData(document.value as! [String : Any], forDocument: document.reference)
+                    document.pack(.save, batch: batch)
+                } else {
+                    document.pack(.update, batch: batch)
                 }
             }
         case .delete: break
