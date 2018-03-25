@@ -108,9 +108,14 @@ public extension Document where Self: Object {
     }
 
     @discardableResult
-    public func saveFiles(container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
+    public func saveFiles(_ id: String, container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
 
         var uploadContainer: UploadContainer = container ?? UploadContainer()
+
+        if id == self.uploadID {
+            return uploadContainer.tasks
+        }
+        self.uploadID = id
 
         for (_, child) in Mirror(reflecting: self).children.enumerated() {
 
@@ -161,13 +166,13 @@ public extension Document where Self: Object {
                     }
                 }
             case .collection(_, _, let collection):
-                collection.saveFiles(container: uploadContainer, block: nil)
+                collection.saveFiles(id, container: uploadContainer, block: nil)
             case .reference(_, _, let reference):
-                reference.saveFiles(container: uploadContainer, block: nil)
+                reference.saveFiles(id, container: uploadContainer, block: nil)
             case .relation(_, _, let relation):
-                relation.saveFiles(container: uploadContainer, block: nil)
+                relation.saveFiles(id, container: uploadContainer, block: nil)
             case .document(_, _, let document):
-                document?.saveFiles(container: uploadContainer, block: nil)
+                document?.saveFiles(id, container: uploadContainer, block: nil)
             default: break
             }
         }

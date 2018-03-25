@@ -88,7 +88,7 @@ public protocol StorageLinkable {
     func shouldUploadFiles(_ id: String) -> Bool
 
     @discardableResult
-    func saveFiles(container: UploadContainer?, block: ((Error?) -> Void)?) -> [String: StorageUploadTask]
+    func saveFiles(_ id: String, container: UploadContainer?, block: ((Error?) -> Void)?) -> [String: StorageUploadTask]
 
     func deleteFiles(container: DeleteContainer?, block: ((Error?) -> Void)?)
 }

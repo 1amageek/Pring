@@ -524,7 +524,7 @@ open class Object: NSObject, Document {
         }
         let ref: DocumentReference = self.reference
         if self.shouldUploadFiles(UUID().uuidString) {
-            return self.saveFiles(container: nil) { (error) in
+            return self.saveFiles(UUID().uuidString, container: nil) { (error) in
                 if let error = error {
                     block?(ref, error)
                     return
@@ -558,7 +558,7 @@ open class Object: NSObject, Document {
     @discardableResult
     public func update(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) -> [String: StorageUploadTask] {
         if self.shouldUploadFiles(UUID().uuidString) {
-            return self.saveFiles(container: nil) { (error) in
+            return self.saveFiles(UUID().uuidString, container: nil) { (error) in
                 if let error = error {
                     block?(error)
                     return

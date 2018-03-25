@@ -40,9 +40,9 @@ extension AnyReference where Self: HasDocument {
         return self.object?.shouldUploadFiles(id) ?? false
     }
 
-    public func saveFiles(container: UploadContainer?, block: ((Error?) -> Void)?) -> [String : StorageUploadTask] {
+    public func saveFiles(_ id: String, container: UploadContainer?, block: ((Error?) -> Void)?) -> [String : StorageUploadTask] {
         let uploadContainer: UploadContainer = container ?? UploadContainer()
-        self.object?.saveFiles(container: uploadContainer, block: nil)
+        self.object?.saveFiles(id, container: uploadContainer, block: nil)
         return uploadContainer.tasks
     }
 

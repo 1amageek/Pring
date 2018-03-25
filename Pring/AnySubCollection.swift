@@ -46,10 +46,10 @@ extension AnySubCollection where Self: Collection, Self.Element: Document {
         return false
     }
     
-    public func saveFiles(container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
+    public func saveFiles(_ id: String, container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
         let uploadContainer: UploadContainer = container ?? UploadContainer()
         self.forEach { document in
-            document.saveFiles(container: uploadContainer, block: nil)
+            document.saveFiles(id, container: uploadContainer, block: nil)
         }
         return uploadContainer.tasks
     }
