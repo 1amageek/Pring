@@ -213,9 +213,22 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
         let parseBlock: ParseBlock? = self.parseBlock
         let completedBlock: CompletedBlock? = self.completedBlock
         let errorBlock: ErrorBlock? = self.errorBlock
+
+        func mainThreadCall(_ block: @escaping () -> Void) {
+            if Thread.isMainThread {
+                block()
+            } else {
+                DispatchQueue.main.async {
+                    block()
+                }
+            }
+        }
+
         guard let snapshot: QuerySnapshot = snapshot else {
-            changeBlock?(nil, CollectionChange(change: nil, error: error))
-            completedBlock?(nil, [])
+            mainThreadCall {
+                changeBlock?(nil, CollectionChange(change: nil, error: error))
+                completedBlock?(nil, [])
+            }
             return
         }
 
@@ -233,7 +246,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                         guard let document: Element = document else {
                             let error: Error = error ?? DataSourceError(kind: .invalidReference)
                             let collectionChange: CollectionChange = CollectionChange.error(error)
-                            changeBlock?(snapshot, collectionChange)
+                            mainThreadCall {
+                                changeBlock?(snapshot, collectionChange)
+                            }
                             group.leave()
                             return
                         }
@@ -242,7 +257,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                                 self.documents.append(document)
                                 self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
                                 if let i: Int = self.documents.index(of: document) {
-                                    changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                                    mainThreadCall {
+                                        changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                                    }
                                 }
                                 group.leave()
                             })
@@ -250,7 +267,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                             self.documents.append(document)
                             self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
                             if let i: Int = self.documents.index(of: document) {
-                                changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                                mainThreadCall {
+                                    changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                                }
                             }
                             group.leave()
                         }
@@ -264,7 +283,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                         guard let document: Element = document else {
                             let error: Error = error ?? DataSourceError(kind: .invalidReference)
                             let collectionChange: CollectionChange = CollectionChange.error(error)
-                            changeBlock?(snapshot, collectionChange)
+                            mainThreadCall {
+                                changeBlock?(snapshot, collectionChange)
+                            }
                             group.leave()
                             return
                         }
@@ -276,7 +297,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                                 }
                                 self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
                                 if let i: Int = self.documents.index(of: document) {
-                                    changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                                    mainThreadCall {
+                                        changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                                    }
                                 }
                                 group.leave()
                             })
@@ -287,7 +310,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                             }
                             self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
                             if let i: Int = self.documents.index(of: document) {
-                                changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                                mainThreadCall {
+                                    changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
+                                }
                             }
                             group.leave()
                         }
@@ -298,8 +323,10 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                     }
                     group.enter()
                     if let i: Int = self.documents.index(of: id) {
-                        changeBlock?(snapshot, CollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
                         self.documents.remove(at: i)
+                        mainThreadCall {
+                            changeBlock?(snapshot, CollectionChange(change: (deletions: [i], insertions: [], modifications: []), error: nil))
+                        }
                         group.leave()
                     }
                 }
@@ -311,7 +338,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
             case .success: break
             case .timedOut:
                 let error: DataSourceError = DataSourceError(kind: .timeout)
-                DispatchQueue.main.async {
+                mainThreadCall {
                     errorBlock?(snapshot, error)
                 }
             }
