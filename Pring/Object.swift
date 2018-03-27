@@ -148,8 +148,18 @@ open class Object: NSObject, Document {
         
         let data: [String: Any] = value as! [String: Any]
 
-        self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Date ?? _createdAt
-        self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as? Date ?? _updatedAt
+        let formatter: ISO8601DateFormatter = ISO8601DateFormatter()
+        if let createdAtStr: String = data[(\Object.createdAt)._kvcKeyPathString!] as? String {
+            self.createdAt = formatter.date(from: createdAtStr) ?? _createdAt
+        } else {
+            self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Date ?? _createdAt
+        }
+
+        if let updatedAtStr: String = data[(\Object.updatedAt)._kvcKeyPathString!] as? String {
+            self.updatedAt = formatter.date(from: updatedAtStr) ?? _updatedAt
+        } else {
+            self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as? Date ?? _updatedAt
+        }
 
         Mirror(reflecting: self).children.forEach { (key, value) in
             if let key: String = key {
