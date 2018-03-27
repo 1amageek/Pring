@@ -12,7 +12,7 @@ import FirebaseFirestore
 public enum DataType {
     /**
      | key | Firestore | Local |
-    */
+     */
     case array      (String, [Any], [Any])
     case set        (String, [AnyHashable: Bool], Set<String>)
     case bool       (String, Bool, Bool)
@@ -36,7 +36,7 @@ public enum DataType {
      Encode to firestore data type
 
      | key | Firestore | Local |
-    */
+     */
     public init(key: String, value: Any?) {
         guard let value = value else {
             self = .null
@@ -229,6 +229,17 @@ public enum DataType {
                 self = .date(key, value, value)
                 return
             }
+            if let value: String = data[key] as? String {
+                let formatter: ISO8601DateFormatter = ISO8601DateFormatter()
+                formatter.formatOptions = [.withFullDate,
+                                           .withTime,
+                                           .withDashSeparatorInDate,
+                                           .withColonSeparatorInTime]
+                if let date: Date = formatter.date(from: value) {
+                    self = .date(key, date, date)
+                    return
+                }
+            }
         } else if subjectType == Data.self || subjectType == Data?.self {
             if let value: Data = data[key] as? Data {
                 self = .binary(key, value, value)
@@ -347,7 +358,7 @@ public enum DataType {
 
         let subjectType: Any.Type = mirror.subjectType
         if
-                subjectType == Bool?.self ||
+            subjectType == Bool?.self ||
                 subjectType == Int?.self ||
                 subjectType == Int8?.self ||
                 subjectType == Int16?.self ||
@@ -391,3 +402,4 @@ extension Collection where Iterator.Element == String {
         return reduce(into: [:]) { $0[$1] = true }
     }
 }
+
