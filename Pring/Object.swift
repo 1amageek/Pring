@@ -149,6 +149,10 @@ open class Object: NSObject, Document {
         let data: [String: Any] = value as! [String: Any]
 
         let formatter: ISO8601DateFormatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate,
+                                   .withTime,
+                                   .withDashSeparatorInDate,
+                                   .withColonSeparatorInTime]
         if let createdAtStr: String = data[(\Object.createdAt)._kvcKeyPathString!] as? String {
             self.createdAt = formatter.date(from: createdAtStr) ?? _createdAt
         } else {
