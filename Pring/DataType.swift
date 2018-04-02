@@ -262,7 +262,7 @@ public enum DataType {
             }
         } else if subjectType == [File].self || subjectType == [File]?.self {
             if let value: [[AnyHashable: String]] = data[key] as? [[AnyHashable: String]] {
-                let files: [File] = value.flatMap { return File(property: $0) }
+                let files: [File] = value.compactMap { return File(property: $0) }
                 self = .files(key, value, files)
                 return
             }

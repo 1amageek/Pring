@@ -97,5 +97,9 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
         let document: Element = Element(id: id)
         self.remove(document, hard: hard)
     }
+
+    public override func deleteFiles(_ id: String, container: DeleteContainer? = nil, block: ((Error?) -> Void)? = nil) {
+        // Do nothing
+    }
 }
 

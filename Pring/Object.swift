@@ -70,8 +70,6 @@ open class Object: NSObject, Document {
 
     public var batchID: String?
 
-    public var uploadID: String?
-
     private var _hash: Int?
 
     /// isObserving is a flag that indicates that Document is concerned with my Field.
@@ -345,7 +343,7 @@ open class Object: NSObject, Document {
             return
         }
 
-        let keys: [String] = Mirror(reflecting: self).children.flatMap({ return $0.label })
+        let keys: [String] = Mirror(reflecting: self).children.compactMap({ return $0.label })
         if keys.contains(keyPath) {
 
             if let value: Any = object.value(forKey: keyPath) as Any? {
@@ -612,7 +610,7 @@ open class Object: NSObject, Document {
 
     public func delete(_ batch: WriteBatch? = nil, block: ((Error?) -> Void)? = nil) {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
-        self.deleteFiles(container: nil) { (error) in
+        self.deleteFiles(UUID().uuidString, container: nil) { (error) in
             self.pack(.delete, batch: batch).commit { (error) in
                 if let error = error {
                     block?(error)

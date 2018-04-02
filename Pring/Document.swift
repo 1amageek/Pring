@@ -71,10 +71,10 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 public extension Document where Self: Object {
 
     public func shouldUploadFiles(_ id: String) -> Bool {
-        if id == self.uploadID {
+        if id == self.batchID {
             return false
         }
-        self.uploadID = id
+        self.batchID = id
         let mirror = Mirror(reflecting: self)
         for (_, child) in mirror.children.enumerated() {
             if let key: String = child.label {
@@ -112,10 +112,10 @@ public extension Document where Self: Object {
 
         var uploadContainer: UploadContainer = container ?? UploadContainer()
 
-        if id == self.uploadID {
+        if id == self.batchID {
             return uploadContainer.tasks
         }
-        self.uploadID = id
+        self.batchID = id
 
         for (_, child) in Mirror(reflecting: self).children.enumerated() {
 
@@ -182,9 +182,14 @@ public extension Document where Self: Object {
         return uploadContainer.tasks
     }
 
-    public func deleteFiles(container: DeleteContainer?, block: ((Error?) -> Void)?) {
+    public func deleteFiles(_ id: String, container: DeleteContainer?, block: ((Error?) -> Void)?) {
 
         var deleteContainer: DeleteContainer = container ?? DeleteContainer()
+
+        if id == self.batchID {
+            return
+        }
+        self.batchID = id
 
         for (_, child) in Mirror(reflecting: self).children.enumerated() {
             guard let key: String = child.label else { break }

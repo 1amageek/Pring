@@ -28,9 +28,9 @@ extension AnyRelation where Self: HasDocument {
         return uploadContainer.tasks
     }
 
-    public func deleteFiles(container: DeleteContainer?, block: ((Error?) -> Void)?) {
+    public func deleteFiles(_ id: String, container: DeleteContainer?, block: ((Error?) -> Void)?) {
         let deleteContainer: DeleteContainer = container ?? DeleteContainer()
-        self.deleteFiles(container: deleteContainer, block: nil)
+        self.deleteFiles(id, container: deleteContainer, block: nil)
     }
 }
 

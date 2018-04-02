@@ -162,6 +162,30 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         }
     }
 
+    public func shouldUploadFiles(_ id: String) -> Bool {
+        for (_, document) in self.enumerated() {
+            if document.shouldUploadFiles(id) {
+                return true
+            }
+        }
+        return false
+    }
+
+    public func saveFiles(_ id: String, container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
+        let uploadContainer: UploadContainer = container ?? UploadContainer()
+        self.forEach { document in
+            document.saveFiles(id, container: uploadContainer, block: nil)
+        }
+        return uploadContainer.tasks
+    }
+
+    public func deleteFiles(_ id: String, container: DeleteContainer? = nil, block: ((Error?) -> Void)? = nil) {
+        let deleteContainer: DeleteContainer = container ?? DeleteContainer()
+        self.forEach { document in
+            document.deleteFiles(id, container: deleteContainer, block: nil)
+        }
+    }
+
     public var description: String {
         if _self.isEmpty {
             return "SubCollection([])"

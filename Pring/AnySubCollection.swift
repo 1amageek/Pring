@@ -27,38 +27,11 @@ public protocol AnySubCollection: class, StorageLinkable, Batchable {
     func setParent(_ object: Object, forKey key: String)
 }
 
-extension AnySubCollection {
+public extension AnySubCollection {
     
     public func setParent(_ object: Object, forKey key: String) {
         self.parent = object
         self.key = key
-    }
-}
-
-extension AnySubCollection where Self: Collection, Self.Element: Document {
-
-    public func shouldUploadFiles(_ id: String) -> Bool {
-        for (_, document) in self.enumerated() {
-            if document.shouldUploadFiles(id) {
-                return true
-            }
-        }
-        return false
-    }
-    
-    public func saveFiles(_ id: String, container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
-        let uploadContainer: UploadContainer = container ?? UploadContainer()
-        self.forEach { document in
-            document.saveFiles(id, container: uploadContainer, block: nil)
-        }
-        return uploadContainer.tasks
-    }
-    
-    public func deleteFiles(container: DeleteContainer? = nil, block: ((Error?) -> Void)?) {
-        let deleteContainer: DeleteContainer = container ?? DeleteContainer()
-        self.forEach { document in
-            document.deleteFiles(container: deleteContainer, block: nil)
-        }
     }
 }
 

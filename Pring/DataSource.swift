@@ -238,7 +238,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                 let id: String = change.document.documentID
                 switch change.type {
                 case .added:
-                    guard !self.documents.flatMap({return $0.id}).contains(id) else {
+                    guard !self.documents.compactMap({return $0.id}).contains(id) else {
                         return
                     }
                     group.enter()
@@ -275,7 +275,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                         }
                     })
                 case .modified:
-                    guard self.documents.flatMap({return $0.id}).contains(id) else {
+                    guard self.documents.compactMap({return $0.id}).contains(id) else {
                         return
                     }
                     group.enter()
@@ -318,7 +318,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                         }
                     })
                 case .removed:
-                    guard self.documents.flatMap({return $0.id}).contains(id) else {
+                    guard self.documents.compactMap({return $0.id}).contains(id) else {
                         return
                     }
                     group.enter()
@@ -490,7 +490,7 @@ extension DataSource: Collection {
 extension Array where Element: Document {
 
     public var keys: [String] {
-        return self.flatMap { return $0.id }
+        return self.compactMap { return $0.id }
     }
 
     public func index(of key: String) -> Int? {
