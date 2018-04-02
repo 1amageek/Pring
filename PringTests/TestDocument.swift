@@ -41,7 +41,11 @@ class TestDocument: Object {
 
     override func encode(_ key: String, value: Any?) -> Any? {
         if key == "type" {
-            return (value as! CustomType).rawValue
+            if let type = value as? CustomType {
+                return type.rawValue
+            } else {
+                return value
+            }
         }
         return nil
     }

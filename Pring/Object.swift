@@ -347,6 +347,12 @@ open class Object: NSObject, Document {
         if keys.contains(keyPath) {
 
             if let value: Any = object.value(forKey: keyPath) as Any? {
+
+                if let updateValue: Any = self.encode(keyPath, value: value) {
+                    update(key: keyPath, value: updateValue)
+                    return
+                }
+
                 switch DataType(key: keyPath, value: value) {
                 case .array         (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .set           (let key, let updateValue, _):   update(key: key, value: updateValue)
@@ -432,7 +438,7 @@ open class Object: NSObject, Document {
      - parameter key: Document field name
      - parameter value: Save to value. If you enter nil
      */
-    internal func update(key: String, value: Any) {
+    public func update(key: String, value: Any) {
         updateValue[key] = value
     }
 
