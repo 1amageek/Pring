@@ -25,7 +25,11 @@ open class Object: NSObject, Document {
     }
 
     open class var reference: CollectionReference {
-        return Firestore.firestore().collection(self.path)
+        let db = Firestore.firestore()
+        let settings = db.settings
+        settings.areTimestampsInSnapshotsEnabled = true
+        db.settings = settings
+        return db.collection(self.path)
     }
 
     open class var storageRef: StorageReference {
@@ -215,8 +219,8 @@ open class Object: NSObject, Document {
                     return
                 }
 
-                self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Date ?? _createdAt
-                self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as? Date ?? _updatedAt
+                self.createdAt = (data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp)?.dateValue() ?? _createdAt
+                self.updatedAt = (data[(\Object.updatedAt)._kvcKeyPathString!] as? Timestamp)?.dateValue() ?? _updatedAt
 
                 Mirror(reflecting: self).children.forEach { (key, value) in
                     if let key: String = key {

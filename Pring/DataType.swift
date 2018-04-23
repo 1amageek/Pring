@@ -22,7 +22,7 @@ public enum DataType {
     case url        (String, String, URL)
     case int        (String, Int, Int)
     case float      (String, Double, Double)
-    case date       (String, Date, Date)
+    case date       (String, Timestamp, Date)
     case geoPoint   (String, GeoPoint, GeoPoint)
     case dictionary (String, [AnyHashable: Any], [AnyHashable: Any])
     case collection (String, [AnyHashable: Any], AnySubCollection)
@@ -92,7 +92,8 @@ public enum DataType {
             }
         case is Date:
             if let value: Date = value as? Date {
-                self = .date(key, value, value)
+                let timestamp: Timestamp = Timestamp(date: value)
+                self = .date(key, timestamp, value)
                 return
             }
         case is Data:
@@ -225,8 +226,9 @@ public enum DataType {
                 return
             }
         } else if subjectType == Date.self || subjectType == Date?.self {
-            if let value: Date = data[key] as? Date {
-                self = .date(key, value, value)
+            if let timestamp: Timestamp = data[key] as? Timestamp {
+                let date: Date = timestamp.dateValue()
+                self = .date(key, timestamp, date)
                 return
             }
             if let value: String = data[key] as? String {
@@ -236,7 +238,8 @@ public enum DataType {
                                            .withDashSeparatorInDate,
                                            .withColonSeparatorInTime]
                 if let date: Date = formatter.date(from: value) {
-                    self = .date(key, date, date)
+                    let timestamp: Timestamp = Timestamp(date: date)
+                    self = .date(key, timestamp, date)
                     return
                 }
             }

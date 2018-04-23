@@ -362,8 +362,8 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                     return
                 }
                 let snapshotOptions: SnapshotOptions = SnapshotOptions.serverTimestampBehavior(.estimate)
-                document?.createdAt = change.document.data(with: snapshotOptions)["createdAt"] as! Date
-                document?.updatedAt = change.document.data(with: snapshotOptions)["updatedAt"] as! Date
+                document?.createdAt = (change.document.data(with: snapshotOptions)["createdAt"] as! Timestamp).dateValue()
+                document?.updatedAt = (change.document.data(with: snapshotOptions)["updatedAt"] as! Timestamp).dateValue()
                 block(document, nil)
             })
         }

@@ -136,10 +136,7 @@ public final class File: NSObject {
 
     /// DownloadURL
     public var downloadURL: URL? {
-        if let url: URL = self._downloadURL {
-            return url
-        }
-        return self.metadata?.downloadURL()
+        return _downloadURL
     }
 
     /// private downloadURL
@@ -231,29 +228,49 @@ public final class File: NSObject {
 
     internal func save(_ key: String, completion: ((StorageMetadata?, Error?) -> Void)?) -> StorageUploadTask? {
 
+        guard let reference: StorageReference = self.ref else {
+            let error: DocumentError = DocumentError(kind: .invalidFile, description: "There is no save destination for this file.")
+            completion?(nil, error)
+            return nil
+        }
+
         let metadata: StorageMetadata = StorageMetadata()
         if let mimeType: MIMEType = self.mimeType {
             metadata.contentType = mimeType.rawValue
         }
 
         if let data: Data = self.data {
-            self.uploadTask = self.ref?.putData(data, metadata: metadata) { (metadata, error) in
+            self.uploadTask = reference.putData(data, metadata: metadata) { (metadata, error) in
                 self.metadata = metadata
-                if let error: Error = error as Error? {
+                if let error = error {
                     completion?(metadata, error)
                     return
                 }
-                completion?(metadata, error)
+                reference.downloadURL(completion: { (url, error) in
+                    if let error = error {
+                        completion?(metadata, error)
+                        return
+                    }
+                    self._downloadURL = url
+                    completion?(metadata, error)
+                })
             }
             return self.uploadTask
         } else if let url: URL = self.url {
-            self.uploadTask = self.ref?.putFile(from: url, metadata: metadata, completion: { (metadata, error) in
+            self.uploadTask = reference.putFile(from: url, metadata: metadata, completion: { (metadata, error) in
                 self.metadata = metadata
-                if let error: Error = error as Error? {
+                if let error = error {
                     completion?(metadata, error)
                     return
                 }
-                completion?(metadata, error)
+                reference.downloadURL(completion: { (url, error) in
+                    if let error = error {
+                        completion?(metadata, error)
+                        return
+                    }
+                    self._downloadURL = url
+                    completion?(metadata, error)
+                })
             })
             return self.uploadTask
         } else {
