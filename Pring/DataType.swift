@@ -9,6 +9,12 @@
 
 import FirebaseFirestore
 
+private func isBoolNumber(num: NSNumber) -> Bool {
+    let boolID = CFBooleanGetTypeID()
+    let numID = CFGetTypeID(num)
+    return numID == boolID
+}
+
 public enum DataType {
     /**
      | key | Firestore | Local |
@@ -43,12 +49,12 @@ public enum DataType {
             return
         }
 
+        if let number = value as? NSNumber, isBoolNumber(num: number) {
+            self = .bool(key, number.boolValue, number.boolValue)
+            return
+        }
+
         switch value.self {
-        case is Bool:
-            if let value: Bool = value as? Bool {
-                self = .bool(key, value, value)
-                return
-            }
         case is Int:
             if let value: Int = value as? Int {
                 self = .int(key, Int(value), Int(value))
@@ -72,6 +78,11 @@ public enum DataType {
         case is Int64:
             if let value: Int64 = value as? Int64 {
                 self = .int(key, Int(value), Int(value))
+                return
+            }
+        case is Bool:
+            if let value: Bool = value as? Bool {
+                self = .bool(key, value, value)
                 return
             }
         case is UInt: fatalError("UInt is not supported.")
