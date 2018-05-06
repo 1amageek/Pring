@@ -38,7 +38,14 @@ class DataSourceViewController: UITableViewController {
         let item: Item = Item()
 
         user.itemIDs.insert(item.id)
-        user.save()
+        user.items.insert(item)
+        user.save { (ref, error) in
+
+            let aUser: User = User(id: user.id, value: [:])
+            aUser.items.get(block: { (_, _) in
+                print("ITEM", aUser.items[0])
+            })
+        }
 
         self.item = item
         self.user = user

@@ -14,6 +14,8 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
 
     public typealias ArrayLiteralElement = T
 
+    internal var _dataSource: DataSource<T> = []
+
     internal var _self: [T] = []
 
     internal var _insertions: Set<T> = []
@@ -184,6 +186,14 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         self.forEach { document in
             document.deleteFiles(id, container: deleteContainer, block: nil)
         }
+    }
+
+    public func get(_ query: DataSource<T>.Query? = nil, block: ((QuerySnapshot?, [T]) -> Void)?) {
+        let query: DataSource<T>.Query = query ?? self.query
+        self._dataSource = query.dataSource().onCompleted { [weak self] (snapshot, documents) in
+            self?._self = documents
+            block?(snapshot, documents)
+        }.get()
     }
 
     public var description: String {
