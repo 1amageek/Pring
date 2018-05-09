@@ -254,8 +254,8 @@ public extension Document {
     }
 
     public static func listen(_ id: String, block: @escaping (Self?, Error?) -> Void) -> ListenerRegistration {
-        let options: DocumentListenOptions = DocumentListenOptions()
-        return self.reference.document(id).addSnapshotListener(options: options) { (snapshot, error) in
+
+        return self.reference.document(id).addSnapshotListener(includeMetadataChanges: true) { (snapshot, error) in
             guard let snapshot: DocumentSnapshot = snapshot else {
                 block(nil, error)
                 return
@@ -273,14 +273,7 @@ public extension Document {
     }
 
     public func listen(_ block: @escaping (Self?, Error?) -> Void) -> ListenerRegistration {
-        let options: DocumentListenOptions = DocumentListenOptions()
-        var isFirst: Bool = true
-        return self.reference.addSnapshotListener(options: options) { (snapshot, error) in
-            // Do not process at the first time
-            if isFirst {
-                isFirst = false
-                return
-            }
+        return self.reference.addSnapshotListener(includeMetadataChanges: true) { (snapshot, error) in
             guard let snapshot: DocumentSnapshot = snapshot, snapshot.exists else {
                 block(nil, error)
                 return

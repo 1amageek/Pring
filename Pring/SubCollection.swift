@@ -225,8 +225,7 @@ public extension SubCollection {
     }
 
     public func listen(_ id: String, block: @escaping (Element?, Error?) -> Void) -> ListenerRegistration {
-        let options: DocumentListenOptions = DocumentListenOptions()
-        return self.reference.document(id).addSnapshotListener(options: options) { (snapshot, error) in
+        return self.reference.document(id).addSnapshotListener(includeMetadataChanges: true) { (snapshot, error) in
             guard let snapshot: DocumentSnapshot = snapshot else {
                 block(nil, error)
                 return

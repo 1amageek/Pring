@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Pring
+//@testable import Pring
 import FirebaseFirestore
 import FirebaseStorage
 import FirebaseCore
@@ -30,6 +30,7 @@ class PringTests: XCTestCase {
     }
 
     func testCustomDocument() {
+        _ = FirebaseTest.shared
         let expectation: XCTestExpectation = XCTestExpectation()
         let document: CustomDocument = CustomDocument()
         document.save { _, _ in

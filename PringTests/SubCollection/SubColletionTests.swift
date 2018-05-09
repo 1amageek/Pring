@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Pring
+//@testable import Pring
 import FirebaseFirestore
 import FirebaseStorage
 import FirebaseCore

@@ -19,6 +19,22 @@
 		1224CB92201CA789002DA245 /* ReferenceCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F5D5201846C3001D635E /* ReferenceCollection.swift */; };
 		122FCCB31FA5C9D8005A069E /* NestedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122FCCB21FA5C9D8005A069E /* NestedItem.swift */; };
 		123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */; };
+		123F0A0720A2D80700C0EAC1 /* TestDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83201F8CAF6E00561159 /* TestDocument.swift */; };
+		123F0A0A20A2D95400C0EAC1 /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF830E1F8CAEEC00561159 /* DataSource.swift */; };
+		123F0A0B20A2D95400C0EAC1 /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C41E771FB31F41002B1526 /* Query.swift */; };
+		123F0A0C20A2D95400C0EAC1 /* DataType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83101F8CAEEC00561159 /* DataType.swift */; };
+		123F0A0D20A2D95400C0EAC1 /* StorageLinkable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F84CBB1FB054CD00D889BE /* StorageLinkable.swift */; };
+		123F0A0E20A2D95400C0EAC1 /* Batchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 120A178F1FC58FC3002767F6 /* Batchable.swift */; };
+		123F0A0F20A2D95400C0EAC1 /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1288E2211FCD203000E72594 /* Reference.swift */; };
+		123F0A1020A2D95400C0EAC1 /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AFC0212045912600E19B6D /* Relation.swift */; };
+		123F0A1120A2D95400C0EAC1 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83111F8CAEEC00561159 /* Document.swift */; };
+		123F0A1220A2D95400C0EAC1 /* AnySubCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12CF86C1200C65300068BF70 /* AnySubCollection.swift */; };
+		123F0A1320A2D95400C0EAC1 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83121F8CAEEC00561159 /* File.swift */; };
+		123F0A1420A2D95400C0EAC1 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83131F8CAEEC00561159 /* Object.swift */; };
+		123F0A1520A2D95400C0EAC1 /* SubCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83161F8CAEED00561159 /* SubCollection.swift */; };
+		123F0A1620A2D95400C0EAC1 /* NestedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F5D3201845F5001D635E /* NestedCollection.swift */; };
+		123F0A1720A2D95400C0EAC1 /* ReferenceCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F5D5201846C3001D635E /* ReferenceCollection.swift */; };
+		123F0A1820A2D95400C0EAC1 /* Disposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF830F1F8CAEEC00561159 /* Disposer.swift */; };
 		1249ABED1FB45DB400E78EA6 /* DataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */; };
 		1249ABEF1FB45ED800E78EA6 /* DataSourceViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEE1FB45ED800E78EA6 /* DataSourceViewCell.swift */; };
 		126080401FB86FE2001B5DDA /* CollectionObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1260803F1FB86FE2001B5DDA /* CollectionObject.swift */; };
@@ -37,7 +53,6 @@
 		12AF82FE1F8CAEDE00561159 /* Pring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AF82F41F8CAEDE00561159 /* Pring.framework */; };
 		12AF83031F8CAEDE00561159 /* PringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83021F8CAEDE00561159 /* PringTests.swift */; };
 		12AF83051F8CAEDE00561159 /* Pring.h in Headers */ = {isa = PBXBuildFile; fileRef = 12AF82F71F8CAEDE00561159 /* Pring.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		12AF83211F8CAF6E00561159 /* TestDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83201F8CAF6E00561159 /* TestDocument.swift */; };
 		12AF83271F8CD1EE00561159 /* Pring.png in Resources */ = {isa = PBXBuildFile; fileRef = 12AF83261F8CD1ED00561159 /* Pring.png */; };
 		12AF83281F8CD28800561159 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12AF83221F8CD0B100561159 /* GoogleService-Info.plist */; };
 		12AF83291F8CD28900561159 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 12AF83221F8CD0B100561159 /* GoogleService-Info.plist */; };
@@ -626,18 +641,33 @@
 			buildActionMask = 2147483647;
 			files = (
 				123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */,
+				123F0A0E20A2D95400C0EAC1 /* Batchable.swift in Sources */,
+				123F0A0A20A2D95400C0EAC1 /* DataSource.swift in Sources */,
+				123F0A1720A2D95400C0EAC1 /* ReferenceCollection.swift in Sources */,
 				12BD88521FD165D80087A1C4 /* ReferenceItem.swift in Sources */,
 				12D14A8D1FB19236006679B6 /* MultipleFilesNestedItem.swift in Sources */,
 				122FCCB31FA5C9D8005A069E /* NestedItem.swift in Sources */,
 				12D7BDB52057E94D00023D87 /* MultipleFilesShallowPathItem.swift in Sources */,
+				123F0A1020A2D95400C0EAC1 /* Relation.swift in Sources */,
+				123F0A1120A2D95400C0EAC1 /* Document.swift in Sources */,
 				1224CB8A201B9B42002DA245 /* SubColletionTests.swift in Sources */,
+				123F0A0D20A2D95400C0EAC1 /* StorageLinkable.swift in Sources */,
+				123F0A0C20A2D95400C0EAC1 /* DataType.swift in Sources */,
 				12C41E761FB30FEE002B1526 /* DataSourceItem.swift in Sources */,
+				123F0A1420A2D95400C0EAC1 /* Object.swift in Sources */,
+				123F0A1620A2D95400C0EAC1 /* NestedCollection.swift in Sources */,
 				126080401FB86FE2001B5DDA /* CollectionObject.swift in Sources */,
 				1266EB2120215664005F5F41 /* CustomDocument.swift in Sources */,
+				123F0A0B20A2D95400C0EAC1 /* Query.swift in Sources */,
+				123F0A1220A2D95400C0EAC1 /* AnySubCollection.swift in Sources */,
 				1224CB8F201B9C80002DA245 /* Item.swift in Sources */,
-				12AF83211F8CAF6E00561159 /* TestDocument.swift in Sources */,
 				1224CB8D201B9C71002DA245 /* User.swift in Sources */,
+				123F0A0720A2D80700C0EAC1 /* TestDocument.swift in Sources */,
+				123F0A0F20A2D95400C0EAC1 /* Reference.swift in Sources */,
+				123F0A1820A2D95400C0EAC1 /* Disposer.swift in Sources */,
 				12D14A8B1FB150DA006679B6 /* MultipleFilesDocument.swift in Sources */,
+				123F0A1520A2D95400C0EAC1 /* SubCollection.swift in Sources */,
+				123F0A1320A2D95400C0EAC1 /* File.swift in Sources */,
 				1224CB88201B94AD002DA245 /* DocumentCRUDTests.swift in Sources */,
 				12AF83031F8CAEDE00561159 /* PringTests.swift in Sources */,
 			);

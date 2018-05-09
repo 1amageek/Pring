@@ -185,10 +185,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     public func listen() -> Self {
         let block: ChangeBlock? = self.changedBlock
         var isFirst: Bool = true
-        let options: QueryListenOptions = QueryListenOptions()
-        options.includeDocumentMetadataChanges(self.options.includeDocumentMetadataChanges)
-        options.includeQueryMetadataChanges(self.options.includeQueryMetadataChanges)
-        self.listenr = self.query.listen(options: options, listener: { [weak self] (snapshot, error) in
+        self.listenr = self.query.listen(includeMetadataChanges: true, listener: { [weak self] (snapshot, error) in
             guard let `self` = self else { return }
             guard let snapshot: QuerySnapshot = snapshot else {
                 block?(nil, CollectionChange(change: nil, error: error))
@@ -361,9 +358,8 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                     block(nil, error)
                     return
                 }
-                let snapshotOptions: SnapshotOptions = SnapshotOptions.serverTimestampBehavior(.estimate)
-                document?.createdAt = (change.document.data(with: snapshotOptions)["createdAt"] as! Timestamp).dateValue()
-                document?.updatedAt = (change.document.data(with: snapshotOptions)["updatedAt"] as! Timestamp).dateValue()
+                document?.createdAt = (change.document.data(with: .estimate)["createdAt"] as! Timestamp).dateValue()
+                document?.updatedAt = (change.document.data(with: .estimate)["updatedAt"] as! Timestamp).dateValue()
                 block(document, nil)
             })
         }

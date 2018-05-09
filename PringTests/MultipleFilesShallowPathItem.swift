@@ -10,6 +10,7 @@ import Foundation
 import Pring
 import Firebase
 import FirebaseFirestore
+import FirebaseStorage
 
 @objcMembers
 class MultipleFilesShallowPathItem: Object {

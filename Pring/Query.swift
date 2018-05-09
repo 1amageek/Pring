@@ -154,8 +154,8 @@ extension DataSource {
             return Query(query.end(beforeDocument: beforeDocument), reference: self.reference, hasRealities: self.hasRealities)
         }
 
-        public func listen(options: QueryListenOptions? = nil, listener: @escaping FIRQuerySnapshotBlock) -> ListenerRegistration {
-            return query.addSnapshotListener(options: options, listener: listener)
+        public func listen(includeMetadataChanges: Bool = true, listener: @escaping FIRQuerySnapshotBlock) -> ListenerRegistration {
+            return query.addSnapshotListener(includeMetadataChanges: includeMetadataChanges, listener: listener)
         }
 
         public func get(completion: @escaping FIRQuerySnapshotBlock) {
