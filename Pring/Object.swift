@@ -195,6 +195,7 @@ open class Object: NSObject, Document {
                 }
             }
         }
+        updateValue = [:]
         self.isSaved = true
     }
 
