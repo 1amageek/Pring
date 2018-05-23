@@ -105,7 +105,7 @@ class DocumentCRUDTests: XCTestCase {
                 })
             })
         }
-        self.wait(for: [expectation], timeout: 10)
+        self.wait(for: [expectation], timeout: 15)
     }
     
     func testDocument() {
