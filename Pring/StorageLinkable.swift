@@ -10,7 +10,7 @@
 import FirebaseFirestore
 import FirebaseStorage
 
-public struct UploadContainer {
+public class UploadContainer {
 
     static var queueLabel: String {
         return "Pring.upload.file.queue." + UUID().uuidString
@@ -24,21 +24,15 @@ public struct UploadContainer {
 
     var timeout: Int = 30 // Default 30s
 
-    var error: Error? = nil {
-        didSet {
-            tasks.forEach({ (_, task) in
-                task.cancel()
-            })
-        }
-    }
+    var error: Error? = nil
 
     func wait(_ block: ((Error?) -> Void)?) {
         queue.async {
-            self.group.notify(queue: DispatchQueue.main, execute: {
-                block?(self.error)
-            })
             switch self.group.wait(timeout: .now() + .seconds(self.timeout)) {
-            case .success: break
+            case .success:
+                DispatchQueue.main.async {
+                    block?(self.error)
+                }
             case .timedOut:
                 self.tasks.forEach({ (_, task) in
                     task.cancel()
@@ -52,7 +46,7 @@ public struct UploadContainer {
     }
 }
 
-public struct DeleteContainer {
+public class DeleteContainer {
 
     static var queueLabel: String {
         return "Pring.delete.file.queue." + UUID().uuidString
@@ -68,11 +62,11 @@ public struct DeleteContainer {
 
     func wait(_ block: ((Error?) -> Void)?) {
         queue.async {
-            self.group.notify(queue: DispatchQueue.main, execute: {
-                block?(self.error)
-            })
             switch self.group.wait(timeout: .now() + .seconds(self.timeout)) {
-            case .success: break
+            case .success:
+                DispatchQueue.main.async {
+                    block?(self.error)
+                }
             case .timedOut:
                 let error: DocumentError = DocumentError(kind: .timeout, description: "Delete the file timeout.")
                 DispatchQueue.main.async {
