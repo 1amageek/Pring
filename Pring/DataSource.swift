@@ -68,7 +68,7 @@ public final class Options {
     public var predicate: NSPredicate?
 
     /// Sort order
-    public var sortDescirptors: [NSSortDescriptor] = []
+    public var sortDescriptors: [NSSortDescriptor] = []
 
     public init() { }
 }
@@ -252,7 +252,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                         if let parseBlock: ParseBlock = parseBlock {
                             parseBlock(snapshot, document, { document in
                                 self.documents.append(document)
-                                self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
+                                self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescriptors)
                                 if let i: Int = self.documents.index(of: document) {
                                     mainThreadCall {
                                         changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
@@ -262,7 +262,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                             })
                         } else {
                             self.documents.append(document)
-                            self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
+                            self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescriptors)
                             if let i: Int = self.documents.index(of: document) {
                                 mainThreadCall {
                                     changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
@@ -292,7 +292,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                                     self.documents.remove(at: i)
                                     self.documents.insert(document, at: i)
                                 }
-                                self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
+                                self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescriptors)
                                 if let i: Int = self.documents.index(of: document) {
                                     mainThreadCall {
                                         changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
@@ -305,7 +305,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                                 self.documents.remove(at: i)
                                 self.documents.insert(document, at: i)
                             }
-                            self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescirptors)
+                            self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescriptors)
                             if let i: Int = self.documents.index(of: document) {
                                 mainThreadCall {
                                     changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [], modifications: [i]), error: nil))
