@@ -36,7 +36,7 @@ class MediaDataSourceViewController: UICollectionViewController, UICollectionVie
 
         let options: Options = Options()
         let sortDescriptor: NSSortDescriptor = NSSortDescriptor(key: "createdAt", ascending: false)
-        options.sortDescirptors = [sortDescriptor]
+        options.sortDescriptors = [sortDescriptor]
             self.dataSource = user
                 .media
                 .order(by: "createdAt")
