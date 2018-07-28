@@ -191,21 +191,22 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                 block?(nil, CollectionChange(change: nil, error: error))
                 return
             }
-
             if isFirst {
                 guard let lastSnapshot = snapshot.documents.last else {
                     // The collection is empty.
                     return
                 }
-                self.query = self.query.start(atDocument: lastSnapshot)
+                self.query = self.query.start(afterDocument: lastSnapshot)
+                self._operate(with: snapshot, isFirst: isFirst, error: error)
                 isFirst = false
+            } else {
+                self._operate(with: snapshot, isFirst: isFirst, error: error)
             }
-            self._operate(with: snapshot, error: error)
         })
         return self
     }
 
-    private func _operate(with snapshot: QuerySnapshot?, error: Error?) {
+    private func _operate(with snapshot: QuerySnapshot?, isFirst: Bool, error: Error?) {
         let changeBlock: ChangeBlock? = self.changedBlock
         let parseBlock: ParseBlock? = self.parseBlock
         let completedBlock: CompletedBlock? = self.completedBlock
@@ -241,10 +242,12 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                     group.enter()
                     self.get(with: change, block: { (document, error) in
                         guard let document: Element = document else {
-                            let error: Error = error ?? DataSourceError(kind: .invalidReference)
-                            let collectionChange: CollectionChange = CollectionChange.error(error)
-                            mainThreadCall {
-                                changeBlock?(snapshot, collectionChange)
+                            if !isFirst {
+                                let error: Error = error ?? DataSourceError(kind: .invalidReference)
+                                let collectionChange: CollectionChange = CollectionChange.error(error)
+                                mainThreadCall {
+                                    changeBlock?(snapshot, collectionChange)
+                                }
                             }
                             group.leave()
                             return
@@ -253,9 +256,11 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                             parseBlock(snapshot, document, { document in
                                 self.documents.append(document)
                                 self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescriptors)
-                                if let i: Int = self.documents.index(of: document) {
-                                    mainThreadCall {
-                                        changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                                if !isFirst {
+                                    if let i: Int = self.documents.index(of: document) {
+                                        mainThreadCall {
+                                            changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                                        }
                                     }
                                 }
                                 group.leave()
@@ -263,9 +268,11 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                         } else {
                             self.documents.append(document)
                             self.documents = self.filtered().sort(sortDescriptors: self.options.sortDescriptors)
-                            if let i: Int = self.documents.index(of: document) {
-                                mainThreadCall {
-                                    changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                            if !isFirst {
+                                if let i: Int = self.documents.index(of: document) {
+                                    mainThreadCall {
+                                        changeBlock?(snapshot, CollectionChange(change: (deletions: [], insertions: [i], modifications: []), error: nil))
+                                    }
                                 }
                             }
                             group.leave()
@@ -329,6 +336,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                 }
             })
             group.notify(queue: DispatchQueue.main, execute: {
+                if isFirst {
+                    changeBlock?(nil, CollectionChange(change: nil, error: nil))
+                }
                 completedBlock?(snapshot, self.documents)
             })
             switch group.wait(timeout: .now() + .seconds(self.options.timeout)) {
@@ -374,12 +384,12 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     @discardableResult
     public func next() -> Self {
         self.query.get(completion: { (snapshot, error) in
-            self._operate(with: snapshot, error: error)
+            self._operate(with: snapshot, isFirst: false, error: error)
             guard let lastSnapshot = snapshot?.documents.last else {
                 // The collection is empty.
                 return
             }
-            self.query = self.query.start(atDocument: lastSnapshot)
+            self.query = self.query.start(afterDocument: lastSnapshot)
         })
         return self
     }

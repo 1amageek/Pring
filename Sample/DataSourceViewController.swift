@@ -27,30 +27,35 @@ class DataSourceViewController: UITableViewController {
         }
     }
 
-
+    @IBAction func next(_ sender: Any) {
+        self.dataSource?.next()
+    }
+    
     var user: User?
     var item: Item?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let user: User = User()
-        let item: Item = Item()
+//        let user: User = User()
+//        let item: Item = Item()
+//
+//        user.itemIDs.insert(item.id)
+//        user.items.insert(item)
+//        user.save { (ref, error) in
+//
+//            let aUser: User = User(id: user.id, value: [:])
+//            aUser.items.get(block: { (_, _) in
+//                print("ITEM", aUser.items[0])
+//            })
+//        }
 
-        user.itemIDs.insert(item.id)
-        user.items.insert(item)
-        user.save { (ref, error) in
+//        self.item = item
+//        self.user = user
 
-            let aUser: User = User(id: user.id, value: [:])
-            aUser.items.get(block: { (_, _) in
-                print("ITEM", aUser.items[0])
-            })
-        }
-
-        self.item = item
-        self.user = user
-
-        self.dataSource = User.where(\User.isDeleted, isEqualTo: false).order(by: \User.updatedAt).dataSource()
+        let options: Options = Options()
+        options.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: true)]
+        self.dataSource = User.order(by: \User.updatedAt, descending: false).limit(to: 3).dataSource(options: options)
             .on({ [weak self] (snapshot, changes) in
                 guard let tableView: UITableView = self?.tableView else { return }
                 switch changes {
@@ -94,7 +99,9 @@ class DataSourceViewController: UITableViewController {
         cell.textLabel?.text = user.name
         cell.detailTextLabel?.text = user.group.object?.name
         cell.disposer = user.listen { (user, error) in
-            cell.textLabel?.text = user?.name
+            guard let user = user else { return }
+            cell.textLabel?.text = "\(user.createdAt)"
+            cell.setNeedsLayout()
         }
     }
 
