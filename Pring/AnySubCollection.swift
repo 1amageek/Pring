@@ -168,6 +168,10 @@ public extension ReferenceCollection {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference, hasRealities: false)
     }
 
+    public func `where`(_ keyPath: PartialKeyPath<Element>, arrayContains: Any) -> DataSource<Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, arrayContains: arrayContains), reference: self.reference, hasRealities: false)
+    }
+
     public func order(by: PartialKeyPath<Element>) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!), reference: self.reference, hasRealities: false)
     }
@@ -196,6 +200,10 @@ public extension ReferenceCollection {
 
     public func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference, hasRealities: false)
+    }
+
+    public func `where`(_ keyPath: String, arrayContains: Any) -> DataSource<Element>.Query {
+        return DataSource.Query(self.reference.whereField(keyPath, arrayContains: arrayContains), reference: self.reference, hasRealities: false)
     }
 
     public func order(by: String) -> DataSource<Element>.Query {

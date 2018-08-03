@@ -72,6 +72,13 @@ extension DataSource {
             return self.where(key, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo)
         }
 
+        public func `where`(_ keyPath: PartialKeyPath<Element>, arrayContains: Any) -> Query {
+            guard let key: String = keyPath._kvcKeyPathString else {
+                fatalError("[Pring.Query] 'keyPath' is not used except for OjbC.")
+            }
+            return self.where(key, arrayContains: arrayContains)
+        }
+
         public func order(by: PartialKeyPath<Element>) -> Query {
             guard let key: String = by._kvcKeyPathString else {
                 fatalError("[Pring.Query] 'keyPath' is not used except for OjbC.")
@@ -106,6 +113,10 @@ extension DataSource {
 
         public func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> Query {
             return Query(query.whereField(keyPath, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference, hasRealities: self.hasRealities)
+        }
+
+        public func `where`(_ keyPath: String, arrayContains: Any) -> Query {
+            return Query(query.whereField(keyPath, arrayContains: arrayContains), reference: self.reference, hasRealities: self.hasRealities)
         }
 
         public func order(by: String) -> Query {
