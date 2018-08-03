@@ -214,6 +214,10 @@ public extension ReferenceCollection {
         return DataSource.Query(self.reference.order(by: by, descending: descending), reference: self.reference, hasRealities: false)
     }
 
+    public func filter(using: NSPredicate) -> DataSource<Element>.Query {
+        return DataSource.Query(self.reference.filter(using: using), reference: self.reference, hasRealities: false)
+    }
+
     // MARK:
 
     public func limit(to: Int) -> DataSource<Element>.Query {

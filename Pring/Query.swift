@@ -127,6 +127,10 @@ extension DataSource {
             return Query(query.order(by: by, descending: descending), reference: self.reference, hasRealities: self.hasRealities)
         }
 
+        public func filter(using: NSPredicate) -> Query {
+            return Query(query.filter(using: using), reference: self.reference, hasRealities: self.hasRealities)
+        }
+
         // MARK: -
 
         public func limit(to: Int) -> Query {
