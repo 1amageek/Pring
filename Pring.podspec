@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "Pring"
-  s.version      = "0.11.0"
+  s.version      = "0.11.1"
   s.summary      = "Firestore model framework"
   s.description  = <<-DESC
 Pring is a framework for defining Firestore's Model. You can seamlessly manage Firestorage data and operate all values type-safely.
