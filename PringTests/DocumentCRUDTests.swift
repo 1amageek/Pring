@@ -174,6 +174,39 @@ class DocumentCRUDTests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testDocumentForArrayAndSet() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test document Array, Set properties")
+        let document: TestDocument = TestDocument()
+
+        document.save { (ref, error) in
+
+            TestDocument.get(ref!.documentID, block: { (document, error) in
+                XCTAssertNotNil(document)
+
+                XCTAssertEqual(document?.array.first, "array")
+                XCTAssertEqual(document?.set.first, "set")
+
+                document?.array.append("update")
+                document?.set.insert("update")
+
+                document?.update({ (error) in
+                    TestDocument.get(document!.id, block: { (document, error) in
+                        XCTAssertNotNil(document)
+                        XCTAssertEqual(document!.array, ["array", "update"])
+                        XCTAssertEqual(document!.set, ["set", "update"])
+                        document?.delete { (error) in
+                            TestDocument.get(document!.id, block: { (document, error) in
+                                XCTAssertNil(document)
+                                expectation.fulfill()
+                            })
+                        }
+                    })
+                })
+            })
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
+
     func testOptionalDocument() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test optional document properties")
         let document: TestOptionalDocument = TestOptionalDocument()
