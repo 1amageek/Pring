@@ -105,7 +105,7 @@
 		1249ABEE1FB45ED800E78EA6 /* DataSourceViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceViewCell.swift; sourceTree = "<group>"; };
 		1260803F1FB86FE2001B5DDA /* CollectionObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionObject.swift; sourceTree = "<group>"; };
 		126080411FB991BD001B5DDA /* Collecor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collecor.swift; sourceTree = "<group>"; };
-		12649F021F9F6567004C6130 /* Pring.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pring.podspec; sourceTree = "<group>"; };
+		12649F021F9F6567004C6130 /* Pring.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pring.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		1266EB2020215664005F5F41 /* CustomDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDocument.swift; sourceTree = "<group>"; };
 		1281B0F21FE11A6500B8FCEE /* Transcript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transcript.swift; sourceTree = "<group>"; };
 		1281D2AA204E955A00F5A89A /* MediaDataSourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDataSourceViewController.swift; sourceTree = "<group>"; };

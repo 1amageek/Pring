@@ -55,8 +55,9 @@ class DataSourceViewController: UITableViewController {
 //        self.user = user
 
         let options: Options = Options()
+        options.listeningChangeTypes = [.added, .modified]
         options.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: true)]
-        self.dataSource = User.order(by: \User.updatedAt, descending: false).limit(to: 3).dataSource(options: options)
+        self.dataSource = User.order(by: \User.updatedAt, descending: true).limit(to: 3).dataSource(options: options)
             .on({ [weak self] (snapshot, changes) in
                 guard let tableView: UITableView = self?.tableView else { return }
                 switch changes {

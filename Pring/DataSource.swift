@@ -60,9 +60,11 @@ public final class Options {
     /// Fetch timeout
     public var timeout: Int = 10    // Default Timeout 10s
 
-    public var includeQueryMetadataChanges: Bool = false
+    ///
+    public var includeMetadataChanges: Bool = true
 
-    public var includeDocumentMetadataChanges: Bool = false
+    /// 
+    public var listeningChangeTypes: [DocumentChangeType] = [.added, .modified, .removed]
 
     /// Predicate
     public var predicate: NSPredicate?
@@ -188,7 +190,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     public func listen() -> Self {
         let block: ChangeBlock? = self.changedBlock
         var isFirst: Bool = true
-        self.listenr = self.query.listen(includeMetadataChanges: true, listener: { [weak self] (snapshot, error) in
+        self.listenr = self.query.listen(includeMetadataChanges: self.options.includeMetadataChanges, listener: { [weak self] (snapshot, error) in
             guard let `self` = self else { return }
             guard let snapshot: QuerySnapshot = snapshot else {
                 block?(nil, CollectionChange(change: nil, error: error))
@@ -235,11 +237,12 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
 
         self.fetchQueue.async {
             let group: DispatchGroup = DispatchGroup()
-            snapshot.documentChanges.forEach({ (change) in
+            snapshot.documentChanges(includeMetadataChanges: self.options.includeMetadataChanges).forEach({ (change) in
                 let id: String = change.document.documentID
                 switch change.type {
                 case .added:
-                    guard !self.documents.compactMap({return $0.id}).contains(id) else {
+                    guard self.options.listeningChangeTypes.contains(.added) else { return }
+                    guard !self.documents.contains(where: { return $0.id == id}) else {
                         return
                     }
                     group.enter()
@@ -282,7 +285,8 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                         }
                     })
                 case .modified:
-                    guard self.documents.compactMap({return $0.id}).contains(id) else {
+                    guard self.options.listeningChangeTypes.contains(.modified) else { return }
+                    guard self.documents.contains(where: { return $0.id == id}) else {
                         return
                     }
                     group.enter()
@@ -325,7 +329,8 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                         }
                     })
                 case .removed:
-                    guard self.documents.compactMap({return $0.id}).contains(id) else {
+                    guard self.options.listeningChangeTypes.contains(.removed) else { return }
+                    guard self.documents.contains(where: { return $0.id == id}) else {
                         return
                     }
                     group.enter()
@@ -389,11 +394,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     ///     - block: It returns `isLast` as an argument.
     @discardableResult
     public func next(_ block: ((Bool) -> Void)? = nil) -> Self {
-        self.query.get(completion: { [weak self] (snapshot, error) in
-            guard let `self` = self else {
-                block?(false)
-                return
-            }
+        self.query.get(completion: { (snapshot, error) in
             self._operate(with: snapshot, isFirst: false, error: error)
             guard let lastSnapshot = snapshot?.documents.last else {
                 // The collection is empty.
