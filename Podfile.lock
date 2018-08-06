@@ -98,12 +98,17 @@ PODS:
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
+  - Pring (0.11.1):
+    - Firebase/Core (~> 5.5.0)
+    - Firebase/Firestore
+    - Firebase/Storage
   - Protobuf (3.6.0)
 
 DEPENDENCIES:
   - Firebase/Core
   - Firebase/Firestore
   - Firebase/Storage
+  - Pring (from `./`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -126,6 +131,10 @@ SPEC REPOS:
     - nanopb
     - Protobuf
 
+EXTERNAL SOURCES:
+  Pring:
+    :path: "./"
+
 SPEC CHECKSUMS:
   BoringSSL: e10f92a27043805c01071fe815a5cd98ae8212e7
   Firebase: 8c957f9cb3852b519180fb378801b7eeeba4d288
@@ -144,8 +153,9 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 0c4baf0a73acd0041bf9f71ea018deedab5ea84e
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  Pring: 2641281a64adfb93a606245bdf7663cee555e7db
   Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
 
-PODFILE CHECKSUM: b6b3fe8fb023828197a15c84fe83dedffdba2154
+PODFILE CHECKSUM: b5a0de5e2203c6376765dd2c331fa1be4ab48405
 
 COCOAPODS: 1.5.3

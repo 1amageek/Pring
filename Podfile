@@ -16,8 +16,6 @@ end
 
 target 'Sample' do
   use_frameworks!
+  pod 'Pring', :path => './'
 
-  pod 'Firebase/Core'
-  pod 'Firebase/Firestore'
-  pod 'Firebase/Storage'
 end
