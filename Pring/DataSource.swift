@@ -95,6 +95,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     /// Count
     public var count: Int { return documents.count }
 
+    /// True if we have the last Document of the data source
+    public private(set) var isLast: Bool = false
+
     /// Reference of element
     private(set) var query: Query
 
@@ -381,15 +384,25 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
         return self
     }
 
+    /// Load the next data from the data source.
+    /// - Parameters:
+    ///     - block: It returns `isLast` as an argument.
     @discardableResult
-    public func next() -> Self {
-        self.query.get(completion: { (snapshot, error) in
+    public func next(_ block: ((Bool) -> Void)? = nil) -> Self {
+        self.query.get(completion: { [weak self] (snapshot, error) in
+            guard let `self` = self else {
+                block?(false)
+                return
+            }
             self._operate(with: snapshot, isFirst: false, error: error)
             guard let lastSnapshot = snapshot?.documents.last else {
                 // The collection is empty.
+                self.isLast = true
+                block?(true)
                 return
             }
             self.query = self.query.start(afterDocument: lastSnapshot)
+            block?(false)
         })
         return self
     }
