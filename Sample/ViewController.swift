@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseFirestore
 import FirebaseStorage
+import Pring
 
 class ViewController: UIViewController {
 

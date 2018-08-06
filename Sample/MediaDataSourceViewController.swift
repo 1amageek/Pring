@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Pring
 
 private let reuseIdentifier = "Cell"
 

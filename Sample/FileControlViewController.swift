@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseFirestore
+import Pring
 
 @objcMembers
 class FileControlObject: Object {

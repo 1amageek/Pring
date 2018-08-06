@@ -9,6 +9,7 @@
 import Foundation
 import Firebase
 import FirebaseFirestore
+import Pring
 
 @objcMembers
 class Collector: Object {
