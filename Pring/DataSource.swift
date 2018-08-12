@@ -350,7 +350,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
             })
             group.notify(queue: DispatchQueue.main, execute: {
                 if isFirst {
-                    changeBlock?(nil, CollectionChange(change: nil, error: nil))
+                    changeBlock?(snapshot, CollectionChange(change: nil, error: nil))
                 }
                 completedBlock?(snapshot, self.documents)
             })
