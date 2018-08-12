@@ -185,7 +185,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
         return self
     }
 
-    /// Monitor changes in the DataSource.
+    /// Start monitoring data source.
     @discardableResult
     public func listen() -> Self {
         let block: ChangeBlock? = self.changedBlock
@@ -209,6 +209,11 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
             }
         })
         return self
+    }
+
+    /// Stop monitoring the data source.
+    public func stop() {
+        self.listenr?.remove()
     }
 
     private func _operate(with snapshot: QuerySnapshot?, isFirst: Bool, error: Error?) {
