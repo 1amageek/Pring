@@ -147,5 +147,9 @@ public class Reference<T: Document>: AnyReference, HasDocument, Batchable {
             block(document, error)
         }
     }
+
+    deinit {
+        self.parent = nil
+    }
 }
 

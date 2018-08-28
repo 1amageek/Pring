@@ -259,11 +259,9 @@ public enum DataType {
                 self = .binary(key, value, value)
                 return
             }
-        } else if subjectType == GeoPoint.self || subjectType == GeoPoint?.self {
-            if let value: GeoPoint = data[key] as? GeoPoint {
-                self = .geoPoint(key, value, value)
-                return
-            }
+        } else if let value: GeoPoint = data[key] as? GeoPoint {
+            self = .geoPoint(key, value, value)
+            return
         } else if subjectType == [Int].self || subjectType == [Int]?.self {
             if let value: [Int] = data[key] as? [Int] {
                 self = .array(key, value, value)

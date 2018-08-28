@@ -238,7 +238,7 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
-    func testMemory() {
+    func testDocumentMemory() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test File")
         weak var weakDocument: TestDocument?
 
@@ -251,6 +251,30 @@ class PringTests: XCTestCase {
                     document?.file = file1
                     document?.update({ (error) in
                         TestDocument.get(ref!.documentID, block: { (document, error) in
+                            expectation.fulfill()
+                        })
+                    })
+                })
+            })
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+        XCTAssertNil(weakDocument)
+    }
+
+    func testOptionalDocumentMemory() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test File")
+        weak var weakDocument: TestOptionalDocument?
+
+        do {
+            let document: TestOptionalDocument = TestOptionalDocument()
+            weakDocument = document
+            document.save({ (ref, error) in
+                TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
+                    let file1: File = File(data: UIImagePNGRepresentation(TestDocument.image1())!, mimeType: .png)
+                    document?.file = file1
+                    document?.update({ (error) in
+                        TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
                             expectation.fulfill()
                         })
                     })

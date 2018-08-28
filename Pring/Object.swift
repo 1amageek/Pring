@@ -86,7 +86,11 @@ open class Object: NSObject, Document {
         Mirror(reflecting: self).children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
-                    self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
+                    switch DataType(key: key, value: value) {
+                    case .reference, .relation: break
+                    default:
+                        self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
+                    }
                 }
             }
         }
@@ -105,7 +109,6 @@ open class Object: NSObject, Document {
             switch DataType(key: child.label!, value: child.value) {
             case .file          (let key, _, let file):         file.setParent(self, forKey: key)
             case .collection    (let key, _, let collection):   collection.setParent(self, forKey: key)
-            case .reference     (let key, _, let reference):    reference.setParent(self, forKey: key)
             default: break
             }
         }
@@ -697,7 +700,11 @@ open class Object: NSObject, Document {
             Mirror(reflecting: self).children.forEach { (key, value) in
                 if let key: String = key {
                     if !self.ignore.contains(key) {
-                        self.removeObserver(self, forKeyPath: key)
+                        switch DataType(key: key, value: value) {
+                        case .reference, .relation: break
+                        default:
+                            self.removeObserver(self, forKeyPath: key)
+                        }
                     }
                 }
             }
