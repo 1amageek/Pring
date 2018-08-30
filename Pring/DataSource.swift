@@ -199,6 +199,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
             if isFirst {
                 guard let lastSnapshot = snapshot.documents.last else {
                     // The collection is empty.
+                    block?(snapshot, .initial)
                     return
                 }
                 self.query = self.query.start(afterDocument: lastSnapshot)
