@@ -716,6 +716,14 @@ extension Object {
     open override var hashValue: Int {
         return self.id.hash
     }
+        
+    open override func isEqual(_ object: Any?) -> Bool {
+        guard let obj = object as? Object else {
+            return false
+        }
+        return self == obj
+    }
+    
     public static func == (lhs: Object, rhs: Object) -> Bool {
         return lhs.id == rhs.id && type(of: lhs).modelVersion == type(of: rhs).modelVersion
     }
