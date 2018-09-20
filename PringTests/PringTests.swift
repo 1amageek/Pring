@@ -424,4 +424,32 @@ class PringTests: XCTestCase {
         }
         self.wait(for: [expectation], timeout: 20)
     }
+
+    func testReference() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test Reference")
+        let object: TestDocument = TestDocument()
+        let item: ReferenceItem = ReferenceItem()
+
+        object.refItem.set(item)
+        object.save { (ref, _) in
+            TestDocument.get(ref!.documentID, block: { (object, _) in
+                XCTAssertEqual(object?.refItem.id!, item.id)
+                let newItem: ReferenceItem = ReferenceItem()
+                object?.refItem.set(newItem)
+                object?.update({ (_) in
+                    TestDocument.get(ref!.documentID, block: { (object, _) in
+                        XCTAssertEqual(object?.refItem.id!, newItem.id)
+                        object?.delete({ (_) in
+                            newItem.delete({ (_) in
+                                item.delete({ (_) in
+                                    expectation.fulfill()
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        }
+        self.wait(for: [expectation], timeout: 20)
+    }
 }
