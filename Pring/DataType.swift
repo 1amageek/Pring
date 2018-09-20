@@ -20,22 +20,22 @@ public enum DataType {
      | key | Firestore | Local |
      */
     case array      (String, [Any], [Any])
-    case set        (String, [AnyHashable: Bool], Set<String>)
+    case set        (String, [String: Bool], Set<String>)
     case bool       (String, Bool, Bool)
     case binary     (String, Data, Data)           // Up to 1,048,487 bytes
-    case file       (String, [AnyHashable: Any], File)
-    case files      (String, [[AnyHashable: String]], [File])
+    case file       (String, [String: Any], File)
+    case files      (String, [[String: String]], [File])
     case url        (String, String, URL)
     case int        (String, Int, Int)
     case float      (String, Double, Double)
     case date       (String, Timestamp, Date)
     case geoPoint   (String, GeoPoint, GeoPoint)
-    case dictionary (String, [AnyHashable: Any], [AnyHashable: Any])
-    case collection (String, [AnyHashable: Any], AnySubCollection)
+    case dictionary (String, [String: Any], [String: Any])
+    case collection (String, [String: Any], AnySubCollection)
     case reference  (String, DocumentReference?, AnyReference)
     case relation   (String, String?, AnyRelation)
     case string     (String, String, String)
-    case document   (String, [AnyHashable: Any], Object?)
+    case document   (String, [String: Any], Object?)
     case null
 
     /**
@@ -119,7 +119,7 @@ public enum DataType {
             }
         case is [File]:
             if let value: [File] = value as? [File] {
-                self = .files(key, value.map { return $0.value as! [AnyHashable: String] }, value)
+                self = .files(key, value.map { return $0.value as! [String: String] }, value)
                 return
             }
         case is [Any]:
@@ -158,11 +158,6 @@ public enum DataType {
                 return
             }
         case is [String: Any]:
-            if let value: [String: Any] = value as? [String: Any] {
-                self = .dictionary(key, value, value)
-                return
-            }
-        case is [AnyHashable: Any]:
             if let value: [String: Any] = value as? [String: Any] {
                 self = .dictionary(key, value, value)
                 return
@@ -273,7 +268,7 @@ public enum DataType {
                 return
             }
         } else if subjectType == [File].self || subjectType == [File]?.self {
-            if let value: [[AnyHashable: String]] = data[key] as? [[AnyHashable: String]] {
+            if let value: [[String: String]] = data[key] as? [[String: String]] {
                 let files: [File] = value.compactMap { return File(property: $0) }
                 self = .files(key, value, files)
                 return
@@ -310,13 +305,8 @@ public enum DataType {
                 self = .dictionary(key, value, value)
                 return
             }
-        } else if subjectType == [AnyHashable: Any].self || subjectType == [AnyHashable: Any]?.self {
-            if let value: [String: Any] = data[key] as? [String: Any] {
-                self = .dictionary(key, value, value)
-                return
-            }
         } else if subjectType == File.self || subjectType == File?.self {
-            if let value: [AnyHashable: String] = data[key] as? [AnyHashable: String] {
+            if let value: [String: String] = data[key] as? [String: String] {
                 if let file: File = File(property: value) {
                     self = .file(key, value, file)
                     return
@@ -326,7 +316,7 @@ public enum DataType {
 
         if value is AnySubCollection {
             let collection: AnySubCollection = value as! AnySubCollection
-            if let value: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
+            if let value: [String: Any] = data[key] as? [String: Any] {
                 self = .collection(key, value, collection)
                 return
             }
@@ -345,16 +335,11 @@ public enum DataType {
                 return
             }
         } else if value is Object {
-            if let rawValue: [AnyHashable: Any] = data[key] as? [AnyHashable: Any] {
+            if let rawValue: [String: Any] = data[key] as? [String: Any] {
                 self = .document(key, rawValue, nil)
                 return
             }
         } else if value is [String: Any] {
-            if let value: [String: Any] = data[key] as? [String: Any] {
-                self = .dictionary(key, value, value)
-                return
-            }
-        } else if value is [AnyHashable: Any] {
             if let value: [String: Any] = data[key] as? [String: Any] {
                 self = .dictionary(key, value, value)
                 return

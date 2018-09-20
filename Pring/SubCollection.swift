@@ -45,7 +45,7 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
     }
 
     /// It is an Object whose ID is Key.
-    public var references: [AnyHashable: Any] {
+    public var references: [String: Any] {
         return _self.values()
     }
 
@@ -67,16 +67,17 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         case .save:
             _self.forEach { (document) in
                 let reference: DocumentReference = self.reference.document(document.id)
-                batch.setData(document.value as! [String : Any], forDocument: reference)
+                batch.setData(document.value , forDocument: reference)
             }
         case .update:
             _insertions.subtracting(_deletions).forEach({ (document) in
                 if document.isSaved {
-                    if let updateValue: [String: Any] = document.updateValue as? [String : Any], !updateValue.isEmpty {
+                    let updateValue: [String: Any] = document.updateValue
+                    if !updateValue.isEmpty {
                         batch.updateData(updateValue, forDocument: document.reference)
                     }
                 } else {
-                    batch.setData(document.value as! [String: Any], forDocument: document.reference)
+                    batch.setData(document.value , forDocument: document.reference)
                 }
             })
             _deletions.subtracting(_insertions).forEach({ (document) in

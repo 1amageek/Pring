@@ -144,13 +144,13 @@ open class Object: NSObject, Document {
         self.isSaved = true
     }
 
-    public convenience required init(id: String, value: [AnyHashable: Any]) {
+    public convenience required init(id: String, value: [String: Any]) {
         self.init()
 
         self.id = id
         self.reference = type(of: self).reference.document(id)
         
-        let data: [String: Any] = value as! [String: Any]
+        let data: [String: Any] = value 
 
         let formatter: ISO8601DateFormatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withFullDate,
@@ -284,9 +284,9 @@ open class Object: NSObject, Document {
     // MARK: -
 
     /// Object raw value
-    public var rawValue: [AnyHashable: Any] {
+    public var rawValue: [String: Any] {
+        var document: [String: Any] = [:]
         let mirror = Mirror(reflecting: self)
-        var document: [AnyHashable: Any] = [:]
         mirror.children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
@@ -324,8 +324,8 @@ open class Object: NSObject, Document {
     }
 
     /// Object value
-    public var value: [AnyHashable: Any] {
-        var value: [AnyHashable: Any] = self.rawValue
+    public var value: [String: Any] {
+        var value: [String: Any] = self.rawValue
         if isSaved {
             value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
         } else {
@@ -433,7 +433,7 @@ open class Object: NSObject, Document {
         }
     }
 
-    public var updateValue: [AnyHashable: Any] = [:]
+    public var updateValue: [String: Any] = [:]
 
     internal var garbages: [File] = []
 
@@ -459,7 +459,7 @@ open class Object: NSObject, Document {
         self._hash = batch.hash
         switch type {
         case .save:
-            batch.setData(self.value as! [String : Any], forDocument: self.reference)
+            batch.setData(self.value , forDocument: self.reference)
             self.each({ (key, value) in
                 if let value = value {
                     switch DataType(key: key, value: value) {
@@ -693,6 +693,17 @@ open class Object: NSObject, Document {
         }
     }
 
+    private var _properties: [String: Any?] {
+        let mirror: Mirror = Mirror(reflecting: self)
+        var properties: [String: Any?] = [:]
+        mirror.children.forEach { (key, value) in
+            if let key: String = key {
+                properties[key] = value
+            }
+        }
+        return properties
+    }
+
     // MARK: Deinit
 
     deinit {
@@ -713,10 +724,6 @@ open class Object: NSObject, Document {
 }
 
 extension Object {
-    open override var hashValue: Int {
-        return self.id.hash
-    }
-        
     open override func isEqual(_ object: Any?) -> Bool {
         guard let obj = object as? Object else {
             return false

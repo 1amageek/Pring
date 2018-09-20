@@ -23,7 +23,7 @@ class TestOptionalDocument: Object {
     dynamic var float: Double = 0
     dynamic var date: Date?
     dynamic var geoPoint: GeoPoint?
-    dynamic var dictionary: [AnyHashable: Any]?
+    dynamic var dictionary: [String: Any]?
     dynamic var string: String?
     dynamic var file: File?
 

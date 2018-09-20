@@ -35,9 +35,9 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
     var isSaved: Bool { get }
 
-    var rawValue: [AnyHashable: Any] { get }
+    var rawValue: [String: Any] { get }
 
-    var value: [AnyHashable: Any] { get }
+    var value: [String: Any] { get }
 
     var createdAt: Date { set get }
 
@@ -45,7 +45,7 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
     var ignore: [String] { get }
 
-    var updateValue: [AnyHashable: Any] { get }
+    var updateValue: [String: Any] { get }
 
     init()
 
@@ -53,7 +53,7 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
     init?(snapshot: DocumentSnapshot)
 
-    init(id: String, value: [AnyHashable: Any])
+    init(id: String, value: [String: Any])
 
     // MARK:
 

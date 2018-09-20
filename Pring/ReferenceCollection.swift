@@ -19,7 +19,7 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
         let batch: WriteBatch = batch ?? Firestore.firestore().batch()
         switch type {
         case .save:
-            var value: [AnyHashable: Any] = [:]
+            var value: [String: Any] = [:]
             _self.forEach { (document) in
                 if T.shouldBeReplicated {
                     value = document.value
@@ -32,10 +32,10 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
                     document.pack(.update, batch: batch)
                 }
                 let reference: DocumentReference = self.reference.document(document.id)
-                batch.setData(value as! [String : Any], forDocument: reference)
+                batch.setData(value, forDocument: reference)
             }
         case .update:
-            var value: [AnyHashable: Any] = [:]
+            var value: [String: Any] = [:]
             _insertions.subtracting(_deletions).forEach({ (document) in
                 if document.isSaved {
                     if T.shouldBeReplicated {
@@ -53,7 +53,7 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
                     document.pack(.save, batch: batch)
                 }
                 let reference: DocumentReference = self.reference.document(document.id)
-                batch.setData(value as! [String : Any], forDocument: reference)
+                batch.setData(value, forDocument: reference)
             })
             _deletions.subtracting(_insertions).forEach({ (document) in
                 let reference: DocumentReference = self.reference.document(document.id)

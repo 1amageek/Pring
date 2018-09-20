@@ -20,7 +20,7 @@ public protocol AnySubCollection: class, StorageLinkable, Batchable {
     
     var parent: Object? { get set }
     
-    var references: [AnyHashable: Any] { get }
+    var references: [String: Any] { get }
     
     func setValue(_ value: Any?, forKey key: String)
     

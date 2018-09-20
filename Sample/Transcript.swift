@@ -26,7 +26,7 @@ class Transcript: Object {
     override func decode(_ key: String, value: Any?) -> Bool {
         switch key {
         case "video":
-            self.video = Video(id: key, value: value as! [AnyHashable : Any])
+            self.video = Video(id: key, value: value as! [String : Any])
             return true
         default: return false
         }

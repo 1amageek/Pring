@@ -146,8 +146,8 @@ public final class File: NSObject {
     private var hasExtension: Bool = true
 
     /// File detail value
-    public var value: [AnyHashable: Any] {
-        var value: [AnyHashable: Any] = ["name": self.name]
+    public var value: [String: Any] {
+        var value: [String: Any] = ["name": self.name]
         if let downloadURL: URL = self.downloadURL {
             value["url"] = downloadURL.absoluteString
         }
@@ -195,7 +195,7 @@ public final class File: NSObject {
         self.url = url
     }
 
-    internal convenience init?(property: [AnyHashable: String]) {
+    internal convenience init?(property: [String: String]) {
         guard let name: String = property["name"] else { return nil }
         self.init(name: name)
         if let mimeType: String = property["mimeType"] {
