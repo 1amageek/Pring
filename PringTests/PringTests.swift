@@ -238,6 +238,20 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
 
+    func testDocumentMemoryLeak() {
+
+        weak var weakDocument: TestDocument?
+
+        do {
+            let document: TestDocument = TestDocument()
+            document.refItem.parent = document
+            weakDocument = document
+            document.rawValue
+        }
+
+        XCTAssertNil(weakDocument)
+    }
+
     func testDocumentMemory() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test File")
         weak var weakDocument: TestDocument?
@@ -255,6 +269,7 @@ class PringTests: XCTestCase {
                         })
                     })
                 })
+                expectation.fulfill()
             })
         }
 

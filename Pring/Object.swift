@@ -87,7 +87,7 @@ open class Object: NSObject, Document {
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     switch DataType(key: key, value: value) {
-                    case .reference, .relation: break
+                    case .collection, .reference, .relation: break
                     default:
                         self.addObserver(self, forKeyPath: key, options: [.new, .old], context: nil)
                     }
@@ -109,6 +109,8 @@ open class Object: NSObject, Document {
             switch DataType(key: child.label!, value: child.value) {
             case .file          (let key, _, let file):         file.setParent(self, forKey: key)
             case .collection    (let key, _, let collection):   collection.setParent(self, forKey: key)
+            case .reference     (let key, _, let reference):    reference.setParent(self, forKey: key)
+            case .relation      (let key, _, let relation):     relation.setParent(self, forKey: key)
             default: break
             }
         }
@@ -286,37 +288,33 @@ open class Object: NSObject, Document {
     /// Object raw value
     public var rawValue: [String: Any] {
         var document: [String: Any] = [:]
-        let mirror = Mirror(reflecting: self)
-        mirror.children.forEach { (key, value) in
-            if let key: String = key {
-                if !self.ignore.contains(key) {
-                    if let rawValue: Any = self.encode(key, value: value) {
-                        document[key] = rawValue
-                        return
-                    }
 
-                    let value: Any? = DataType.unwrap(value)
-
-                    switch DataType(key: key, value: value) {
-                    case .array         (let key, let rawValue, _):   document[key] = rawValue
-                    case .set           (let key, let rawValue, _):   document[key] = rawValue
-                    case .bool          (let key, let rawValue, _):   document[key] = rawValue
-                    case .binary        (let key, let rawValue, _):   document[key] = rawValue
-                    case .file          (let key, let rawValue, _):   document[key] = rawValue
-                    case .files         (let key, let rawValue, _):   document[key] = rawValue
-                    case .url           (let key, let rawValue, _):   document[key] = rawValue
-                    case .int           (let key, let rawValue, _):   document[key] = rawValue
-                    case .float         (let key, let rawValue, _):   document[key] = rawValue
-                    case .date          (let key, let rawValue, _):   document[key] = rawValue
-                    case .geoPoint      (let key, let rawValue, _):   document[key] = rawValue
-                    case .dictionary    (let key, let rawValue, _):   document[key] = rawValue
-                    case .collection    (let key, let rawValue, _):   if !rawValue.isEmpty { document[key] = rawValue }
-                    case .reference     (let key, let rawValue, _):   document[key] = rawValue
-                    case .relation      (let key, let rawValue, _):   document[key] = rawValue
-                    case .string        (let key, let rawValue, _):   document[key] = rawValue
-                    case .document      (let key, let rawValue, _):   document[key] = rawValue
-                    case .null: break
-                    }
+        self._properties.forEach { (key, value) in
+            if !self.ignore.contains(key) {
+                if let rawValue: Any = self.encode(key, value: value) {
+                    document[key] = rawValue
+                    return
+                }
+                print(key, value)
+                switch DataType(key: key, value: value) {
+                case .array         (let key, let rawValue, _):   document[key] = rawValue
+                case .set           (let key, let rawValue, _):   document[key] = rawValue
+                case .bool          (let key, let rawValue, _):   document[key] = rawValue
+                case .binary        (let key, let rawValue, _):   document[key] = rawValue
+                case .file          (let key, let rawValue, _):   document[key] = rawValue
+                case .files         (let key, let rawValue, _):   document[key] = rawValue
+                case .url           (let key, let rawValue, _):   document[key] = rawValue
+                case .int           (let key, let rawValue, _):   document[key] = rawValue
+                case .float         (let key, let rawValue, _):   document[key] = rawValue
+                case .date          (let key, let rawValue, _):   document[key] = rawValue
+                case .geoPoint      (let key, let rawValue, _):   document[key] = rawValue
+                case .dictionary    (let key, let rawValue, _):   document[key] = rawValue
+                case .collection    (let key, let rawValue, _):   if !rawValue.isEmpty { document[key] = rawValue }
+                case .reference     (let key, let rawValue, _):   document[key] = rawValue
+                case .relation      (let key, let rawValue, _):   document[key] = rawValue
+                case .string        (let key, let rawValue, _):   document[key] = rawValue
+                case .document      (let key, let rawValue, _):   document[key] = rawValue
+                case .null: break
                 }
             }
         }
@@ -460,7 +458,7 @@ open class Object: NSObject, Document {
         switch type {
         case .save:
             batch.setData(self.value , forDocument: self.reference)
-            self.each({ (key, value) in
+            self._properties.forEach({ (key, value) in
                 if let value = value {
                     switch DataType(key: key, value: value) {
                     case .collection(_, _, let collection):
@@ -482,7 +480,7 @@ open class Object: NSObject, Document {
                 updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                 batch.updateData(updateValue, forDocument: self.reference)
             }
-            self.each({ (key, value) in
+            self._properties.forEach({ (key, value) in
                 if let value = value {
                     switch DataType(key: key, value: value) {
                     case .collection(_, _, let collection):
@@ -511,7 +509,7 @@ open class Object: NSObject, Document {
         }
         self.batchID = batchID
         self.isSaved = true
-        self.each({ (key, value) in
+        self._properties.forEach({ (key, value) in
             if let value = value {
                 switch DataType(key: key, value: value) {
                 case .collection(_, _, let collection):
@@ -683,16 +681,6 @@ open class Object: NSObject, Document {
         }
     }
 
-    private func each(_ block: (String, Any?) -> Void) {
-        let mirror = Mirror(reflecting: self)
-        mirror.children.forEach { (key, value) in
-            if let key: String = key {
-                let value: Any? = DataType.unwrap(value)
-                block(key, value)
-            }
-        }
-    }
-
     private var _properties: [String: Any?] {
         let mirror: Mirror = Mirror(reflecting: self)
         var properties: [String: Any?] = [:]
@@ -712,7 +700,7 @@ open class Object: NSObject, Document {
                 if let key: String = key {
                     if !self.ignore.contains(key) {
                         switch DataType(key: key, value: value) {
-                        case .reference, .relation: break
+                        case .collection, .reference, .relation: break
                         default:
                             self.removeObserver(self, forKeyPath: key)
                         }

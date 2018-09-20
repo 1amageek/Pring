@@ -25,9 +25,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
 
 
-        let user: User = User(id: "aaaaa", value: [:])
-        user.name = "aaaaa"
-        user.update()
+//        let user: User = User(id: "aaaaa", value: [:])
+//        user.name = "aaaaa"
+//        user.update()
 
         return true
     }

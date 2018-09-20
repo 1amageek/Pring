@@ -76,6 +76,7 @@
 		12F4F5D4201845F5001D635E /* NestedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F5D3201845F5001D635E /* NestedCollection.swift */; };
 		12F4F5D6201846C3001D635E /* ReferenceCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F5D5201846C3001D635E /* ReferenceCollection.swift */; };
 		12F84CBC1FB054CD00D889BE /* StorageLinkable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F84CBB1FB054CD00D889BE /* StorageLinkable.swift */; };
+		12FFEA172153A26E0084F414 /* MemoryLeakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12FFEA162153A26E0084F414 /* MemoryLeakViewController.swift */; };
 		1C25E115320FD71F9D49320F /* Pods_Pring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A88B25399127D470BF0814D /* Pods_Pring.framework */; };
 		1F8D81E194D8ABB3AA7B4C0F /* Pods_PringTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3174F0E0A8FE283A8ED67786 /* Pods_PringTests.framework */; };
 		91FE1B8ED52B40F958B52E11 /* Pods_Sample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ED32BEED2D22F7832C64B71 /* Pods_Sample.framework */; };
@@ -150,6 +151,7 @@
 		12F4F5D3201845F5001D635E /* NestedCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedCollection.swift; sourceTree = "<group>"; };
 		12F4F5D5201846C3001D635E /* ReferenceCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceCollection.swift; sourceTree = "<group>"; };
 		12F84CBB1FB054CD00D889BE /* StorageLinkable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageLinkable.swift; sourceTree = "<group>"; };
+		12FFEA162153A26E0084F414 /* MemoryLeakViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLeakViewController.swift; sourceTree = "<group>"; };
 		1EB6FB58971115CE01BDB30D /* Pods-Pring.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pring.release.xcconfig"; path = "Pods/Target Support Files/Pods-Pring/Pods-Pring.release.xcconfig"; sourceTree = "<group>"; };
 		1ED32BEED2D22F7832C64B71 /* Pods_Sample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3174F0E0A8FE283A8ED67786 /* Pods_PringTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PringTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -288,6 +290,7 @@
 				1281B0F21FE11A6500B8FCEE /* Transcript.swift */,
 				126080411FB991BD001B5DDA /* Collecor.swift */,
 				12027CB11FF4BDA800912630 /* FileControlViewController.swift */,
+				12FFEA162153A26E0084F414 /* MemoryLeakViewController.swift */,
 				12AF83341F8CD2F400561159 /* Main.storyboard */,
 				12AF83371F8CD2F400561159 /* Assets.xcassets */,
 				12AF83391F8CD2F400561159 /* LaunchScreen.storyboard */,
@@ -675,6 +678,7 @@
 				126080421FB991BD001B5DDA /* Collecor.swift in Sources */,
 				1249ABEF1FB45ED800E78EA6 /* DataSourceViewCell.swift in Sources */,
 				1288E22B1FCEA46A00E72594 /* Video.swift in Sources */,
+				12FFEA172153A26E0084F414 /* MemoryLeakViewController.swift in Sources */,
 				12AF83511F8CD4A400561159 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
