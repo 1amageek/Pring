@@ -295,7 +295,6 @@ open class Object: NSObject, Document {
                     document[key] = rawValue
                     return
                 }
-                print(key, value)
                 switch DataType(key: key, value: value) {
                 case .array         (let key, let rawValue, _):   document[key] = rawValue
                 case .set           (let key, let rawValue, _):   document[key] = rawValue
