@@ -1,10 +1,10 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '11.0'
 
 target 'Pring' do
   use_frameworks!
 
-  pod 'Firebase', '~> 5.6.0'
+  pod 'Firebase'
   pod 'Firebase/Firestore'
   pod 'Firebase/Storage'
 
@@ -16,6 +16,9 @@ end
 
 target 'Sample' do
   use_frameworks!
-  pod 'Pring', :path => './'
+  pod 'Firebase'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Storage'
+  #pod 'Pring', :path => './'
 
 end
