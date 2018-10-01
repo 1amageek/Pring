@@ -633,22 +633,20 @@ open class Object: NSObject, Document {
 
     internal func reset() {
         self.updateValue = [:]
-        for (_, child) in Mirror(reflecting: self).children.enumerated() {
-            guard let key: String = child.label else { break }
-            if self.ignore.contains(key) { break }
-            let value = child.value
-
-            switch DataType(key: key, value: value) {
-            case .file(let key, _, let file):
-                if file.deleteRequest {
-                    self[key] = nil
+        self._properties.forEach { (key, value) in
+            if !self.ignore.contains(key) {
+                switch DataType(key: key, value: value) {
+                case .file(let key, _, let file):
+                    if file.deleteRequest {
+                        self[key] = nil
+                    }
+                    if file.isDeleted {
+                        self[key] = nil
+                    }
+                case .files(_, _, let files):
+                    self[key] = files.filter { return !$0.deleteRequest }
+                default: break
                 }
-                if file.isDeleted {
-                    self[key] = nil
-                }
-            case .files(_, _, let files):
-                self[key] = files.filter { return !$0.deleteRequest }
-            default: break
             }
         }
     }
