@@ -644,7 +644,9 @@ open class Object: NSObject, Document {
                         self[key] = nil
                     }
                 case .files(_, _, let files):
-                    self[key] = files.filter { return !$0.deleteRequest }
+                    if !files.isEmpty {
+                        self[key] = files.filter { return !$0.deleteRequest }
+                    }
                 default: break
                 }
             }
