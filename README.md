@@ -145,7 +145,7 @@ userA.items.insert(item)
 userA.save()
 ```
 
-** ❗️Important**
+__Important❗️__
 
 Pring clearly separates save and update. This is to prevent unexpected overwriting.
 Pring provides three methods of initializing Object.
