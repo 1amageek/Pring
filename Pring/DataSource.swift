@@ -188,18 +188,20 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     /// Start monitoring data source.
     @discardableResult
     public func listen() -> Self {
-        let block: ChangeBlock? = self.changedBlock
+        let changeBlock: ChangeBlock? = self.changedBlock
+        let completedBlock: CompletedBlock? = self.completedBlock
         var isFirst: Bool = true
         self.listenr = self.query.listen(includeMetadataChanges: self.options.includeMetadataChanges, listener: { [weak self] (snapshot, error) in
             guard let `self` = self else { return }
             guard let snapshot: QuerySnapshot = snapshot else {
-                block?(nil, CollectionChange(change: nil, error: error))
+                changeBlock?(nil, CollectionChange(change: nil, error: error))
                 return
             }
             if isFirst {
                 guard let lastSnapshot = snapshot.documents.last else {
                     // The collection is empty.
-                    block?(snapshot, .initial)
+                    changeBlock?(snapshot, .initial)
+                    completedBlock?(snapshot, self.documents)
                     return
                 }
                 self.query = self.query.start(afterDocument: lastSnapshot)
