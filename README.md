@@ -19,9 +19,6 @@ The concept of Document and Collection has been added to Firestore. Pring define
 
 [Deep Dive into the Firebase](https://github.com/1amageek/Pring/wiki/Deep-Dive-into-the-Firebase)
 
-<b> ⚠️ This code still contains bugs.</b><br>
-Please see TODO for details.
-
 Please report issues [here](https://github.com/1amageek/Pring/issues/new)
 
 
@@ -73,8 +70,8 @@ If you are going to use `Firestore` and make products, I recommend you to read i
 - [x] Verify the implementation of custom DataType
 - [x] Verify cooperation with Firestorage
 - [x] Verify the implementation of the NestedCollection feature
-- [ ] Verify the implementation of the ReferenceCollection feature
-- [ ] Verify the implementation of Query-enabled DataSource
+- [x] Verify the implementation of the ReferenceCollection feature
+- [x] Verify the implementation of Query-enabled DataSource
 
 If you have a Feature Request, please post an [issue](https://github.com/1amageek/Pring/issues/new).
 
@@ -144,6 +141,31 @@ userA.followers.insert(userB)
 userA.items.insert(item)
 userA.save()
 ```
+
+__Important❗️__
+
+Pring clearly separates save and update. This is to prevent unexpected overwriting.
+Pring provides three methods of initializing Object.
+
+#### Initialization giving AutoID to Object
+```swift
+let user: User = User()
+```
+
+#### Initialization giving arbitrary ID
+```swift
+let user: User = User(id: "YOUR_ID") // isSaved false
+```
+
+#### Initialization when dealing with already saved Object
+If you are dealing with an Object that has already been saved, please perform the following initialization.
+In case of this initialization can not save Please update.
+```swift
+let user: User = User(id: "YOUR_ID", value: [:]) // isSaved true
+```
+
+It is the developer's responsibility to manage the saved state of the Object.
+
 
 ### Scheme 
 
