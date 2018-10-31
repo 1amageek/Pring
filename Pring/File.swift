@@ -195,7 +195,7 @@ public final class File: NSObject {
         self.url = url
     }
 
-    internal convenience init?(property: [String: String]) {
+    public convenience init?(property: [String: String]) {
         guard let name: String = property["name"] else { return nil }
         self.init(name: name)
         if let mimeType: String = property["mimeType"] {
