@@ -257,6 +257,10 @@ extension SubCollection: Collection {
     public var first: T? {
         return _self.first
     }
+    
+    public var last: T? {
+        return _self.last
+    }
 
     public subscript(i: Int) -> T {
         return _self[i]
