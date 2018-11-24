@@ -24,7 +24,7 @@ public enum DataType {
     case bool       (String, Bool, Bool)
     case binary     (String, Data, Data)           // Up to 1,048,487 bytes
     case file       (String, [String: Any], File)
-    case files      (String, [[String: String]], [File])
+    case files      (String, [[String: Any]], [File])
     case url        (String, String, URL)
     case int        (String, Int, Int)
     case float      (String, Double, Double)
@@ -268,7 +268,7 @@ public enum DataType {
                 return
             }
         } else if subjectType == [File].self || subjectType == [File]?.self {
-            if let value: [[String: String]] = data[key] as? [[String: String]] {
+            if let value: [[String: Any]] = data[key] as? [[String: Any]] {
                 let files: [File] = value.compactMap { return File(property: $0) }
                 self = .files(key, value, files)
                 return
@@ -306,7 +306,7 @@ public enum DataType {
                 return
             }
         } else if subjectType == File.self || subjectType == File?.self {
-            if let value: [String: String] = data[key] as? [String: String] {
+            if let value: [String: Any] = data[key] as? [String: Any] {
                 if let file: File = File(property: value) {
                     self = .file(key, value, file)
                     return

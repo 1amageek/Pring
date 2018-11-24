@@ -29,6 +29,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        user.name = "aaaaa"
 //        user.update()
 
+        let user: User  = User()
+        user.name = "hogehoghgoe"
+        user.save()
+
         return true
     }
 

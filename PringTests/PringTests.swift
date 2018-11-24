@@ -57,12 +57,22 @@ class PringTests: XCTestCase {
         document.file1 = File(data: MultipleFilesDocument.image().pngData()!, mimeType: .png)
         document.file2 = File(data: MultipleFilesDocument.image().pngData()!, mimeType: .png)
 
+        document.file0?.additionalData = [
+            "text": "test",
+            "number": 0
+        ]
+
         let tasks = document.save { (ref, error) in
             MultipleFilesDocument.get(ref!.documentID, block: { (document, error) in
                 XCTAssertNotNil(document)
                 guard let document: MultipleFilesDocument = document else {
                     return
                 }
+
+                let file0: File = document.file0!
+
+                XCTAssertEqual(file0.additionalData!["text"] as! String, "test")
+                XCTAssertEqual(file0.additionalData!["number"] as! Int, 0)
 
                 let ref0 = document.file0?.ref
                 let ref1 = document.file1?.ref

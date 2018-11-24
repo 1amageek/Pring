@@ -456,6 +456,7 @@ open class Object: NSObject, Document {
         self._hash = batch.hash
         switch type {
         case .save:
+            print(self.value)
             batch.setData(self.value , forDocument: self.reference)
             self._properties.forEach({ (key, value) in
                 if let value = value {
