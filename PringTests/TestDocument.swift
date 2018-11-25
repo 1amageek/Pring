@@ -29,9 +29,10 @@ class TestDocument: Object {
     dynamic var float: Double                       = Double.infinity
     dynamic var date: Date                          = Date(timeIntervalSince1970: 100)
     dynamic var geoPoint: GeoPoint                  = GeoPoint(latitude: 0, longitude: 0)
-    dynamic var dictionary: [String: Any]      = ["key": "value"]
+    dynamic var dictionary: [String: Any]           = ["key": "value"]
     dynamic var string: String                      = "string"
     dynamic var file: File                          = File(data: TestDocument.image0().pngData()!, mimeType: .png)
+    dynamic var files: [File]                       = []
     dynamic var refItem: Reference<ReferenceItem>   = Reference()
     dynamic var relationItem: Relation<ReferenceItem>   = Relation()
 

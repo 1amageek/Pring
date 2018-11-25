@@ -118,6 +118,74 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 30)
     }
 
+    func testFileArray() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test Files")
+        let document: MultipleFilesDocument = MultipleFilesDocument()
+
+        let file: File = File(data: MultipleFilesDocument.image().pngData()!, mimeType: .png)
+
+
+
+        file.additionalData = [
+            "text": "test",
+            "number": 0
+        ]
+
+        document.fileArray.append(file)
+        document.fileArray.append(File(data: MultipleFilesDocument.image().pngData()!, mimeType: .png))
+        document.fileArray.append(File(data: MultipleFilesDocument.image().pngData()!, mimeType: .png))
+
+        let tasks = document.save { (ref, error) in
+            MultipleFilesDocument.get(ref!.documentID, block: { (document, error) in
+                XCTAssertNotNil(document)
+                guard let document: MultipleFilesDocument = document else {
+                    return
+                }
+
+                let file0: File = document.fileArray.first!
+
+                XCTAssertEqual(file0.additionalData!["text"] as! String, "test")
+                XCTAssertEqual(file0.additionalData!["number"] as! Int, 0)
+
+                let ref0 = document.fileArray[0].ref
+                let ref1 = document.fileArray[1].ref
+                let ref2 = document.fileArray[2].ref
+
+                ref0?.getData(maxSize: 1000000, completion: { (data, error) in
+                    XCTAssertNotNil(data)
+                    ref1?.getData(maxSize: 1000000, completion: { (data, error) in
+                        XCTAssertNotNil(data)
+                        ref2?.getData(maxSize: 1000000, completion: { (data, error) in
+                            XCTAssertNotNil(data)
+                            document.fileArray = []
+                            document.update({ (error) in
+                                MultipleFilesDocument.get(ref!.documentID, block: { (doc, error) in
+                                    guard let doc: MultipleFilesDocument = doc else {
+                                        return
+                                    }
+                                    XCTAssertNotNil(doc)
+                                    XCTAssertEqual(doc.fileArray.count, 0)
+                                    ref0?.getData(maxSize: 1000000, completion: { (data, error) in
+                                        XCTAssertNil(data)
+                                        ref1?.getData(maxSize: 1000000, completion: { (data, error) in
+                                            XCTAssertNil(data)
+                                            ref2?.getData(maxSize: 1000000, completion: { (data, error) in
+                                                XCTAssertNil(data)
+                                                expectation.fulfill()
+                                            })
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        }
+        XCTAssertEqual(tasks.count, 3)
+        self.wait(for: [expectation], timeout: 30)
+    }
+
     func testNestedFiles() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test Nested File delete")
 

@@ -119,7 +119,7 @@ public enum DataType {
             }
         case is [File]:
             if let value: [File] = value as? [File] {
-                self = .files(key, value.map { return $0.value as! [String: Any] }, value)
+                self = .files(key, value.map { return $0.value as [String: Any] }, value)
                 return
             }
         case is [Any]:

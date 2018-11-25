@@ -18,6 +18,8 @@ class MultipleFilesDocument: Object {
     dynamic var file1: File?
     dynamic var file2: File?
 
+    dynamic var fileArray: [File] = []
+
     let files: NestedCollection<MultipleFilesNestedItem> = []
 
     let shallowFiles: NestedCollection<MultipleFilesShallowPathItem> = []

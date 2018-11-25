@@ -408,6 +408,14 @@ open class Object: NSObject, Document {
                             file.setParent(self, forKey: key)
                             self.garbages.append(file)
                         }
+
+                        newFiles.forEach { (file) in
+                            if file.deleteRequest {
+                                file.setParent(self, forKey: key)
+                                self.garbages.append(file)
+                            }
+                        }
+                        self.update(key: key, value: newFiles.filter { $0.deleteRequest == false }.map { $0.value })
                     }
                 case .url           (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .int           (let key, let updateValue, _):   update(key: key, value: updateValue)
@@ -456,7 +464,6 @@ open class Object: NSObject, Document {
         self._hash = batch.hash
         switch type {
         case .save:
-            print(self.value)
             batch.setData(self.value , forDocument: self.reference)
             self._properties.forEach({ (key, value) in
                 if let value = value {
