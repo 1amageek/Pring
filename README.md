@@ -318,6 +318,12 @@ object.thumbnailImage = File.delete()
 object.update()
 ```
 
+If it is held in an array, automatic file deletion is done by deleting from the array and updating it.
+``` swift
+object.files.remove(at: 0)
+object.update()
+```
+
 ### Nested Collection & Reference Collection
 
 `NestedCollection` and `ReferenceCollection` are classes that define SubCollection.
