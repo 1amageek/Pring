@@ -29,6 +29,7 @@ public enum DataType {
     case int        (String, Int, Int)
     case float      (String, Double, Double)
     case date       (String, Timestamp, Date)
+    case timestamp  (String, Timestamp, Timestamp)
     case geoPoint   (String, GeoPoint, GeoPoint)
     case dictionary (String, [String: Any], [String: Any])
     case collection (String, [String: Any], AnySubCollection)
@@ -105,6 +106,11 @@ public enum DataType {
             if let value: Date = value as? Date {
                 let timestamp: Timestamp = Timestamp(date: value)
                 self = .date(key, timestamp, value)
+                return
+            }
+        case is Timestamp:
+            if let value: Timestamp = value as? Timestamp {
+                self = .timestamp(key, value, value)
                 return
             }
         case is Data:
@@ -248,6 +254,11 @@ public enum DataType {
                     self = .date(key, timestamp, date)
                     return
                 }
+            }
+        } else if subjectType == Timestamp.self || subjectType == Timestamp?.self {
+            if let timestamp: Timestamp = data[key] as? Timestamp {
+                self = .timestamp(key, timestamp, timestamp)
+                return
             }
         } else if subjectType == Data.self || subjectType == Data?.self {
             if let value: Data = data[key] as? Data {

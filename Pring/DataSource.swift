@@ -384,8 +384,8 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                     block(nil, error)
                     return
                 }
-                document?.createdAt = (change.document.data(with: .estimate)["createdAt"] as! Timestamp).dateValue()
-                document?.updatedAt = (change.document.data(with: .estimate)["updatedAt"] as! Timestamp).dateValue()
+                document?.createdAt = (change.document.data(with: .estimate)["createdAt"] as! Timestamp)
+                document?.updatedAt = (change.document.data(with: .estimate)["updatedAt"] as! Timestamp)
                 block(document, nil)
             })
         }
