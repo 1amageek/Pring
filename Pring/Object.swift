@@ -159,17 +159,6 @@ open class Object: NSObject, Document {
                                    .withTime,
                                    .withDashSeparatorInDate,
                                    .withColonSeparatorInTime]
-//        if let createdAtStr: String = data[(\Object.createdAt)._kvcKeyPathString!] as? String {
-//            self.createdAt = formatter.date(from: createdAtStr) ?? _createdAt
-//        } else {
-//            self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Date ?? _createdAt
-//        }
-//
-//        if let updatedAtStr: String = data[(\Object.updatedAt)._kvcKeyPathString!] as? String {
-//            self.updatedAt = formatter.date(from: updatedAtStr) ?? _updatedAt
-//        } else {
-//            self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as? Date ?? _updatedAt
-//        }
 
         self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
         self.updatedAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
@@ -212,8 +201,22 @@ open class Object: NSObject, Document {
         self.snapshot = snapshot
     }
 
-    public func set(_ reference: DocumentReference) {
+    public func setReference(_ reference: DocumentReference) {
         self.reference = reference
+        Mirror(reflecting: self).children.forEach { (key, value) in
+            if let key: String = key {
+                if !self.ignore.contains(key) {
+                    switch DataType(key: key, value: value) {
+                    case .file          (let key, _, let value):    value.setParent(self, forKey: key)
+                    case .files         (let key, _, let value):    value.forEach { $0.setParent(self, forKey: key) }
+                    case .collection    (let key, _, let collection):   collection.setParent(self, forKey: key)
+                    case .reference     (let key, _, let reference):    reference.setParent(self, forKey: key)
+                    case .relation      (let key, _, let relation):     relation.setParent(self, forKey: key)
+                    default: break
+                    }
+                }
+            }
+        }
     }
 
     public var snapshot: DocumentSnapshot? {

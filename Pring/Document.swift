@@ -57,7 +57,7 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
     // MARK:
 
-    func set(_ reference: DocumentReference)
+    func setReference(_ reference: DocumentReference)
 
     @discardableResult
     func save(_ block: ((DocumentReference?, Error?) -> Void)?) -> [String: StorageUploadTask]

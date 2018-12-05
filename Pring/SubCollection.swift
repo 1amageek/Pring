@@ -66,8 +66,8 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         switch type {
         case .save:
             _self.forEach { (document) in
-                let reference: DocumentReference = self.reference.document(document.id)
-                batch.setData(document.value , forDocument: reference)
+                batch.setData(document.value , forDocument: document.reference)
+                document.pack(type, batch: batch)
             }
         case .update:
             _insertions.subtracting(_deletions).forEach({ (document) in
@@ -81,13 +81,11 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
                 }
             })
             _deletions.subtracting(_insertions).forEach({ (document) in
-                let reference: DocumentReference = self.reference.document(document.id)
-                batch.deleteDocument(reference)
+                batch.deleteDocument(document.reference)
             })
         case .delete:
             self.forEach { (document) in
-                let reference: DocumentReference = self.reference.document(document.id)
-                batch.deleteDocument(reference)
+                batch.deleteDocument(document.reference)
             }
         }
         return batch
@@ -125,7 +123,7 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
 
     /// Save the new Object.
     public func insert(_ newMember: Element) {
-        newMember.set(self.reference.document(newMember.id))
+        newMember.setReference(self.reference.document(newMember.id))
         if !_self.contains(newMember) {
             _self.append(newMember)
         }
@@ -143,8 +141,10 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         if let index: Int = _self.index(of: member) {
             _self.remove(at: index)
         }
-        _deletions.insert(member)
-        member.set(Element.reference.document(member.id))
+        let _member: Element = Element(id: member.id, value: [:])
+        _member.setReference(self.reference.document(member.id))
+        _deletions.insert(_member)
+        member.setReference(Element.reference.document(member.id))
     }
 
     /// Deletes the Document contained in SubCollection from ID.
@@ -195,6 +195,12 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
             self?._self = documents
             block?(snapshot, documents)
         }.get()
+    }
+
+    public func doc(_ id: String) -> T {
+        let doc: T = T(id: id, value: [:])
+        doc.setReference(self.reference.document(id))
+        return doc
     }
 
     public var description: String {

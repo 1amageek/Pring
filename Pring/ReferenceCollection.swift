@@ -101,5 +101,10 @@ public class ReferenceCollection<T: Document>: SubCollection<T> {
     public override func deleteFiles(_ id: String, container: DeleteContainer? = nil, block: ((Error?) -> Void)? = nil) {
         // Do nothing
     }
+
+    public override func doc(_ id: String) -> T {
+        let doc: T = T(id: id, value: [:])
+        return doc
+    }
 }
 
