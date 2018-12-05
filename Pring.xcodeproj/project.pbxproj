@@ -35,7 +35,8 @@
 		123F0A1820A2D95400C0EAC1 /* Disposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF830F1F8CAEEC00561159 /* Disposer.swift */; };
 		1249ABED1FB45DB400E78EA6 /* DataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */; };
 		1249ABEF1FB45ED800E78EA6 /* DataSourceViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEE1FB45ED800E78EA6 /* DataSourceViewCell.swift */; };
-		124C323421B7DD09001629C9 /* PackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124C323321B7DD09001629C9 /* PackTests.swift */; };
+		124C323621B8043D001629C9 /* PackNestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124C323521B8043D001629C9 /* PackNestTests.swift */; };
+		124C323821B80450001629C9 /* PackReferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124C323721B80450001629C9 /* PackReferenceTests.swift */; };
 		126080401FB86FE2001B5DDA /* CollectionObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1260803F1FB86FE2001B5DDA /* CollectionObject.swift */; };
 		126080421FB991BD001B5DDA /* Collecor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126080411FB991BD001B5DDA /* Collecor.swift */; };
 		1266EB2120215664005F5F41 /* CustomDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1266EB2020215664005F5F41 /* CustomDocument.swift */; };
@@ -106,7 +107,8 @@
 		123546CE1FA20102006DBDD6 /* TestOptionalDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestOptionalDocument.swift; sourceTree = "<group>"; };
 		1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceViewController.swift; sourceTree = "<group>"; };
 		1249ABEE1FB45ED800E78EA6 /* DataSourceViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceViewCell.swift; sourceTree = "<group>"; };
-		124C323321B7DD09001629C9 /* PackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackTests.swift; sourceTree = "<group>"; };
+		124C323521B8043D001629C9 /* PackNestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PackNestTests.swift; sourceTree = "<group>"; };
+		124C323721B80450001629C9 /* PackReferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackReferenceTests.swift; sourceTree = "<group>"; };
 		1260803F1FB86FE2001B5DDA /* CollectionObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionObject.swift; sourceTree = "<group>"; };
 		126080411FB991BD001B5DDA /* Collecor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collecor.swift; sourceTree = "<group>"; };
 		12649F021F9F6567004C6130 /* Pring.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pring.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -260,7 +262,8 @@
 				12AF83021F8CAEDE00561159 /* PringTests.swift */,
 				1224CB87201B94AD002DA245 /* DocumentCRUDTests.swift */,
 				12F31A6D21AAE28E00E4E63E /* TypeTests.swift */,
-				124C323321B7DD09001629C9 /* PackTests.swift */,
+				124C323521B8043D001629C9 /* PackNestTests.swift */,
+				124C323721B80450001629C9 /* PackReferenceTests.swift */,
 				1224CB8B201B9C61002DA245 /* SubCollection */,
 				12AF83201F8CAF6E00561159 /* TestDocument.swift */,
 				1266EB2020215664005F5F41 /* CustomDocument.swift */,
@@ -699,6 +702,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */,
+				124C323621B8043D001629C9 /* PackNestTests.swift in Sources */,
 				123F0A0E20A2D95400C0EAC1 /* Batchable.swift in Sources */,
 				123F0A0A20A2D95400C0EAC1 /* DataSource.swift in Sources */,
 				123F0A1720A2D95400C0EAC1 /* ReferenceCollection.swift in Sources */,
@@ -713,6 +717,7 @@
 				123F0A0D20A2D95400C0EAC1 /* StorageLinkable.swift in Sources */,
 				123F0A0C20A2D95400C0EAC1 /* DataType.swift in Sources */,
 				12C41E761FB30FEE002B1526 /* DataSourceItem.swift in Sources */,
+				124C323821B80450001629C9 /* PackReferenceTests.swift in Sources */,
 				123F0A1420A2D95400C0EAC1 /* Object.swift in Sources */,
 				123F0A1620A2D95400C0EAC1 /* NestedCollection.swift in Sources */,
 				126080401FB86FE2001B5DDA /* CollectionObject.swift in Sources */,
@@ -726,7 +731,6 @@
 				123F0A1820A2D95400C0EAC1 /* Disposer.swift in Sources */,
 				12D14A8B1FB150DA006679B6 /* MultipleFilesDocument.swift in Sources */,
 				123F0A1520A2D95400C0EAC1 /* SubCollection.swift in Sources */,
-				124C323421B7DD09001629C9 /* PackTests.swift in Sources */,
 				123F0A1320A2D95400C0EAC1 /* File.swift in Sources */,
 				1224CB88201B94AD002DA245 /* DocumentCRUDTests.swift in Sources */,
 				12AF83031F8CAEDE00561159 /* PringTests.swift in Sources */,

@@ -12,13 +12,13 @@ import Firebase
 @objcMembers
 fileprivate class Doc: Object {
     dynamic var name: String?
-    let nest: NestedCollection<Doc1> = []
+    let nest: NestedCollection<Doc0> = []
 }
 
 @objcMembers
 fileprivate class Doc0: Object {
     dynamic var name: String?
-    let nest: NestedCollection<Doc1> = []
+    let ref: ReferenceCollection<Doc1> = []
 }
 
 @objcMembers
@@ -30,7 +30,7 @@ fileprivate class Doc1: Object {
 @objcMembers
 fileprivate class Doc2: Object {
     dynamic var name: String?
-    let nest: NestedCollection<Doc3> = []
+    let ref: ReferenceCollection<Doc3> = []
 }
 
 @objcMembers
@@ -38,31 +38,33 @@ fileprivate class Doc3: Object {
     dynamic var name: String?
 }
 
-class PackTests: XCTestCase {
+class PackNestTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
         _ = FirebaseTest.shared
     }
 
-    func testNestReference() {
+    func testReference() {
         let doc: Doc = Doc()
-        let doc1: Doc1 = doc.nest.doc("doc1")
-        print(doc1.reference.path)
-        XCTAssertEqual(doc1.reference.path, "version/1/doc/\(doc.id)/nest/doc1")
+        let doc0: Doc0 = doc.nest.doc("doc0")
+        XCTAssertEqual(doc0.reference.path, "version/1/doc/\(doc.id)/nest/doc0")
+        let doc1: Doc1 = doc.nest.doc("doc0").ref.doc("doc1")
+        XCTAssertEqual(doc1.reference.path, "version/1/doc1/doc1")
         let doc2: Doc2 = doc1.nest.doc("doc2")
-        print(doc2.reference.path)
-        XCTAssertEqual(doc2.reference.path, "version/1/doc/\(doc.id)/nest/doc1/nest/doc2")
-        let doc3: Doc3 = doc2.nest.doc("doc3")
-        print(doc3.reference.path)
-        XCTAssertEqual(doc3.reference.path, "version/1/doc/\(doc.id)/nest/doc1/nest/doc2/nest/doc3")
+        XCTAssertEqual(doc2.reference.path, "version/1/doc1/doc1/nest/doc2")
+        let doc3: Doc3 = doc2.ref.doc("doc3")
+        XCTAssertEqual(doc3.reference.path, "version/1/doc3/doc3")
     }
 
-    func testDocNest() {
+    func testDoc() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "")
 
         let doc: Doc = Doc()
         doc.name = "doc"
+
+        let doc0: Doc0 = Doc0()
+        doc0.name = "doc0"
 
         let doc1: Doc1 = Doc1()
         doc1.name = "doc1"
@@ -73,30 +75,33 @@ class PackTests: XCTestCase {
         let doc3: Doc3 = Doc3()
         doc3.name = "doc3"
 
-        doc.nest.insert(doc1)
+        doc.nest.insert(doc0)
+        doc0.ref.insert(doc1)
         doc1.nest.insert(doc2)
-        doc2.nest.insert(doc3)
+        doc2.ref.insert(doc3)
 
         doc.save { (_, error) in
             let doc: Doc = Doc(id: doc.id, value: [:])
             doc.nest.query.dataSource().onCompleted({ (_, docs) in
                 XCTAssert(!docs.isEmpty)
-                let doc1: Doc1 = docs.first!
-                XCTAssertEqual(doc1.name!, "doc1")
-                doc1.nest.query.dataSource().onCompleted({ (_, docs) in
+                let doc0: Doc0 = docs.first!
+                XCTAssertEqual(doc0.name!, "doc0")
+                doc0.ref.query.dataSource().onCompleted({ (_, docs) in
                     XCTAssert(!docs.isEmpty)
-                    let doc2: Doc2 = docs.first!
-                    XCTAssertEqual(doc2.name!, "doc2")
-                    doc2.nest.query.dataSource().onCompleted({ (_, docs) in
+                    let doc1: Doc1 = docs.first!
+                    XCTAssertEqual(doc1.name!, "doc1")
+                    doc1.nest.query.dataSource().onCompleted({ (_, docs) in
                         XCTAssert(!docs.isEmpty)
-                        let doc3: Doc3 = docs.first!
-                        XCTAssertEqual(doc3.name!, "doc3")
-                        XCTAssert(!docs.isEmpty)
-
-                        doc3.update({ (_) in
+                        let doc2: Doc2 = docs.first!
+                        XCTAssertEqual(doc2.name!, "doc2")
+                        doc2.ref.query.dataSource().onCompleted({ (_, docs) in
+                            XCTAssert(!docs.isEmpty)
+                            let doc3: Doc3 = docs.first!
+                            XCTAssertEqual(doc3.name!, "doc3")
+                            XCTAssert(!docs.isEmpty)
 
                             expectation.fulfill()
-                        })
+                        }).get()
                     }).get()
                 }).get()
             }).get()
