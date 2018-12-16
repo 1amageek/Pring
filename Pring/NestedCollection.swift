@@ -10,7 +10,7 @@
 import FirebaseFirestore
 import FirebaseStorage
 
-public class NestedCollection<T: Document>: SubCollection<T> {
+public final class NestedCollection<T: Document>: SubCollection<T> {
 
 }
 

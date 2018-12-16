@@ -100,7 +100,7 @@ PODS:
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
-  - Pring (0.13.12):
+  - Pring (0.14.0):
     - Firebase
     - Firebase/Firestore
     - Firebase/Storage
@@ -151,7 +151,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
-  Pring: 1f5c89d52b5a7c4e346bfc349bee60166510da9e
+  Pring: 7acc4e8fae7dd3859d524fe3b2303e273947de60
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
 
 PODFILE CHECKSUM: c19e118e1ef1f17350e6111834d26e82decc1598

@@ -24,6 +24,7 @@ class User: Object {
     dynamic var isDeleted: Bool = false
     dynamic var itemIDs: Set<String> = []
 
+
     dynamic var item: Item?
 
     dynamic var files: [File] = []

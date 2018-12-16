@@ -37,7 +37,8 @@ public enum DataType {
     case relation   (String, String?, AnyRelation)
     case string     (String, String, String)
     case document   (String, [String: Any], Object?)
-    case null
+    case list       (String, [String: Any], AnyList)
+    case unknown
 
     /**
      Encode to firestore data type
@@ -46,7 +47,7 @@ public enum DataType {
      */
     public init(key: String, value: Any?) {
         guard let value = value else {
-            self = .null
+            self = .unknown
             return
         }
 
@@ -143,6 +144,11 @@ public enum DataType {
                 self = .file(key, value.value, value)
                 return
             }
+        case is AnyList:
+            if let value: AnyList = value as? AnyList {
+                self = .list(key, value.value, value)
+                return
+            }
         case is AnySubCollection:
             if let value: AnySubCollection = value as? AnySubCollection {
                 self = .collection(key, [:], value)
@@ -169,11 +175,11 @@ public enum DataType {
                 return
             }
         default:
-            self = .null
+            self = .unknown
             //print("[Pring.Base] This property(\(key) is null", value, String(describing: type(of: value)))
             return
         }
-        self = .null
+        self = .unknown
     }
 
     /**
@@ -331,6 +337,12 @@ public enum DataType {
                 self = .collection(key, value, collection)
                 return
             }
+        } else if value is AnyList {
+            if let object: [String: Any] = data[key] as? [String: Any] {
+                let list: AnyList = value as! AnyList
+                self = .list(key, object, list)
+                return
+            }
         } else if value is AnyReference {
             if let documentReference: DocumentReference = data[key] as? DocumentReference {
                 var reference: AnyReference = value as! AnyReference
@@ -356,9 +368,9 @@ public enum DataType {
                 return
             }
         } else {
-            self = .null
+            self = .unknown
         }
-        self = .null
+        self = .unknown
     }
 
     static func verify(value: Any) {

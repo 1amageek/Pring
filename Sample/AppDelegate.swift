@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import FirebaseCore
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,15 +24,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         FirebaseApp.configure()
 
+        let order: Order = Order()
+        do {
+            let orderItem: OrderItem = OrderItem()
+            orderItem.name = "aaaa"
+            orderItem.price = 39
+            order.items.append(orderItem)
+        }
+        do {
+            let orderItem: OrderItem = OrderItem()
+            orderItem.name = "bbb"
+            orderItem.price = 21
+            order.items.append(orderItem)
+        }
 
-//        let user: User = User(id: "aaaaa", value: [:])
-//        user.name = "aaaaa"
-//        user.update()
-
-        let user: User  = User()
-        user.name = "hogehoghgoe"
-        user.save()
-
+        order.save()
+        print(order.value)
         return true
     }
 

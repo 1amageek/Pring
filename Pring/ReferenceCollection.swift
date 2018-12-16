@@ -10,7 +10,7 @@
 import FirebaseFirestore
 import FirebaseStorage
 
-public class ReferenceCollection<T: Document>: SubCollection<T> {
+public final class ReferenceCollection<T: Document>: SubCollection<T> {
 
     internal var _hardDeletions: Set<T> = []
 
