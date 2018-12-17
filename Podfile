@@ -18,6 +18,6 @@ target 'Sample' do
   pod 'Firebase'
   pod 'Firebase/Firestore'
   pod 'Firebase/Storage'
-  pod 'Pring', :path => './'
+  #pod 'Pring', :path => './'
 
 end

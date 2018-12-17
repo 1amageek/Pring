@@ -109,6 +109,7 @@ open class Object: NSObject, Document {
             switch DataType(key: child.label!, value: child.value) {
             case .file          (let key, _, let file):         file.setParent(self, forKey: key)
             case .collection    (let key, _, let collection):   collection.setParent(self, forKey: key)
+            case .list          (let key, _, let list):         list.setParent(self, forKey: key)
             case .reference     (let key, _, let reference):    reference.setParent(self, forKey: key)
             case .relation      (let key, _, let relation):     relation.setParent(self, forKey: key)
             default: break
@@ -498,15 +499,17 @@ open class Object: NSObject, Document {
                 }
             })
         case .update:
-            if !updateValue.isEmpty {
-                updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
-                batch.updateData(updateValue, forDocument: self.reference)
-            }
+            var updateValue: [String: Any] = self.updateValue
             self._properties.forEach({ (key, value) in
                 if let value = value {
                     switch DataType(key: key, value: value) {
                     case .collection(_, _, let collection):
                         collection.pack(.update, batch: batch)
+                    case .list(let key, _, let list):
+                        let listUpdateValue: [String: Any] = list.updateValue
+                        if !listUpdateValue.isEmpty {
+                            updateValue[key] = list.updateValue
+                        }
                     case .reference(_, _, let reference):
                         if reference is Batchable {
                             (reference as! Batchable).pack(.update, batch: batch)
@@ -519,6 +522,11 @@ open class Object: NSObject, Document {
                     }
                 }
             })
+            print("!!!!", updateValue)
+            if !updateValue.isEmpty {
+                updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+                batch.setData(updateValue, forDocument: self.reference, merge: true)
+            }
         case .delete:
             batch.deleteDocument(self.reference)
         }

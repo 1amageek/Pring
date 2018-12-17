@@ -17,7 +17,9 @@ public protocol AnyList: class {
 
     var value: [String: Any] { get }
 
-    func setValue(_ value: [String: Any], forKey key: String)
+    var updateValue: [String: Any] { get }
+
+    func setValue(_ value: [String: Any])
 
     func setParent(_ object: Object, forKey key: String)
 }
@@ -30,11 +32,15 @@ public extension AnyList {
     }
 }
 
-public final class List<T: Document>: AnyList, ExpressibleByArrayLiteral {
+public final class List<T: Document>: AnyList, Collection, ExpressibleByArrayLiteral {
 
     fileprivate var _storage: [String: T] = [:]
 
     public typealias ArrayLiteralElement = T
+
+    public typealias Element = T
+
+    public typealias Index = Int
 
     public init(arrayLiteral elements: T...) {
         var storage: [String: T] = [:]
@@ -56,7 +62,17 @@ public final class List<T: Document>: AnyList, ExpressibleByArrayLiteral {
         return value
     }
 
-    public func setValue(_ value: [String : Any], forKey key: String) {
+    public var updateValue: [String: Any] {
+        var updateValue: [String: Any] = [:]
+        self.forEach { (document) in
+            if !document.updateValue.isEmpty {
+                updateValue[document.id] = document.updateValue
+            }
+        }
+        return updateValue
+    }
+
+    public func setValue(_ value: [String : Any]) {
         var storage: [String: T] = [:]
         value.forEach { (id, data) in
             if let data: [String: Any] = data as? [String: Any] {
@@ -71,46 +87,58 @@ public final class List<T: Document>: AnyList, ExpressibleByArrayLiteral {
         self.key = key
     }
 
-    public subscript(id: String) -> T? {
-        return self._storage[id]
-    }
-
     public func append(_ object: T) {
         self._storage[object.id] = object
+        if let parent: Object = self.parent, let key: String = self.key, parent.isSaved {
+            parent.updateValue[key] = [object.id: object.rawValue]
+        }
     }
 
     public func remove(_ object: T) {
         self._storage.removeValue(forKey: object.id)
+        if let parent: Object = self.parent, let key: String = self.key, parent.isSaved {
+            parent.updateValue[key] = [object.id: FieldValue.delete()]
+        }
+    }
+
+    public var keys: [String] {
+        return self._storage.keys.map { $0 }.sorted()
     }
 }
 
-extension Array where Element == Document {
+extension List {
 
+    public var count: Int {
+        return self._storage.count
+    }
+
+    public var isEmpty: Bool {
+        return self._storage.isEmpty
+    }
+
+    public var first: T? {
+        if self.isEmpty { return nil }
+        return self._storage[self.keys[self.startIndex]]
+    }
+
+    public var startIndex: Int {
+        return 0
+    }
+
+    public var endIndex: Int {
+        return self.keys.endIndex
+    }
+
+    public subscript(position: String) -> T {
+        return self._storage[position]!
+    }
+
+    public subscript(position: Int) -> T {
+        let position: String = self.keys[position]
+        return self._storage[position]!
+    }
+
+    public func index(after i: Int) -> Int {
+        return self.keys.index(after: i)
+    }
 }
-
-//extension List: StorageLinkable {
-//
-//    public func shouldUploadFiles(_ id: String) -> Bool {
-//        for (_, object) in self._storage.enumerated() {
-//            if object.value.shouldUploadFiles(id) {
-//                return true
-//            }
-//        }
-//        return false
-//    }
-//
-//    public func saveFiles(_ id: String, container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
-//        let uploadContainer: UploadContainer = container ?? UploadContainer()
-//        for (_, object) in self._storage.enumerated() {
-//            object.value.saveFiles(id, container: uploadContainer, block: nil)
-//        }
-//        return uploadContainer.tasks
-//    }
-//
-//    public func deleteFiles(_ id: String, container: DeleteContainer? = nil, block: ((Error?) -> Void)? = nil) {
-//        let deleteContainer: DeleteContainer = container ?? DeleteContainer()
-//        for (_, object) in self._storage.enumerated() {
-//            object.value.deleteFiles(id, container: deleteContainer, block: nil)
-//        }
-//    }
-//}
