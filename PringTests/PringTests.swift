@@ -74,6 +74,10 @@ class PringTests: XCTestCase {
                 XCTAssertEqual(file0.additionalData!["text"] as! String, "test")
                 XCTAssertEqual(file0.additionalData!["number"] as! Int, 0)
 
+                XCTAssertNotNil(document.file0?.downloadURL)
+                XCTAssertNotNil(document.file1?.downloadURL)
+                XCTAssertNotNil(document.file2?.downloadURL)
+
                 let ref0 = document.file0?.ref
                 let ref1 = document.file1?.ref
                 let ref2 = document.file2?.ref
@@ -186,7 +190,7 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 30)
     }
 
-    func testNestedFiles() {
+    func testNestedFilesSave() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test Nested File delete")
 
         let document: MultipleFilesDocument = MultipleFilesDocument()
@@ -196,6 +200,7 @@ class PringTests: XCTestCase {
         let id: String = item.id
 
         document.save { (ref, error) in
+            XCTAssertNotNil(item.file?.downloadURL)
             MultipleFilesDocument.get(ref!.documentID, block: { (document, error) in
                 guard let document: MultipleFilesDocument = document else {
                     return
@@ -209,6 +214,42 @@ class PringTests: XCTestCase {
                             ref?.getData(maxSize: 1000000, completion: { (data, error) in
                                 XCTAssertNil(data)
                                 expectation.fulfill()
+                            })
+                        })
+                    })
+                })
+            })
+        }
+
+        self.wait(for: [expectation], timeout: 10)
+    }
+
+    func testNestedFilesUpdate() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test Nested File delete")
+
+        let document: MultipleFilesDocument = MultipleFilesDocument()
+        document.save { (ref, error) in
+            MultipleFilesDocument.get(ref!.documentID, block: { (document, error) in
+                guard let document: MultipleFilesDocument = document else {
+                    return
+                }
+                XCTAssertNotNil(document)
+
+                let item: MultipleFilesNestedItem = MultipleFilesNestedItem()
+                item.file = File(data: MultipleFilesNestedItem.image().pngData()!, mimeType: .png)
+                document.files.insert(item)
+                let id: String = item.id
+                document.update({ _ in
+                    XCTAssertNotNil(item.file?.downloadURL)
+                    document.files.get(id, block: { (item, error) in
+                        let ref = item?.file?.ref
+                        ref?.getData(maxSize: 1000000, completion: { (data, error) in
+                            XCTAssertNotNil(data)
+                            item?.file?.delete({ (error) in
+                                ref?.getData(maxSize: 1000000, completion: { (data, error) in
+                                    XCTAssertNil(data)
+                                    expectation.fulfill()
+                                })
                             })
                         })
                     })
@@ -439,7 +480,7 @@ class PringTests: XCTestCase {
                 })
             })
         }
-        self.wait(for: [expectation], timeout: 10)
+        self.wait(for: [expectation], timeout: 15)
     }
 
     var dataSource: DataSource<DataSourceItem>?

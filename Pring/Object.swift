@@ -522,10 +522,13 @@ open class Object: NSObject, Document {
                     }
                 }
             })
-            print("!!!!", updateValue)
-            if !updateValue.isEmpty {
-                updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
-                batch.setData(updateValue, forDocument: self.reference, merge: true)
+            if self.isSaved {
+                if !updateValue.isEmpty {
+                    updateValue[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
+                    batch.setData(updateValue, forDocument: self.reference, merge: true)
+                }
+            } else {
+                batch.setData(self.value , forDocument: self.reference)
             }
         case .delete:
             batch.deleteDocument(self.reference)
