@@ -27,9 +27,9 @@ public final class ReferenceCollection<T: Document>: SubCollection<T> {
                 value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                 value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                 if !document.isSaved {
-                    document.pack(.save, batch: batch)
+                    document.pack(type, batch: batch)
                 } else {
-                    document.pack(.update, batch: batch)
+                    document.pack(type, batch: batch)
                 }
                 let reference: DocumentReference = self.reference.document(document.id)
                 batch.setData(value, forDocument: reference)
@@ -43,17 +43,16 @@ public final class ReferenceCollection<T: Document>: SubCollection<T> {
                     }
                     value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                     value[(\Object.createdAt)._kvcKeyPathString!] = document.createdAt
-                    document.pack(.update, batch: batch)
                 } else {
                     if T.shouldBeReplicated {
                         value = document.value
                     }
                     value[(\Object.updatedAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
                     value[(\Object.createdAt)._kvcKeyPathString!] = FieldValue.serverTimestamp()
-                    document.pack(.save, batch: batch)
                 }
                 let reference: DocumentReference = self.reference.document(document.id)
                 batch.setData(value, forDocument: reference)
+                document.pack(type, batch: batch)
             })
             _deletions.subtracting(_insertions).forEach({ (document) in
                 let reference: DocumentReference = self.reference.document(document.id)

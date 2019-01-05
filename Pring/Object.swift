@@ -485,14 +485,14 @@ open class Object: NSObject, Document {
                 if let value = value {
                     switch DataType(key: key, value: value) {
                     case .collection(_, _, let collection):
-                        collection.pack(.save, batch: batch)
+                        collection.pack(type, batch: batch)
                     case .reference(_, _, let reference):
                         if reference is Batchable {
-                            (reference as! Batchable).pack(.save, batch: batch)
+                            (reference as! Batchable).pack(type, batch: batch)
                         }
                     case .relation(_, _, let relation):
                         if relation is Batchable {
-                            (relation as! Batchable).pack(.save, batch: batch)
+                            (relation as! Batchable).pack(type, batch: batch)
                         }
                     default: break
                     }
@@ -504,7 +504,7 @@ open class Object: NSObject, Document {
                 if let value = value {
                     switch DataType(key: key, value: value) {
                     case .collection(_, _, let collection):
-                        collection.pack(.update, batch: batch)
+                        collection.pack(type, batch: batch)
                     case .list(let key, _, let list):
                         let listUpdateValue: [String: Any] = list.updateValue
                         if !listUpdateValue.isEmpty {
@@ -512,11 +512,11 @@ open class Object: NSObject, Document {
                         }
                     case .reference(_, _, let reference):
                         if reference is Batchable {
-                            (reference as! Batchable).pack(.update, batch: batch)
+                            (reference as! Batchable).pack(type, batch: batch)
                         }
                     case .relation(_, _, let relation):
                         if relation is Batchable {
-                            (relation as! Batchable).pack(.update, batch: batch)
+                            (relation as! Batchable).pack(type, batch: batch)
                         }
                     default: break
                     }
