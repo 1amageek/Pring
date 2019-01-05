@@ -184,7 +184,8 @@ class User: Object {
     dynamic var float: Double                       = Double.infinity
     dynamic var date: Date                          = Date(timeIntervalSince1970: 100)
     dynamic var geoPoint: GeoPoint                  = GeoPoint(latitude: 0, longitude: 0)
-    dynamic var dictionary: [String: Any]      = ["key": "value"]    
+    dynamic var list: List<Group>                   = []    
+    dynamic var dictionary: [String: Any]           = ["key": "value"]    
     dynamic var string: String                      = "string"
     
     let group: Reference<Group>                         = .init()
@@ -204,6 +205,7 @@ class User: Object {
 |Float|It is Float type. In iOS, it will be a 64 bit Double type.|
 |Date|It is Date type.|
 |GeoPoint|It is GeoPoint type.|
+|List|It is Object array type.|
 |Dictionary|It is a Dictionary type. Save the structural data.|
 |nestedCollection or referenceCollection|It is SubCollection type.|
 |String|It is String type.|
@@ -267,6 +269,37 @@ batch.add(.delete, object: userC)
 batch.commit(completion: { (error) in
   // error handling
 })
+```
+
+### List
+List can access the Object faster than NestedCollection.
+List holds data in Document, not SubCollection.
+
+```swift
+// save
+let order: Order = Order()
+do {
+    let orderItem: OrderItem = OrderItem()
+    orderItem.name = "aaaa"
+    orderItem.price = 39
+    order.items.append(orderItem)
+}
+do {
+    let orderItem: OrderItem = OrderItem()
+    orderItem.name = "bbb"
+    orderItem.price = 21
+    order.items.append(orderItem)
+}
+order.save()
+```
+
+Be sure to update the parent's object when updating data.
+```swift
+// update
+Order.get("ORDER_ID") { (order, error) in
+    order.items.first.name = "hoge"
+    order.update()
+}
 ```
 
 ### 📄 File
