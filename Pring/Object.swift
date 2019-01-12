@@ -93,7 +93,7 @@ open class Object: NSObject, Document, HasParent {
         if isObserving {
             return
         }
-        Mirror(reflecting: self).children.forEach { (key, value) in
+        allChildrenUpToRootObject.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     switch DataType(key: key, value: value) {
@@ -113,8 +113,7 @@ open class Object: NSObject, Document, HasParent {
     // MARK: - Initialize
 
     private func _init() {
-        let mirror: Mirror = Mirror(reflecting: self)
-        mirror.children.forEach { (child) in
+        allChildrenUpToRootObject.forEach { (child) in
             DataType.verify(value: child.value)
             switch DataType(key: child.label!, value: child.value) {
             case .file          (let key, _, let file):         file.setParent(self, forKey: key)
@@ -182,7 +181,7 @@ open class Object: NSObject, Document, HasParent {
         self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
         self.updatedAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
         
-        Mirror(reflecting: self).children.forEach { (key, value) in
+        allChildrenUpToRootObject.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     if self.decode(key, value: data[key]) {
@@ -221,14 +220,13 @@ open class Object: NSObject, Document, HasParent {
     }
 
     
-
     private func _setSnapshot(_ snapshot: DocumentSnapshot) {
         self.snapshot = snapshot
     }
 
     public func setReference(_ reference: DocumentReference) {
         self.reference = reference
-        Mirror(reflecting: self).children.forEach { (key, value) in
+        allChildrenUpToRootObject.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     switch DataType(key: key, value: value) {
@@ -349,7 +347,7 @@ open class Object: NSObject, Document, HasParent {
             return
         }
 
-        let keys: [String] = Mirror(reflecting: self).children.compactMap({ return $0.label })
+        let keys: [String] = allChildrenUpToRootObject.compactMap({ return $0.label })
         if keys.contains(keyPath) {
 
             if let value: Any = object.value(forKey: keyPath) as Any? {
@@ -689,7 +687,7 @@ open class Object: NSObject, Document, HasParent {
             "  createdAt: \(self.createdAt)\n" +
             "  updatedAt: \(self.updatedAt)\n"
 
-        let values: String = Mirror(reflecting: self).children.reduce(base) { (result, children) -> String in
+        let values: String = allChildrenUpToRootObject.reduce(base) { (result, children) -> String in
             guard let label: String = children.0 else {
                 return result
             }
@@ -709,9 +707,8 @@ open class Object: NSObject, Document, HasParent {
     }
 
     private var _properties: [String: Any?] {
-        let mirror: Mirror = Mirror(reflecting: self)
         var properties: [String: Any?] = [:]
-        mirror.children.forEach { (key, value) in
+        allChildrenUpToRootObject.forEach { (key, value) in
             if let key: String = key {
                 properties[key] = value
             }
@@ -723,7 +720,7 @@ open class Object: NSObject, Document, HasParent {
 
     deinit {
         if self.isObserving {
-            Mirror(reflecting: self).children.forEach { (key, value) in
+            allChildrenUpToRootObject.forEach { (key, value) in
                 if let key: String = key {
                     if !self.ignore.contains(key) {
                         switch DataType(key: key, value: value) {
