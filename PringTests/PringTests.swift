@@ -260,7 +260,6 @@ class PringTests: XCTestCase {
         self.wait(for: [expectation], timeout: 10)
     }
     
-    
     func testNestedObjectUpdate() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test Nested File delete")
         let nestedItem = NestedItem()
@@ -272,10 +271,12 @@ class PringTests: XCTestCase {
                 }
                 XCTAssertNotNil(item.item)
                 item.item?.array = ["nested2"]
+                item.nonOptionalItem.int = 100
                 item.update({ _ in
                     XCTAssertNotNil(item.item)
                     NestedItem.get(ref!.documentID, block: { (item2, error) in
-                        XCTAssertEqual("nested2", item2?.item.array.first)
+                        XCTAssertEqual("nested2", item2?.item?.array.first)
+                        XCTAssertEqual(100, item2?.nonOptionalItem.int)
                         expectation.fulfill()
                     })
                 })
