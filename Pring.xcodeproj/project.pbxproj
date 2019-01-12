@@ -103,6 +103,9 @@
 		12FFEA172153A26E0084F414 /* MemoryLeakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12FFEA162153A26E0084F414 /* MemoryLeakViewController.swift */; };
 		1C25E115320FD71F9D49320F /* Pods_Pring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A88B25399127D470BF0814D /* Pods_Pring.framework */; };
 		1F8D81E194D8ABB3AA7B4C0F /* Pods_PringTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3174F0E0A8FE283A8ED67786 /* Pods_PringTests.framework */; };
+		8EBFD61921EA536A00EC64B2 /* OptionalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBFD61821EA536900EC64B2 /* OptionalProtocol.swift */; };
+		8EBFD61A21EA537B00EC64B2 /* OptionalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBFD61821EA536900EC64B2 /* OptionalProtocol.swift */; };
+		8EBFD61B21EA538300EC64B2 /* OptionalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBFD61821EA536900EC64B2 /* OptionalProtocol.swift */; };
 		91FE1B8ED52B40F958B52E11 /* Pods_Sample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ED32BEED2D22F7832C64B71 /* Pods_Sample.framework */; };
 /* End PBXBuildFile section */
 
@@ -188,6 +191,7 @@
 		3174F0E0A8FE283A8ED67786 /* Pods_PringTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PringTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		54FFAEAD7C63F6D4BFEA728B /* Pods-PringTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PringTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PringTests/Pods-PringTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6A88B25399127D470BF0814D /* Pods_Pring.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pring.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8EBFD61821EA536900EC64B2 /* OptionalProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalProtocol.swift; sourceTree = "<group>"; };
 		9A9F42603EC279D95CFCE125 /* Pods-PringTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PringTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PringTests/Pods-PringTests.release.xcconfig"; sourceTree = "<group>"; };
 		B122F1B99E5B8247F98E6F36 /* Pods-Pring.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pring.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pring/Pods-Pring.debug.xcconfig"; sourceTree = "<group>"; };
 		CF87E6137C2530BC4F30C35F /* Pods-Sample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sample/Pods-Sample.debug.xcconfig"; sourceTree = "<group>"; };
@@ -259,6 +263,7 @@
 		12AF82F61F8CAEDE00561159 /* Pring */ = {
 			isa = PBXGroup;
 			children = (
+				8EBFD61821EA536900EC64B2 /* OptionalProtocol.swift */,
 				12AF82F71F8CAEDE00561159 /* Pring.h */,
 				12AF830E1F8CAEEC00561159 /* DataSource.swift */,
 				12C41E771FB31F41002B1526 /* Query.swift */,
@@ -720,6 +725,7 @@
 				12AF83531F8CE16900561159 /* DataType.swift in Sources */,
 				12F4F5D4201845F5001D635E /* NestedCollection.swift in Sources */,
 				12F84CBC1FB054CD00D889BE /* StorageLinkable.swift in Sources */,
+				8EBFD61921EA536A00EC64B2 /* OptionalProtocol.swift in Sources */,
 				12AF83581F8CE16900561159 /* SubCollection.swift in Sources */,
 				12CF86C2200C65300068BF70 /* AnySubCollection.swift in Sources */,
 				1288E2221FCD203000E72594 /* Reference.swift in Sources */,
@@ -731,6 +737,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EBFD61A21EA537B00EC64B2 /* OptionalProtocol.swift in Sources */,
 				123546CF1FA20102006DBDD6 /* TestOptionalDocument.swift in Sources */,
 				124C323621B8043D001629C9 /* PackNestTests.swift in Sources */,
 				123F0A0E20A2D95400C0EAC1 /* Batchable.swift in Sources */,
@@ -773,6 +780,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EBFD61B21EA538300EC64B2 /* OptionalProtocol.swift in Sources */,
 				12BB91D221C68D4000BD8166 /* NestedCollection.swift in Sources */,
 				12BB91C621C68D4000BD8166 /* Query.swift in Sources */,
 				12BB91CB21C68D4000BD8166 /* Relation.swift in Sources */,
