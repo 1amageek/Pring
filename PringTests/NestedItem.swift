@@ -26,6 +26,7 @@ class NestedItem: Object {
     dynamic var dictionary: [String: Any]      = ["key": "nested"]
     dynamic var string: String                      = "nested"
     dynamic var file: File                          = File(data: TestDocument.image0().pngData()!, mimeType: .png)
+    dynamic var item: NestedItem? 
 
     let referenceCollection: ReferenceCollection<TestDocument>  = []
     let nextedCollection: NestedCollection<NestedItem>          = []

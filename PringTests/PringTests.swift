@@ -259,6 +259,30 @@ class PringTests: XCTestCase {
 
         self.wait(for: [expectation], timeout: 10)
     }
+    
+    
+    func testNestedObjectUpdate() {
+        let expectation: XCTestExpectation = XCTestExpectation(description: "Test Nested File delete")
+        let nestedItem = NestedItem()
+        nestedItem.item = NestedItem()
+        nestedItem.save { (ref, error) in
+            NestedItem.get(ref!.documentID, block: { (item, error) in
+                guard let item: NestedItem = item else {
+                    return
+                }
+                XCTAssertNotNil(item.item)
+                item.item?.array = ["nested2"]
+                item.update({ _ in
+                    XCTAssertNotNil(item.item)
+                    NestedItem.get(ref!.documentID, block: { (item2, error) in
+                        XCTAssertEqual("nested2", item2?.item.array.first)
+                        expectation.fulfill()
+                    })
+                })
+            })
+        }
+        self.wait(for: [expectation], timeout: 10)
+    }
 
     func testReferenceShallowFile() {
         let expectation: XCTestExpectation = XCTestExpectation(description: "Test Reference Shallow File")
@@ -571,4 +595,5 @@ class PringTests: XCTestCase {
         }
         self.wait(for: [expectation], timeout: 20)
     }
+    
 }

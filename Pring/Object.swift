@@ -10,7 +10,16 @@
 import FirebaseFirestore
 import FirebaseStorage
 
-open class Object: NSObject, Document {
+open class Object: NSObject, Document, HasParent {
+    public var parent: Object?
+    
+    public var key: String?
+    
+    public func setParent(_ object: Object, forKey key: String) {
+        self.parent = object
+        self.key = key
+    }
+    
 
     open class var modelVersion: Int {
         return 1
@@ -67,6 +76,7 @@ open class Object: NSObject, Document {
             _updatedAt = updatedAt
         }
     }
+    
 
     private var _createdAt: Timestamp
 
@@ -75,7 +85,7 @@ open class Object: NSObject, Document {
     public var batchID: String?
 
     private var _hash: Int?
-
+    
     /// isObserving is a flag that indicates that Document is concerned with my Field.
     internal private(set) var isObserving: Bool = false
 
@@ -112,6 +122,7 @@ open class Object: NSObject, Document {
             case .list          (let key, _, let list):         list.setParent(self, forKey: key)
             case .reference     (let key, _, let reference):    reference.setParent(self, forKey: key)
             case .relation      (let key, _, let relation):     relation.setParent(self, forKey: key)
+            case .document      (let key, _, let object):       object?.setParent(self, forKey: key)
             default: break
             }
         }
@@ -146,30 +157,38 @@ open class Object: NSObject, Document {
         _setSnapshot(snapshot)
         self.isSaved = true
     }
+    
+    
 
     public convenience required init(id: String, value: [String: Any]) {
         self.init()
 
         self.id = id
         self.reference = type(of: self).reference.document(id)
+        initializeWithValues(value)
+        self.isSaved = true
+    }
+    
+    
+    private func initializeWithValues(_ value: [String: Any]){
+        let data: [String: Any] = value
         
-        let data: [String: Any] = value 
-
         let formatter: ISO8601DateFormatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withFullDate,
                                    .withTime,
                                    .withDashSeparatorInDate,
                                    .withColonSeparatorInTime]
-
+        
         self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
         self.updatedAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
-
+        
         Mirror(reflecting: self).children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     if self.decode(key, value: data[key]) {
                         return
                     }
+                    
                     switch DataType(key: key, value: value, data: data) {
                     case .array         (let key, _, let value):                self.setValue(value, forKey: key)
                     case .set           (let key, _, let value):                self.setValue(value, forKey: key)
@@ -188,7 +207,10 @@ open class Object: NSObject, Document {
                     case .list          (let key, _, let list):                 list.setParent(self, forKey: key)
                     case .reference     (let key, _, let reference):            reference.setParent(self, forKey: key)
                     case .relation      (let key, _, let relation):             relation.setParent(self, forKey: key)
-                    case .document      (_, _, _):                              break
+                    case .document      (let key, let dict, let value):
+                        value?.initializeWithValues(dict)
+                        value?.setParent(self, forKey: key)
+                        self.setValue(value, forKey: key)
                     case .string        (let key, _, let value):                self.setValue(value, forKey: key)
                     case .unknown: break
                     }
@@ -196,8 +218,9 @@ open class Object: NSObject, Document {
             }
         }
         updateValue = [:]
-        self.isSaved = true
     }
+
+    
 
     private func _setSnapshot(_ snapshot: DocumentSnapshot) {
         self.snapshot = snapshot
@@ -215,6 +238,7 @@ open class Object: NSObject, Document {
                     case .list          (let key, _, let list):         list.setParent(self, forKey: key)
                     case .reference     (let key, _, let reference):    reference.setParent(self, forKey: key)
                     case .relation      (let key, _, let relation):     relation.setParent(self, forKey: key)
+                    case .document      (let key, _, let object):       object?.setParent(self, forKey: key)
                     default: break
                     }
                 }
@@ -232,42 +256,7 @@ open class Object: NSObject, Document {
                 guard let data: [String: Any] = snapshot.data(with: .estimate) else  {
                     return
                 }
-
-                self.createdAt = (data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp) ?? _createdAt
-                self.updatedAt = (data[(\Object.updatedAt)._kvcKeyPathString!] as? Timestamp) ?? _updatedAt
-
-                Mirror(reflecting: self).children.forEach { (key, value) in
-                    if let key: String = key {
-                        if !self.ignore.contains(key) {
-                            if self.decode(key, value: data[key]) {
-                                return
-                            }
-                            switch DataType(key: key, value: value, data: data) {
-                            case .array         (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .set           (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .bool          (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .binary        (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .file          (let key, _, let value):                self.setValue(value, forKey: key); value.setParent(self, forKey: key)
-                            case .files         (let key, _, let value):                self.setValue(value, forKey: key); value.forEach { $0.setParent(self, forKey: key) }
-                            case .url           (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .int           (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .float         (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .date          (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .timestamp     (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .geoPoint      (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .dictionary    (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .collection    (let key, let value, let collection):   collection.setValue(value, forKey: key)
-                            case .list          (let key, _, let list):                 list.setParent(self, forKey: key)
-                            case .reference     (let key, _, let reference):            reference.setParent(self, forKey: key)
-                            case .relation      (let key, _, let relation):             relation.setParent(self, forKey: key)
-                            case .document      (_, _, _):                              break
-                            case .string        (let key, _, let value):                self.setValue(value, forKey: key)
-                            case .unknown: break
-                            }
-                        }
-                    }
-                }
-                self.updateValue = [:]
+                initializeWithValues(data)
                 _observe()
             }
         }
@@ -442,7 +431,9 @@ open class Object: NSObject, Document {
                 case .list          (_, _, _):   break
                 case .reference     (_, _, _):   break
                 case .relation      (_, _, _):   break
-                case .document      (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .document      (let key, let updateValue, let object):
+                    update(key: key, value: updateValue)
+                    object?.setParent(self, forKey: key)
                 case .string        (let key, let updateValue, _):   update(key: key, value: updateValue)
                 case .unknown: break
                 }
@@ -467,6 +458,9 @@ open class Object: NSObject, Document {
      */
     public func update(key: String, value: Any) {
         updateValue[key] = value
+        if let parent = self.parent, let key = self.key{
+            parent.setValue(self, forKey: key)
+        }
     }
 
     /**
