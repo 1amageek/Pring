@@ -64,21 +64,19 @@ class SubColletionTests: XCTestCase {
         user0.name = "user0"
         user1.name = "user1"
 
-        var updatedAt: Date = Date()
-
         user0.followers.insert(user1)
         user0.save { (ref, error) in
             user0.update({ (_) in
                 XCTAssertEqual(user0.followers.count, 1)
                 user0.followers.query.dataSource().onCompleted({ (snapshot, _) in
                     let document = snapshot!.documents.first
-                    updatedAt = (document?.data()["updatedAt"] as! Timestamp).dateValue()
+                    let updatedAt = document?.data()["updatedAt"] as! Timestamp
                     user0.followers.insert(user1)
                     user0.update({ (_) in
                         XCTAssertEqual(user0.followers.count, 1)
                         user0.followers.query.dataSource().onCompleted({ (snapshot, _) in
                             let document = snapshot!.documents.first
-                            XCTAssertTrue(updatedAt < (document?.data()["updatedAt"] as! Timestamp).dateValue())
+                            XCTAssertTrue(updatedAt.compare(document?.data()["updatedAt"] as! Timestamp) == .orderedAscending)
                             let batch = Firestore.firestore().batch()
                             user0.followers.delete(id: user1.id)
                             user0.update({ (_) in
