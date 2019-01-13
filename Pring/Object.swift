@@ -76,7 +76,7 @@ open class Object: NSObject, Document, HasParent {
             _updatedAt = updatedAt
         }
     }
-    
+
     private var _createdAt: Timestamp
 
     private var _updatedAt: Timestamp
@@ -156,7 +156,7 @@ open class Object: NSObject, Document, HasParent {
         _setSnapshot(snapshot)
         self.isSaved = true
     }
-    
+
     public convenience required init(id: String, value: [String: Any]) {
         self.init()
 
@@ -178,14 +178,13 @@ open class Object: NSObject, Document, HasParent {
 
         self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
         self.updatedAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
-        
+
         Mirror(reflecting: self).children.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     if self.decode(key, value: data[key]) {
                         return
                     }
-                    
                     switch DataType(key: key, value: value, data: data) {
                     case .array         (let key, _, let value):                self.setValue(value, forKey: key)
                     case .set           (let key, _, let value):                self.setValue(value, forKey: key)

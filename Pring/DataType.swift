@@ -414,7 +414,7 @@ public enum DataType {
         if value is AnySubCollection {
             return value
         }
-        
+
         if let (label, v) = mirror.children.first {
             if label == "some" {
                 return v
