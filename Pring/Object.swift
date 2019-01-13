@@ -178,7 +178,7 @@ open class Object: NSObject, Document, HasParent {
                                    .withTime,
                                    .withDashSeparatorInDate,
                                    .withColonSeparatorInTime]
-        
+
         self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
         self.updatedAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
         
@@ -219,8 +219,6 @@ open class Object: NSObject, Document, HasParent {
         }
         updateValue = [:]
     }
-
-    
 
     private func _setSnapshot(_ snapshot: DocumentSnapshot) {
         self.snapshot = snapshot

@@ -218,7 +218,7 @@ public enum DataType {
                 self = .relation(key, id, relation)
                 return
             }
-        } else if value is Object{
+        } else if value is Object {
             if let rawValue: [String: Any] = data[key] as? [String: Any] {
                 self = .document(key, rawValue, value as? Object)
                 return
@@ -370,7 +370,7 @@ public enum DataType {
                     return
                 }
             }
-        }else if let optional = value as? OptionalProtocol, let objectType = optional.wrappedType() as? Object.Type{
+        } else if let optional = value as? OptionalProtocol, let objectType = optional.wrappedType() as? Object.Type{
             if let dict: [String: Any] = data[key] as? [String: Any] {
                 let object  = objectType.init()
                 self = .document(key, dict, object)
@@ -414,7 +414,7 @@ public enum DataType {
         if value is AnySubCollection {
             return value
         }
-
+        
         if let (label, v) = mirror.children.first {
             if label == "some" {
                 return v
