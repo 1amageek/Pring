@@ -76,7 +76,6 @@ open class Object: NSObject, Document, HasParent {
             _updatedAt = updatedAt
         }
     }
-    
 
     private var _createdAt: Timestamp
 
@@ -85,7 +84,7 @@ open class Object: NSObject, Document, HasParent {
     public var batchID: String?
 
     private var _hash: Int?
-    
+
     /// isObserving is a flag that indicates that Document is concerned with my Field.
     internal private(set) var isObserving: Bool = false
 
@@ -156,8 +155,6 @@ open class Object: NSObject, Document, HasParent {
         _setSnapshot(snapshot)
         self.isSaved = true
     }
-    
-    
 
     public convenience required init(id: String, value: [String: Any]) {
         self.init()
@@ -177,17 +174,16 @@ open class Object: NSObject, Document, HasParent {
                                    .withTime,
                                    .withDashSeparatorInDate,
                                    .withColonSeparatorInTime]
-        
+
         self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
         self.updatedAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
-        
+
         allChildrenUpToRootObject.forEach { (key, value) in
             if let key: String = key {
                 if !self.ignore.contains(key) {
                     if self.decode(key, value: data[key]) {
                         return
                     }
-                    
                     switch DataType(key: key, value: value, data: data) {
                     case .array         (let key, _, let value):                self.setValue(value, forKey: key)
                     case .set           (let key, _, let value):                self.setValue(value, forKey: key)
@@ -219,7 +215,6 @@ open class Object: NSObject, Document, HasParent {
         updateValue = [:]
     }
 
-    
     private func _setSnapshot(_ snapshot: DocumentSnapshot) {
         self.snapshot = snapshot
     }
