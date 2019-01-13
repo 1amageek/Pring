@@ -77,7 +77,6 @@ open class Object: NSObject, Document, HasParent {
         }
     }
     
-
     private var _createdAt: Timestamp
 
     private var _updatedAt: Timestamp
@@ -85,7 +84,7 @@ open class Object: NSObject, Document, HasParent {
     public var batchID: String?
 
     private var _hash: Int?
-    
+
     /// isObserving is a flag that indicates that Document is concerned with my Field.
     internal private(set) var isObserving: Bool = false
 
@@ -158,8 +157,6 @@ open class Object: NSObject, Document, HasParent {
         self.isSaved = true
     }
     
-    
-
     public convenience required init(id: String, value: [String: Any]) {
         self.init()
 

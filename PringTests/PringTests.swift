@@ -596,5 +596,4 @@ class PringTests: XCTestCase {
         }
         self.wait(for: [expectation], timeout: 20)
     }
-    
 }
