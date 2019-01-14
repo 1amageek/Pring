@@ -12,7 +12,7 @@ import Firebase
 import FirebaseFirestore
 
 @objcMembers
-class ChildItem: Object{
+class ChildItem: Object {
     dynamic var int: Int = 0
 }
 
