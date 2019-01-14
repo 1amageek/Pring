@@ -231,22 +231,20 @@ public extension Document where Self: Object {
         }
     }
     
-    var allChildrenUpToRootObject: [Mirror.Child]{
-        get{
-            var mirror = Mirror(reflecting: self)
-            var children = Array(mirror.children)
-            while true{
-                guard let thisMirror = mirror.superclassMirror else{
-                    break
-                }
-                if thisMirror.subjectType == Object.self{
-                    break
-                }
-                children += thisMirror.children
-                mirror = thisMirror
+    var allChildrenUpToRootObject: [Mirror.Child] {
+        var mirror = Mirror(reflecting: self)
+        var children = Array(mirror.children)
+        while true {
+            guard let thisMirror = mirror.superclassMirror else{
+                break
             }
-            return children
+            if thisMirror.subjectType == Object.self{
+                break
+            }
+            children += thisMirror.children
+            mirror = thisMirror
         }
+        return children
     }
 }
 

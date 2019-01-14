@@ -166,7 +166,7 @@ open class Object: NSObject, Document, HasParent {
     }
     
     
-    private func initializeWithValues(_ value: [String: Any]){
+    private func initializeWithValues(_ value: [String: Any]) {
         let data: [String: Any] = value
         
         let formatter: ISO8601DateFormatter = ISO8601DateFormatter()
