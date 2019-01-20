@@ -75,8 +75,7 @@ public extension Document where Self: Object {
             return false
         }
         self.batchID = id
-        let mirror = Mirror(reflecting: self)
-        for (_, child) in mirror.children.enumerated() {
+        for (_, child) in allChildrenUpToRootObject.enumerated() {
             if let key: String = child.label {
                 switch DataType(key: key, value: child.value) {
                 case .file(_, _, _): return true
@@ -117,7 +116,7 @@ public extension Document where Self: Object {
         }
         self.batchID = id
 
-        for (_, child) in Mirror(reflecting: self).children.enumerated() {
+        for (_, child) in allChildrenUpToRootObject.enumerated() {
 
             guard let key: String = child.label else { break }
             if self.ignore.contains(key) { break }
@@ -191,7 +190,7 @@ public extension Document where Self: Object {
         }
         self.batchID = id
 
-        for (_, child) in Mirror(reflecting: self).children.enumerated() {
+        for (_, child) in allChildrenUpToRootObject.enumerated() {
             guard let key: String = child.label else { break }
             if self.ignore.contains(key) { break }
             let value = child.value
@@ -230,6 +229,22 @@ public extension Document where Self: Object {
         if container == nil {
             deleteContainer.wait(block)
         }
+    }
+    
+    var allChildrenUpToRootObject: [Mirror.Child] {
+        var mirror = Mirror(reflecting: self)
+        var children = Array(mirror.children)
+        while true {
+            guard let thisMirror = mirror.superclassMirror else{
+                break
+            }
+            if thisMirror.subjectType == Object.self{
+                break
+            }
+            children += thisMirror.children
+            mirror = thisMirror
+        }
+        return children
     }
 }
 
