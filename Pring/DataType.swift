@@ -220,7 +220,7 @@ public enum DataType {
             }
         } else if value is Object {
             if let rawValue: [String: Any] = data[key] as? [String: Any] {
-                self = .document(key, rawValue, nil)
+                self = .document(key, rawValue, value as? Object)
                 return
             }
         } else if value is [String: Any] {
@@ -369,6 +369,12 @@ public enum DataType {
                     self = .file(key, value, file)
                     return
                 }
+            }
+        } else if let optional = value as? OptionalProtocol, let objectType = optional.wrappedType() as? Object.Type{
+            if let dict: [String: Any] = data[key] as? [String: Any] {
+                let object  = objectType.init()
+                self = .document(key, dict, object)
+                return
             }
         }
 

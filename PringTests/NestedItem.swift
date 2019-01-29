@@ -12,6 +12,11 @@ import Firebase
 import FirebaseFirestore
 
 @objcMembers
+class ChildItem: Object {
+    dynamic var int: Int = 0
+}
+
+@objcMembers
 class NestedItem: Object {
 
     dynamic var array: [String]                     = ["nested"]
@@ -26,6 +31,8 @@ class NestedItem: Object {
     dynamic var dictionary: [String: Any]      = ["key": "nested"]
     dynamic var string: String                      = "nested"
     dynamic var file: File                          = File(data: TestDocument.image0().pngData()!, mimeType: .png)
+    dynamic var item: NestedItem?
+    dynamic var nonOptionalItem: ChildItem = .init()
 
     let referenceCollection: ReferenceCollection<TestDocument>  = []
     let nextedCollection: NestedCollection<NestedItem>          = []
