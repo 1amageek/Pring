@@ -100,6 +100,8 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     /// True if we have the last Document of the data source
     public private(set) var isLast: Bool = false
 
+    public var completedBlocks: [CompletedBlock] = []
+
     /// Reference of element
     private(set) var query: Query
 
@@ -117,8 +119,6 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     private var changedBlock: ChangeBlock?
 
     private var parseBlock: ParseBlock?
-
-    private var completedBlock: CompletedBlock?
 
     private var errorBlock: ErrorBlock?
 
@@ -175,7 +175,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
 
     @discardableResult
     public func onCompleted(_ block: CompletedBlock?) -> Self {
-        self.completedBlock = block
+        if let block: CompletedBlock = block {
+            self.completedBlocks.append(block)
+        }
         return self
     }
 
@@ -189,7 +191,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     @discardableResult
     public func listen() -> Self {
         let changeBlock: ChangeBlock? = self.changedBlock
-        let completedBlock: CompletedBlock? = self.completedBlock
+        let completedBlocks: [CompletedBlock] = self.completedBlocks
         var isFirst: Bool = true
         self.listenr = self.query.listen(includeMetadataChanges: self.options.includeMetadataChanges, listener: { [weak self] (snapshot, error) in
             guard let `self` = self else { return }
@@ -201,7 +203,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                 guard let lastSnapshot = snapshot.documents.last else {
                     // The collection is empty.
                     changeBlock?(snapshot, .initial)
-                    completedBlock?(snapshot, self.documents)
+                    completedBlocks.forEach({ block in
+                        block(snapshot, self.documents)
+                    })
                     return
                 }
                 self.query = self.query.start(afterDocument: lastSnapshot)
@@ -222,7 +226,7 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
     private func _operate(with snapshot: QuerySnapshot?, isFirst: Bool, error: Error?) {
         let changeBlock: ChangeBlock? = self.changedBlock
         let parseBlock: ParseBlock? = self.parseBlock
-        let completedBlock: CompletedBlock? = self.completedBlock
+        let completedBlocks: [CompletedBlock] = self.completedBlocks
         let errorBlock: ErrorBlock? = self.errorBlock
 
         func mainThreadCall(_ block: @escaping () -> Void) {
@@ -238,7 +242,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
         guard let snapshot: QuerySnapshot = snapshot else {
             mainThreadCall {
                 changeBlock?(nil, CollectionChange(change: nil, error: error))
-                completedBlock?(nil, [])
+                completedBlocks.forEach({ block in
+                    block(nil, [])
+                })
             }
             return
         }
@@ -355,7 +361,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                 if isFirst {
                     changeBlock?(snapshot, CollectionChange(change: nil, error: nil))
                 }
-                completedBlock?(snapshot, self.documents)
+                completedBlocks.forEach({ block in
+                    block(snapshot, self.documents)
+                })
             })
             switch group.wait(timeout: .now() + .seconds(self.options.timeout)) {
             case .success: break
