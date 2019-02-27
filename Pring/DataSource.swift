@@ -208,9 +208,11 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                     })
                     return
                 }
-                self.query = self.query.start(afterDocument: lastSnapshot)
-                self._operate(with: snapshot, isFirst: isFirst, error: error)
-                isFirst = false
+                if !snapshot.metadata.hasPendingWrites {
+                    self.query = self.query.start(afterDocument: lastSnapshot)
+                    self._operate(with: snapshot, isFirst: isFirst, error: error)
+                    isFirst = false
+                }
             } else {
                 self._operate(with: snapshot, isFirst: isFirst, error: error)
             }
