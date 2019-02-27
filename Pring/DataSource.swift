@@ -210,9 +210,9 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                 }
                 if !snapshot.metadata.hasPendingWrites {
                     self.query = self.query.start(afterDocument: lastSnapshot)
-                    self._operate(with: snapshot, isFirst: isFirst, error: error)
-                    isFirst = false
                 }
+                self._operate(with: snapshot, isFirst: isFirst, error: error)
+                isFirst = false
             } else {
                 self._operate(with: snapshot, isFirst: isFirst, error: error)
             }
