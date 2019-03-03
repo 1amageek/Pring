@@ -36,7 +36,6 @@ open class Object: NSObject, Document, HasParent {
     open class var reference: CollectionReference {
         let db = Firestore.firestore()
         let settings = db.settings
-        settings.areTimestampsInSnapshotsEnabled = true
         db.settings = settings
         return db.collection(self.path)
     }
@@ -185,28 +184,29 @@ open class Object: NSObject, Document, HasParent {
                         return
                     }
                     switch DataType(key: key, value: value, data: data) {
-                    case .array         (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .set           (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .bool          (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .binary        (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .file          (let key, _, let value):                self.setValue(value, forKey: key); value.setParent(self, forKey: key)
-                    case .files         (let key, _, let value):                self.setValue(value, forKey: key); value.forEach { $0.setParent(self, forKey: key) }
-                    case .url           (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .int           (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .float         (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .date          (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .timestamp     (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .geoPoint      (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .dictionary    (let key, _, let value):                self.setValue(value, forKey: key)
-                    case .collection    (let key, let value, let collection):   collection.setValue(value, forKey: key)
-                    case .list          (let key, _, let list):                 list.setParent(self, forKey: key)
-                    case .reference     (let key, _, let reference):            reference.setParent(self, forKey: key)
-                    case .relation      (let key, _, let relation):             relation.setParent(self, forKey: key)
-                    case .document      (let key, let dict, let value):
+                    case .array             (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .set               (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .bool              (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .binary            (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .file              (let key, _, let value):                self.setValue(value, forKey: key); value.setParent(self, forKey: key)
+                    case .files             (let key, _, let value):                self.setValue(value, forKey: key); value.forEach { $0.setParent(self, forKey: key) }
+                    case .url               (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .int               (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .float             (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .date              (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .timestamp         (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .geoPoint          (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .dictionary        (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .documentReference (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .collection        (let key, let value, let collection):   collection.setValue(value, forKey: key)
+                    case .list              (let key, _, let list):                 list.setParent(self, forKey: key)
+                    case .reference         (let key, _, let reference):            reference.setParent(self, forKey: key)
+                    case .relation          (let key, _, let relation):             relation.setParent(self, forKey: key)
+                    case .document          (let key, let dict, let value):
                         value?.initializeWithValues(dict)
                         value?.setParent(self, forKey: key)
                         self.setValue(value, forKey: key)
-                    case .string        (let key, _, let value):                self.setValue(value, forKey: key)
+                    case .string            (let key, _, let value):                self.setValue(value, forKey: key)
                     case .unknown: break
                     }
                 }
@@ -290,25 +290,26 @@ open class Object: NSObject, Document, HasParent {
                     return
                 }
                 switch DataType(key: key, value: value) {
-                case .array         (let key, let rawValue, _):   document[key] = rawValue
-                case .set           (let key, let rawValue, _):   document[key] = rawValue
-                case .bool          (let key, let rawValue, _):   document[key] = rawValue
-                case .binary        (let key, let rawValue, _):   document[key] = rawValue
-                case .file          (let key, let rawValue, _):   document[key] = rawValue
-                case .files         (let key, let rawValue, _):   document[key] = rawValue
-                case .url           (let key, let rawValue, _):   document[key] = rawValue
-                case .int           (let key, let rawValue, _):   document[key] = rawValue
-                case .float         (let key, let rawValue, _):   document[key] = rawValue
-                case .date          (let key, let rawValue, _):   document[key] = rawValue
-                case .timestamp     (let key, let rawValue, _):   document[key] = rawValue
-                case .geoPoint      (let key, let rawValue, _):   document[key] = rawValue
-                case .dictionary    (let key, let rawValue, _):   document[key] = rawValue
-                case .collection    (let key, let rawValue, _):   if !rawValue.isEmpty { document[key] = rawValue }
-                case .list          (let key, let rawValue, _):   document[key] = rawValue
-                case .reference     (let key, let rawValue, _):   document[key] = rawValue
-                case .relation      (let key, let rawValue, _):   document[key] = rawValue
-                case .string        (let key, let rawValue, _):   document[key] = rawValue
-                case .document      (let key, let rawValue, _):   document[key] = rawValue
+                case .array             (let key, let rawValue, _):   document[key] = rawValue
+                case .set               (let key, let rawValue, _):   document[key] = rawValue
+                case .bool              (let key, let rawValue, _):   document[key] = rawValue
+                case .binary            (let key, let rawValue, _):   document[key] = rawValue
+                case .file              (let key, let rawValue, _):   document[key] = rawValue
+                case .files             (let key, let rawValue, _):   document[key] = rawValue
+                case .url               (let key, let rawValue, _):   document[key] = rawValue
+                case .int               (let key, let rawValue, _):   document[key] = rawValue
+                case .float             (let key, let rawValue, _):   document[key] = rawValue
+                case .date              (let key, let rawValue, _):   document[key] = rawValue
+                case .timestamp         (let key, let rawValue, _):   document[key] = rawValue
+                case .geoPoint          (let key, let rawValue, _):   document[key] = rawValue
+                case .dictionary        (let key, let rawValue, _):   document[key] = rawValue
+                case .collection        (let key, let rawValue, _):   if !rawValue.isEmpty { document[key] = rawValue }
+                case .list              (let key, let rawValue, _):   document[key] = rawValue
+                case .documentReference (let key, let rawValue, _):   document[key] = rawValue
+                case .reference         (let key, let rawValue, _):   document[key] = rawValue
+                case .relation          (let key, let rawValue, _):   document[key] = rawValue
+                case .string            (let key, let rawValue, _):   document[key] = rawValue
+                case .document          (let key, let rawValue, _):   document[key] = rawValue
                 case .unknown: break
                 }
             }
@@ -413,18 +414,19 @@ open class Object: NSObject, Document, HasParent {
                         }
                         self.update(key: key, value: newFiles.filter { $0.deleteRequest == false }.map { $0.value })
                     }
-                case .url           (let key, let updateValue, _):   update(key: key, value: updateValue)
-                case .int           (let key, let updateValue, _):   update(key: key, value: updateValue)
-                case .float         (let key, let updateValue, _):   update(key: key, value: updateValue)
-                case .date          (let key, let updateValue, _):   update(key: key, value: updateValue)
-                case .timestamp     (let key, let updateValue, _):   update(key: key, value: updateValue)
-                case .geoPoint      (let key, let updateValue, _):   update(key: key, value: updateValue)
-                case .dictionary    (let key, let updateValue, _):   update(key: key, value: updateValue)
-                case .collection    (_, _, _):   break
-                case .list          (_, _, _):   break
-                case .reference     (_, _, _):   break
-                case .relation      (_, _, _):   break
-                case .document      (let key, let updateValue, let object):
+                case .url               (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .int               (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .float             (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .date              (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .timestamp         (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .geoPoint          (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .dictionary        (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .documentReference (let key, let updateValue, _):   update(key: key, value: updateValue)
+                case .collection        (_, _, _):   break
+                case .list              (_, _, _):   break
+                case .reference         (_, _, _):   break
+                case .relation          (_, _, _):   break
+                case .document          (let key, let updateValue, let object):
                     update(key: key, value: updateValue)
                     object?.setParent(self, forKey: key)
                 case .string        (let key, let updateValue, _):   update(key: key, value: updateValue)

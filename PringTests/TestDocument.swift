@@ -33,6 +33,7 @@ class TestDocument: Object {
     dynamic var string: String                      = "string"
     dynamic var file: File                          = File(data: TestDocument.image0().pngData()!, mimeType: .png)
     dynamic var files: [File]                       = []
+    dynamic var documentRef: DocumentReference      = Firestore.firestore().collection("test").document("0")
     dynamic var refItem: Reference<ReferenceItem>   = Reference()
     dynamic var relationItem: Relation<ReferenceItem>   = Relation()
 

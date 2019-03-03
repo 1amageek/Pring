@@ -26,6 +26,7 @@ class TestOptionalDocument: Object {
     dynamic var dictionary: [String: Any]?
     dynamic var string: String?
     dynamic var file: File?
+    dynamic var documentRef: DocumentReference?
 
     let referenceCollection: ReferenceCollection<TestDocument>  = []
     let nextedCollection: NestedCollection<NestedItem>          = []

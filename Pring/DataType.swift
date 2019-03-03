@@ -19,25 +19,26 @@ public enum DataType {
     /**
      | key | Firestore | Local |
      */
-    case array      (String, [Any], [Any])
-    case set        (String, [String: Bool], Set<String>)
-    case bool       (String, Bool, Bool)
-    case binary     (String, Data, Data)           // Up to 1,048,487 bytes
-    case file       (String, [String: Any], File)
-    case files      (String, [[String: Any]], [File])
-    case url        (String, String, URL)
-    case int        (String, Int, Int)
-    case float      (String, Double, Double)
-    case date       (String, Timestamp, Date)
-    case timestamp  (String, Timestamp, Timestamp)
-    case geoPoint   (String, GeoPoint, GeoPoint)
-    case dictionary (String, [String: Any], [String: Any])
-    case collection (String, [String: Any], AnySubCollection)
-    case reference  (String, DocumentReference?, AnyReference)
-    case relation   (String, String?, AnyRelation)
-    case string     (String, String, String)
-    case document   (String, [String: Any], Object?)
-    case list       (String, [String: Any], AnyList)
+    case array              (String, [Any], [Any])
+    case set                (String, [String: Bool], Set<String>)
+    case bool               (String, Bool, Bool)
+    case binary             (String, Data, Data)           // Up to 1,048,487 bytes
+    case file               (String, [String: Any], File)
+    case files              (String, [[String: Any]], [File])
+    case url                (String, String, URL)
+    case int                (String, Int, Int)
+    case float              (String, Double, Double)
+    case date               (String, Timestamp, Date)
+    case timestamp          (String, Timestamp, Timestamp)
+    case geoPoint           (String, GeoPoint, GeoPoint)
+    case dictionary         (String, [String: Any], [String: Any])
+    case collection         (String, [String: Any], AnySubCollection)
+    case documentReference  (String, DocumentReference?, DocumentReference)
+    case reference          (String, DocumentReference?, AnyReference)
+    case relation           (String, String?, AnyRelation)
+    case string             (String, String, String)
+    case document           (String, [String: Any], Object?)
+    case list               (String, [String: Any], AnyList)
     case unknown
 
     /**
@@ -152,6 +153,11 @@ public enum DataType {
         case is AnySubCollection:
             if let value: AnySubCollection = value as? AnySubCollection {
                 self = .collection(key, [:], value)
+                return
+            }
+        case is DocumentReference:
+            if let value: DocumentReference = value as? DocumentReference {
+                self = .documentReference(key, value, value)
                 return
             }
         case is AnyReference:
@@ -315,6 +321,9 @@ public enum DataType {
         } else if let value: GeoPoint = data[key] as? GeoPoint {
             self = .geoPoint(key, value, value)
             return
+        } else if let value: DocumentReference = data[key] as? DocumentReference  {
+            self = .documentReference(key, value, value)
+            return
         } else if subjectType == [Int].self || subjectType == [Int]?.self {
             if let value: [Int] = data[key] as? [Int] {
                 self = .array(key, value, value)
@@ -397,12 +406,12 @@ public enum DataType {
             fatalError("[Pring.DataType] *** error: Invalid DataType. \(subjectType) is number. Pring not support optional number type." )
         }
 
-        if let displayStyle: Mirror.DisplayStyle = mirror.displayStyle {
-            let subjectTypeString: String = String(describing: subjectType)
-            if displayStyle == .optional && subjectTypeString.contains("Reference") {
-                fatalError("[Pring.DataType] *** error: Invalid DataType. \(subjectType) is Reference. Pring not support optional AnyReference Protocol." )
-            }
-        }
+//        if let displayStyle: Mirror.DisplayStyle = mirror.displayStyle {
+//            let subjectTypeString: String = String(describing: subjectType)
+//            if displayStyle == .optional && subjectTypeString.contains("Reference") {
+//                fatalError("[Pring.DataType] *** error: Invalid DataType. \(subjectType) is Reference. Pring not support optional AnyReference Protocol." )
+//            }
+//        }
     }
 
     internal static func unwrap(_ value: Any) -> Any? {

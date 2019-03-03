@@ -49,6 +49,7 @@ class DocumentCRUDTests: XCTestCase {
                 XCTAssertEqual(document?.dictionary.keys.first, "key")
                 XCTAssertEqual(document?.dictionary.values.first as! String, "value")
                 XCTAssertEqual(document?.string, "string")
+                XCTAssertEqual(document?.documentRef.path, Firestore.firestore().collection("test").document("0").path)
                 XCTAssertEqual(document?.refItem.id, referenceItem0.id)
                 XCTAssertEqual(document?.relationItem.id, referenceItem1.id)
 
@@ -69,6 +70,7 @@ class DocumentCRUDTests: XCTestCase {
                 document?.geoPoint = GeoPoint(latitude: 1, longitude: 1)
                 document?.dictionary = ["key": "update"]
                 document?.string = "update"
+                document?.documentRef = Firestore.firestore().collection("test").document("1")
                 document?.refItem.set(updateItem0)
                 document?.relationItem.set(updateItem1)
 
@@ -93,6 +95,7 @@ class DocumentCRUDTests: XCTestCase {
                         XCTAssertEqual(document?.dictionary.keys.first, "key")
                         XCTAssertEqual(document?.dictionary.values.first as! String, "update")
                         XCTAssertEqual(document?.string, "update")
+                        XCTAssertEqual(document?.documentRef.path, Firestore.firestore().collection("test").document("1").path)
                         XCTAssertEqual(document?.refItem.id, updateItem0.id)
                         XCTAssertEqual(document?.relationItem.id, updateItem1.id)
                         document?.delete { (error) in
@@ -130,7 +133,7 @@ class DocumentCRUDTests: XCTestCase {
                 XCTAssertEqual(document?.dictionary.keys.first, "key")
                 XCTAssertEqual(document?.dictionary.values.first as! String, "value")
                 XCTAssertEqual(document?.string, "string")
-
+                XCTAssertEqual(document?.documentRef.path, Firestore.firestore().collection("test").document("0").path)
 
                 document?.type = .update
                 document?.array = ["update"]
@@ -144,6 +147,7 @@ class DocumentCRUDTests: XCTestCase {
                 document?.geoPoint = GeoPoint(latitude: 1, longitude: 1)
                 document?.dictionary = ["key": "update"]
                 document?.string = "update"
+                document?.documentRef = Firestore.firestore().collection("test").document("1")
 
                 document?.update({ (error) in
                     TestDocument.get(document!.id, block: { (document, error) in
@@ -161,6 +165,7 @@ class DocumentCRUDTests: XCTestCase {
                         XCTAssertEqual(document?.dictionary.keys.first, "key")
                         XCTAssertEqual(document?.dictionary.values.first as! String, "update")
                         XCTAssertEqual(document?.string, "update")
+                        XCTAssertEqual(document?.documentRef.path, Firestore.firestore().collection("test").document("1").path)
                         document?.delete { (error) in
                             TestDocument.get(document!.id, block: { (document, error) in
                                 XCTAssertNil(document)
@@ -222,6 +227,7 @@ class DocumentCRUDTests: XCTestCase {
         document.geoPoint = GeoPoint(latitude: 0, longitude: 0)
         document.dictionary = ["key": "value"]
         document.string = "string"
+        document.documentRef = Firestore.firestore().collection("test").document("0")
 
         document.save { (ref, error) in
             TestOptionalDocument.get(ref!.documentID, block: { (document, error) in
@@ -238,6 +244,7 @@ class DocumentCRUDTests: XCTestCase {
                 XCTAssertEqual(document?.dictionary?.keys.first, "key")
                 XCTAssertEqual(document?.dictionary?.values.first as! String, "value")
                 XCTAssertEqual(document?.string, "string")
+                XCTAssertEqual(document?.documentRef!.path, Firestore.firestore().collection("test").document("0").path)
 
                 document?.array = ["update"]
                 document?.set = ["update"]
@@ -250,6 +257,7 @@ class DocumentCRUDTests: XCTestCase {
                 document?.geoPoint = GeoPoint(latitude: 1, longitude: 1)
                 document?.dictionary = ["key": "update"]
                 document?.string = "update"
+                document?.documentRef = Firestore.firestore().collection("test").document("1")
 
                 document?.update({ (error) in
                     TestOptionalDocument.get(document!.id, block: { (document, error) in
@@ -266,6 +274,7 @@ class DocumentCRUDTests: XCTestCase {
                         XCTAssertEqual(document?.dictionary?.keys.first, "key")
                         XCTAssertEqual(document?.dictionary?.values.first as! String, "update")
                         XCTAssertEqual(document?.string, "update")
+                        XCTAssertEqual(document?.documentRef!.path, Firestore.firestore().collection("test").document("1").path)
                         document?.delete { (error) in
                             TestOptionalDocument.get(document!.id, block: { (document, error) in
                                 XCTAssertNil(document)
