@@ -405,13 +405,6 @@ public enum DataType {
                 subjectType == Double?.self {
             fatalError("[Pring.DataType] *** error: Invalid DataType. \(subjectType) is number. Pring not support optional number type." )
         }
-
-//        if let displayStyle: Mirror.DisplayStyle = mirror.displayStyle {
-//            let subjectTypeString: String = String(describing: subjectType)
-//            if displayStyle == .optional && subjectTypeString.contains("Reference") {
-//                fatalError("[Pring.DataType] *** error: Invalid DataType. \(subjectType) is Reference. Pring not support optional AnyReference Protocol." )
-//            }
-//        }
     }
 
     internal static func unwrap(_ value: Any) -> Any? {
