@@ -321,9 +321,18 @@ public enum DataType {
         } else if let value: GeoPoint = data[key] as? GeoPoint {
             self = .geoPoint(key, value, value)
             return
-        } else if let value: DocumentReference = data[key] as? DocumentReference  {
+        } else if let value: DocumentReference = data[key] as? DocumentReference {
             self = .documentReference(key, value, value)
             return
+        } else if subjectType == DocumentReference.self || subjectType == DocumentReference?.self {
+            if let dict: [String: Any] = data[key] as? [String: Any],
+                let _path: [String: Any] = dict["_path"] as? [String: Any],
+                let segments: [String] = _path["segments"] as? [String] {
+                let path: String = segments.joined(separator: "/")
+                let value: DocumentReference = Firestore.firestore().document(path)
+                self = .documentReference(key, value, value)
+                return
+            }
         } else if subjectType == [Int].self || subjectType == [Int]?.self {
             if let value: [Int] = data[key] as? [Int] {
                 self = .array(key, value, value)
