@@ -70,7 +70,7 @@ public protocol Document: NSObjectProtocol, Hashable, StorageLinkable, Batchable
 
 public extension Document where Self: Object {
 
-    public func shouldUploadFiles(_ id: String) -> Bool {
+    func shouldUploadFiles(_ id: String) -> Bool {
         if id == self.batchID {
             return false
         }
@@ -107,7 +107,7 @@ public extension Document where Self: Object {
     }
 
     @discardableResult
-    public func saveFiles(_ id: String, container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
+    func saveFiles(_ id: String, container: UploadContainer? = nil, block: ((Error?) -> Void)?) -> [String: StorageUploadTask] {
 
         var uploadContainer: UploadContainer = container ?? UploadContainer()
 
@@ -181,7 +181,7 @@ public extension Document where Self: Object {
         return uploadContainer.tasks
     }
 
-    public func deleteFiles(_ id: String, container: DeleteContainer?, block: ((Error?) -> Void)?) {
+    func deleteFiles(_ id: String, container: DeleteContainer?, block: ((Error?) -> Void)?) {
 
         var deleteContainer: DeleteContainer = container ?? DeleteContainer()
 
@@ -250,11 +250,11 @@ public extension Document where Self: Object {
 
 public extension Document {
 
-    public static var query: DataSource<Self>.Query {
+    static var query: DataSource<Self>.Query {
         return DataSource.Query(self.reference)
     }
 
-    public static func get(_ id: String, block: @escaping (Self?, Error?) -> Void) {
+    static func get(_ id: String, block: @escaping (Self?, Error?) -> Void) {
         self.reference.document(id).getDocument { (snapshot, error) in
             guard let snapshot: DocumentSnapshot = snapshot, snapshot.exists else {
                 block(nil, error)
@@ -268,7 +268,7 @@ public extension Document {
         }
     }
 
-    public static func listen(_ id: String, block: @escaping (Self?, Error?) -> Void) -> ListenerRegistration {
+    static func listen(_ id: String, block: @escaping (Self?, Error?) -> Void) -> ListenerRegistration {
 
         return self.reference.document(id).addSnapshotListener(includeMetadataChanges: true) { (snapshot, error) in
             guard let snapshot: DocumentSnapshot = snapshot else {
@@ -283,11 +283,11 @@ public extension Document {
         }
     }
 
-    public static func listen(_ id: String, block: @escaping (Self?, Error?) -> Void) -> Disposer<Self> {
+    static func listen(_ id: String, block: @escaping (Self?, Error?) -> Void) -> Disposer<Self> {
         return .init(.value(listen(id, block: block)))
     }
 
-    public func listen(_ block: @escaping (Self?, Error?) -> Void) -> ListenerRegistration {
+    func listen(_ block: @escaping (Self?, Error?) -> Void) -> ListenerRegistration {
         return self.reference.addSnapshotListener(includeMetadataChanges: true) { (snapshot, error) in
             guard let snapshot: DocumentSnapshot = snapshot, snapshot.exists else {
                 block(nil, error)
@@ -301,7 +301,7 @@ public extension Document {
         }
     }
 
-    public func listen(block: @escaping (Self?, Error?) -> Void) -> Disposer<Self> {
+    func listen(block: @escaping (Self?, Error?) -> Void) -> Disposer<Self> {
         return .init(.value(listen(block)))
     }
 }
@@ -324,56 +324,56 @@ extension DocumentReference {
 
 public extension Document where Self: Object {
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, isEqualTo: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: PartialKeyPath<Self>, isEqualTo: Any) -> DataSource<Self>.Query {
         guard let key: String = keyPath._kvcKeyPathString else {
             fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
         }
         return self.where(key, isEqualTo: isEqualTo)
     }
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThan: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThan: Any) -> DataSource<Self>.Query {
         guard let key: String = keyPath._kvcKeyPathString else {
             fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
         }
         return self.where(key, isLessThan: isLessThan)
     }
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThanOrEqualTo: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: PartialKeyPath<Self>, isLessThanOrEqualTo: Any) -> DataSource<Self>.Query {
         guard let key: String = keyPath._kvcKeyPathString else {
             fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
         }
         return self.where(key, isLessThanOrEqualTo: isLessThanOrEqualTo)
     }
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThan: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThan: Any) -> DataSource<Self>.Query {
         guard let key: String = keyPath._kvcKeyPathString else {
             fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
         }
         return self.where(key, isGreaterThan: isGreaterThan)
     }
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThanOrEqualTo: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: PartialKeyPath<Self>, isGreaterThanOrEqualTo: Any) -> DataSource<Self>.Query {
         guard let key: String = keyPath._kvcKeyPathString else {
             fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
         }
         return self.where(key, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo)
     }
 
-    public static func `where`(_ keyPath: PartialKeyPath<Self>, arrayContains: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: PartialKeyPath<Self>, arrayContains: Any) -> DataSource<Self>.Query {
         guard let key: String = keyPath._kvcKeyPathString else {
             fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
         }
         return self.where(key, arrayContains: arrayContains)
     }
 
-    public static func order(by: PartialKeyPath<Self>) -> DataSource<Self>.Query {
+    static func order(by: PartialKeyPath<Self>) -> DataSource<Self>.Query {
         guard let key: String = by._kvcKeyPathString else {
             fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
         }
         return self.order(by: key)
     }
 
-    public static func order(by: PartialKeyPath<Self>, descending: Bool) -> DataSource<Self>.Query {
+    static func order(by: PartialKeyPath<Self>, descending: Bool) -> DataSource<Self>.Query {
         guard let key: String = by._kvcKeyPathString else {
             fatalError("[Pring.Document] 'keyPath' is not used except for OjbC.")
         }
@@ -382,73 +382,73 @@ public extension Document where Self: Object {
 
     // MARK:
 
-    public static func `where`(_ keyPath: String, isEqualTo: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: String, isEqualTo: Any) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isEqualTo: isEqualTo), reference: self.reference)
     }
 
-    public static func `where`(_ keyPath: String, isLessThan: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: String, isLessThan: Any) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isLessThan: isLessThan), reference: self.reference)
     }
 
-    public static func `where`(_ keyPath: String, isLessThanOrEqualTo: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: String, isLessThanOrEqualTo: Any) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference)
     }
 
-    public static func `where`(_ keyPath: String, isGreaterThan: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: String, isGreaterThan: Any) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isGreaterThan: isGreaterThan), reference: self.reference)
     }
 
-    public static func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference)
     }
 
-    public static func `where`(_ keyPath: String, arrayContains: Any) -> DataSource<Self>.Query {
+    static func `where`(_ keyPath: String, arrayContains: Any) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, arrayContains: arrayContains), reference: self.reference)
     }
 
-    public static func order(by: String) -> DataSource<Self>.Query {
+    static func order(by: String) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.order(by: by), reference: self.reference)
     }
 
-    public static func order(by: String, descending: Bool) -> DataSource<Self>.Query {
+    static func order(by: String, descending: Bool) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.order(by: by, descending: descending), reference: self.reference)
     }
 
     // MARK: -
 
-    public static func limit(to: Int) -> DataSource<Self>.Query {
+    static func limit(to: Int) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.limit(to: to), reference: self.reference)
     }
 
-    public static func start(at: [Any]) -> DataSource<Self>.Query {
+    static func start(at: [Any]) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.start(at: at), reference: self.reference)
     }
 
-    public static func start(after: [Any]) -> DataSource<Self>.Query {
+    static func start(after: [Any]) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.start(after: after), reference: self.reference)
     }
 
-    public static func start(atDocument: DocumentSnapshot) -> DataSource<Self>.Query {
+    static func start(atDocument: DocumentSnapshot) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.start(atDocument: atDocument), reference: self.reference)
     }
 
-    public static func start(afterDocument: DocumentSnapshot) -> DataSource<Self>.Query {
+    static func start(afterDocument: DocumentSnapshot) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.start(afterDocument: afterDocument), reference: self.reference)
     }
 
-    public static func end(at: [Any]) -> DataSource<Self>.Query {
+    static func end(at: [Any]) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.end(at: at), reference: self.reference)
     }
 
-    public static func end(atDocument: DocumentSnapshot) -> DataSource<Self>.Query {
+    static func end(atDocument: DocumentSnapshot) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.end(atDocument: atDocument), reference: self.reference)
     }
 
-    public static func end(before: [Any]) -> DataSource<Self>.Query {
+    static func end(before: [Any]) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.end(before: before), reference: self.reference)
     }
 
-    public static func end(beforeDocument: DocumentSnapshot) -> DataSource<Self>.Query {
+    static func end(beforeDocument: DocumentSnapshot) -> DataSource<Self>.Query {
         return DataSource.Query(self.reference.end(beforeDocument: beforeDocument), reference: self.reference)
     }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Ffe-Od-SaB">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Increment View Controller-->
+        <scene sceneID="39a-46-izq">
+            <objects>
+                <viewController id="Ffe-Od-SaB" customClass="IncrementViewController" customModule="Sample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="RSD-w3-sZf">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7wK-kf-gAL">
+                                <rect key="frame" x="16" y="140" width="343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e2d-69-XnT">
+                                <rect key="frame" x="16" y="221" width="343" height="30"/>
+                                <state key="normal" title="FieldValue.Increment"/>
+                                <connections>
+                                    <action selector="start:" destination="Ffe-Od-SaB" eventType="touchUpInside" id="6Th-Az-P3L"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zk3-P6-4xe">
+                                <rect key="frame" x="16" y="283" width="343" height="30"/>
+                                <state key="normal" title="Transaction"/>
+                                <connections>
+                                    <action selector="startTransaction:" destination="Ffe-Od-SaB" eventType="touchUpInside" id="xiV-s2-uMP"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="e2d-69-XnT" firstAttribute="top" secondItem="7wK-kf-gAL" secondAttribute="bottom" constant="60" id="3AD-Z1-9tg"/>
+                            <constraint firstItem="7wK-kf-gAL" firstAttribute="top" secondItem="ONm-Ck-2GB" secondAttribute="top" constant="120" id="9Ay-18-cJX"/>
+                            <constraint firstItem="ONm-Ck-2GB" firstAttribute="trailing" secondItem="7wK-kf-gAL" secondAttribute="trailing" constant="16" id="CNa-9R-3jD"/>
+                            <constraint firstItem="7wK-kf-gAL" firstAttribute="leading" secondItem="ONm-Ck-2GB" secondAttribute="leading" constant="16" id="CRO-Ls-cjT"/>
+                            <constraint firstItem="zk3-P6-4xe" firstAttribute="top" secondItem="e2d-69-XnT" secondAttribute="bottom" constant="32" id="INV-i5-m7w"/>
+                            <constraint firstItem="ONm-Ck-2GB" firstAttribute="trailing" secondItem="e2d-69-XnT" secondAttribute="trailing" constant="16" id="Oko-UH-onQ"/>
+                            <constraint firstItem="ONm-Ck-2GB" firstAttribute="trailing" secondItem="zk3-P6-4xe" secondAttribute="trailing" constant="16" id="PKd-lA-Ufz"/>
+                            <constraint firstItem="e2d-69-XnT" firstAttribute="leading" secondItem="ONm-Ck-2GB" secondAttribute="leading" constant="16" id="hTw-eG-iri"/>
+                            <constraint firstItem="zk3-P6-4xe" firstAttribute="leading" secondItem="ONm-Ck-2GB" secondAttribute="leading" constant="16" id="occ-ka-iSN"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="ONm-Ck-2GB"/>
+                    </view>
+                    <connections>
+                        <outlet property="label" destination="7wK-kf-gAL" id="Ps2-mf-znG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="D4M-XK-nzb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="194" y="-191"/>
+        </scene>
+    </scenes>
+</document>

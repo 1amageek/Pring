@@ -26,7 +26,7 @@ public protocol AnyList: class {
 
 public extension AnyList {
 
-    public func setParent(_ object: Object, forKey key: String) {
+    func setParent(_ object: Object, forKey key: String) {
         self.parent = object
         self.key = key
     }

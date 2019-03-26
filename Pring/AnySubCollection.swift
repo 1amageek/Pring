@@ -29,7 +29,7 @@ public protocol AnySubCollection: class, StorageLinkable, Batchable {
 
 public extension AnySubCollection {
     
-    public func setParent(_ object: Object, forKey key: String) {
+    func setParent(_ object: Object, forKey key: String) {
         self.parent = object
         self.key = key
     }
@@ -37,222 +37,222 @@ public extension AnySubCollection {
 
 public extension AnySubCollection where Self: Collection, Self.Element: Document {
     
-    public var query: DataSource<Self.Element>.Query {
+    var query: DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference)
     }
     
     // MARK:
     
-    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isEqualTo: Any) -> DataSource<Self.Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Self.Element>, isEqualTo: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo), reference: self.reference)
     }
     
-    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isLessThan: Any) -> DataSource<Self.Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Self.Element>, isLessThan: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThan: isLessThan), reference: self.reference)
     }
     
-    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isLessThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Self.Element>, isLessThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference)
     }
     
-    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isGreaterThan: Any) -> DataSource<Self.Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Self.Element>, isGreaterThan: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThan: isGreaterThan), reference: self.reference)
     }
     
-    public func `where`(_ keyPath: PartialKeyPath<Self.Element>, isGreaterThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Self.Element>, isGreaterThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference)
     }
     
-    public func order(by: PartialKeyPath<Self.Element>) -> DataSource<Self.Element>.Query {
+    func order(by: PartialKeyPath<Self.Element>) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!), reference: self.reference)
     }
     
-    public func order(by: PartialKeyPath<Self.Element>, descending: Bool) -> DataSource<Self.Element>.Query {
+    func order(by: PartialKeyPath<Self.Element>, descending: Bool) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!, descending: descending), reference: self.reference)
     }
     
     // MARK:
     
-    public func `where`(_ keyPath: String, isEqualTo: Any) -> DataSource<Self.Element>.Query {
+    func `where`(_ keyPath: String, isEqualTo: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isEqualTo: isEqualTo), reference: self.reference)
     }
     
-    public func `where`(_ keyPath: String, isLessThan: Any) -> DataSource<Self.Element>.Query {
+    func `where`(_ keyPath: String, isLessThan: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isLessThan: isLessThan), reference: self.reference)
     }
     
-    public func `where`(_ keyPath: String, isLessThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
+    func `where`(_ keyPath: String, isLessThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference)
     }
     
-    public func `where`(_ keyPath: String, isGreaterThan: Any) -> DataSource<Self.Element>.Query {
+    func `where`(_ keyPath: String, isGreaterThan: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isGreaterThan: isGreaterThan), reference: self.reference)
     }
     
-    public func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
+    func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference)
     }
     
-    public func order(by: String) -> DataSource<Self.Element>.Query {
+    func order(by: String) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.order(by: by), reference: self.reference)
     }
     
-    public func order(by: String, descending: Bool) -> DataSource<Self.Element>.Query {
+    func order(by: String, descending: Bool) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.order(by: by, descending: descending), reference: self.reference)
     }
     
     // MARK:
     
-    public func limit(to: Int) -> DataSource<Self.Element>.Query {
+    func limit(to: Int) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.limit(to: to), reference: self.reference)
     }
     
-    public func start(at: [Any]) -> DataSource<Self.Element>.Query {
+    func start(at: [Any]) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.start(at: at), reference: self.reference)
     }
     
-    public func start(after: [Any]) -> DataSource<Self.Element>.Query {
+    func start(after: [Any]) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.start(after: after), reference: self.reference)
     }
     
-    public func start(atDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
+    func start(atDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.start(atDocument: atDocument), reference: self.reference)
     }
     
-    public func start(afterDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
+    func start(afterDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.start(afterDocument: afterDocument), reference: self.reference)
     }
     
-    public func end(at: [Any]) -> DataSource<Self.Element>.Query {
+    func end(at: [Any]) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.end(at: at), reference: self.reference)
     }
     
-    public func end(atDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
+    func end(atDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.end(atDocument: atDocument), reference: self.reference)
     }
     
-    public func end(before: [Any]) -> DataSource<Self.Element>.Query {
+    func end(before: [Any]) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.end(before: before), reference: self.reference)
     }
     
-    public func end(beforeDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
+    func end(beforeDocument: DocumentSnapshot) -> DataSource<Self.Element>.Query {
         return DataSource.Query(self.reference.end(beforeDocument: beforeDocument), reference: self.reference)
     }
 }
 
 public extension ReferenceCollection {
 
-    public var query: DataSource<Element>.Query {
+    var query: DataSource<Element>.Query {
         return DataSource.Query(self.reference, hasRealities: false)
     }
 
     // MARK:
 
-    public func `where`(_ keyPath: PartialKeyPath<Element>, isEqualTo: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Element>, isEqualTo: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isEqualTo: isEqualTo), reference: self.reference, hasRealities: false)
     }
 
-    public func `where`(_ keyPath: PartialKeyPath<Element>, isLessThan: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Element>, isLessThan: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThan: isLessThan), reference: self.reference, hasRealities: false)
     }
 
-    public func `where`(_ keyPath: PartialKeyPath<Element>, isLessThanOrEqualTo: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Element>, isLessThanOrEqualTo: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference, hasRealities: false)
     }
 
-    public func `where`(_ keyPath: PartialKeyPath<Element>, isGreaterThan: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Element>, isGreaterThan: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThan: isGreaterThan), reference: self.reference, hasRealities: false)
     }
 
-    public func `where`(_ keyPath: PartialKeyPath<Element>, isGreaterThanOrEqualTo: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Element>, isGreaterThanOrEqualTo: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference, hasRealities: false)
     }
 
-    public func `where`(_ keyPath: PartialKeyPath<Element>, arrayContains: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: PartialKeyPath<Element>, arrayContains: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath._kvcKeyPathString!, arrayContains: arrayContains), reference: self.reference, hasRealities: false)
     }
 
-    public func order(by: PartialKeyPath<Element>) -> DataSource<Element>.Query {
+    func order(by: PartialKeyPath<Element>) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!), reference: self.reference, hasRealities: false)
     }
 
-    public func order(by: PartialKeyPath<Element>, descending: Bool) -> DataSource<Element>.Query {
+    func order(by: PartialKeyPath<Element>, descending: Bool) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.order(by: by._kvcKeyPathString!, descending: descending), reference: self.reference, hasRealities: false)
     }
 
     // MARK:
 
-    public func `where`(_ keyPath: String, isEqualTo: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: String, isEqualTo: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isEqualTo: isEqualTo), reference: self.reference, hasRealities: false)
     }
 
-    public func `where`(_ keyPath: String, isLessThan: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: String, isLessThan: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isLessThan: isLessThan), reference: self.reference, hasRealities: false)
     }
 
-    public func `where`(_ keyPath: String, isLessThanOrEqualTo: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: String, isLessThanOrEqualTo: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isLessThanOrEqualTo: isLessThanOrEqualTo), reference: self.reference, hasRealities: false)
     }
 
-    public func `where`(_ keyPath: String, isGreaterThan: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: String, isGreaterThan: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isGreaterThan: isGreaterThan), reference: self.reference, hasRealities: false)
     }
 
-    public func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: String, isGreaterThanOrEqualTo: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, isGreaterThanOrEqualTo: isGreaterThanOrEqualTo), reference: self.reference, hasRealities: false)
     }
 
-    public func `where`(_ keyPath: String, arrayContains: Any) -> DataSource<Element>.Query {
+    func `where`(_ keyPath: String, arrayContains: Any) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.whereField(keyPath, arrayContains: arrayContains), reference: self.reference, hasRealities: false)
     }
 
-    public func order(by: String) -> DataSource<Element>.Query {
+    func order(by: String) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.order(by: by), reference: self.reference, hasRealities: false)
     }
 
-    public func order(by: String, descending: Bool) -> DataSource<Element>.Query {
+    func order(by: String, descending: Bool) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.order(by: by, descending: descending), reference: self.reference, hasRealities: false)
     }
 
-    public func filter(using: NSPredicate) -> DataSource<Element>.Query {
+    func filter(using: NSPredicate) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.filter(using: using), reference: self.reference, hasRealities: false)
     }
 
     // MARK:
 
-    public func limit(to: Int) -> DataSource<Element>.Query {
+    func limit(to: Int) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.limit(to: to), reference: self.reference, hasRealities: false)
     }
 
-    public func start(at: [Any]) -> DataSource<Element>.Query {
+    func start(at: [Any]) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.start(at: at), reference: self.reference, hasRealities: false)
     }
 
-    public func start(after: [Any]) -> DataSource<Element>.Query {
+    func start(after: [Any]) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.start(after: after), reference: self.reference, hasRealities: false)
     }
 
-    public func start(atDocument: DocumentSnapshot) -> DataSource<Element>.Query {
+    func start(atDocument: DocumentSnapshot) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.start(atDocument: atDocument), reference: self.reference, hasRealities: false)
     }
 
-    public func start(afterDocument: DocumentSnapshot) -> DataSource<Element>.Query {
+    func start(afterDocument: DocumentSnapshot) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.start(afterDocument: afterDocument), reference: self.reference, hasRealities: false)
     }
 
-    public func end(at: [Any]) -> DataSource<Element>.Query {
+    func end(at: [Any]) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.end(at: at), reference: self.reference, hasRealities: false)
     }
 
-    public func end(atDocument: DocumentSnapshot) -> DataSource<Element>.Query {
+    func end(atDocument: DocumentSnapshot) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.end(atDocument: atDocument), reference: self.reference, hasRealities: false)
     }
 
-    public func end(before: [Any]) -> DataSource<Element>.Query {
+    func end(before: [Any]) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.end(before: before), reference: self.reference, hasRealities: false)
     }
 
-    public func end(beforeDocument: DocumentSnapshot) -> DataSource<Element>.Query {
+    func end(beforeDocument: DocumentSnapshot) -> DataSource<Element>.Query {
         return DataSource.Query(self.reference.end(beforeDocument: beforeDocument), reference: self.reference, hasRealities: false)
     }
 }

@@ -21,10 +21,10 @@ class ViewController: UIViewController {
         user.item = Item()
 
 
-        user.files.append(File(data: UIImageJPEGRepresentation(User.image(), 0.2)!, mimeType: .jpeg))
-        user.files.append(File(data: UIImageJPEGRepresentation(User.image(), 0.2)!, mimeType: .jpeg))
-        user.files.append(File(data: UIImageJPEGRepresentation(User.image(), 0.2)!, mimeType: .jpeg))
-        user.files.append(File(data: UIImageJPEGRepresentation(User.image(), 0.2)!, mimeType: .jpeg)) 
+        user.files.append(File(data: User.image().jpegData(compressionQuality: 0.2)!, mimeType: .jpeg))
+        user.files.append(File(data: User.image().jpegData(compressionQuality: 0.2)!, mimeType: .jpeg))
+        user.files.append(File(data: User.image().jpegData(compressionQuality: 0.2)!, mimeType: .jpeg))
+        user.files.append(File(data: User.image().jpegData(compressionQuality: 0.2)!, mimeType: .jpeg)) 
 
 
         user.save()

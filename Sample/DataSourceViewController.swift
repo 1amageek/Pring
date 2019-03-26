@@ -122,7 +122,7 @@ class DataSourceViewController: UITableViewController {
         return true
     }
 
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             self.dataSource?.removeDocument(at: indexPath.item, block: { (key, error) in
                 print(error)

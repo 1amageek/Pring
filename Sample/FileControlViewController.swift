@@ -61,12 +61,12 @@ class FileControlViewController: UIViewController {
         let object: FileControlObject = FileControlObject()
 
         do {
-            let file: File = File(data: UIImageJPEGRepresentation(FileControlObject.image(UIColor.blue), 0.2)!, mimeType: .jpeg)
+            let file: File = File(data: FileControlObject.image(UIColor.blue).jpegData(compressionQuality: 0.2)!, mimeType: .jpeg)
             object.file = file
         }
 
         object.files = [UIColor.blue, UIColor.yellow, UIColor.red].map {
-            return File(data: UIImageJPEGRepresentation(FileControlObject.image($0), 0.2)!, name: UUID().uuidString, mimeType: .jpeg)
+            return File(data: FileControlObject.image($0).jpegData(compressionQuality: 0.2)!, name: UUID().uuidString, mimeType: .jpeg)
         }
 
         object.save { _, error in
@@ -82,12 +82,12 @@ class FileControlViewController: UIViewController {
         }
 
         do {
-            let file: File = File(data: UIImageJPEGRepresentation(FileControlObject.image(UIColor.green), 0.2)!, mimeType: .jpeg)
+            let file: File = File(data: FileControlObject.image(UIColor.green).jpegData(compressionQuality: 0.2)!, mimeType: .jpeg)
             object.file = file
         }
 
         object.files = [UIColor.purple, UIColor.brown, UIColor.orange].map {
-            return File(data: UIImageJPEGRepresentation(FileControlObject.image($0), 0.2)!, name: UUID().uuidString, mimeType: .jpeg)
+            return File(data: FileControlObject.image($0).jpegData(compressionQuality: 0.2)!, name: UUID().uuidString, mimeType: .jpeg)
         }
 
         object.update(nil) { (error) in

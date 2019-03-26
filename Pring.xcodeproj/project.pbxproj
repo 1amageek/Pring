@@ -33,10 +33,14 @@
 		123F0A1620A2D95400C0EAC1 /* NestedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F5D3201845F5001D635E /* NestedCollection.swift */; };
 		123F0A1720A2D95400C0EAC1 /* ReferenceCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F4F5D5201846C3001D635E /* ReferenceCollection.swift */; };
 		123F0A1820A2D95400C0EAC1 /* Disposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF830F1F8CAEEC00561159 /* Disposer.swift */; };
+		1246EF202249C57200CCAB2A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 122988682109D4A900068424 /* GoogleService-Info.plist */; };
 		1249ABED1FB45DB400E78EA6 /* DataSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */; };
 		1249ABEF1FB45ED800E78EA6 /* DataSourceViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1249ABEE1FB45ED800E78EA6 /* DataSourceViewCell.swift */; };
 		124C323621B8043D001629C9 /* PackNestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124C323521B8043D001629C9 /* PackNestTests.swift */; };
 		124C323821B80450001629C9 /* PackReferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124C323721B80450001629C9 /* PackReferenceTests.swift */; };
+		124F65A5224329B400ED0A42 /* IncrementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124F65A4224329B400ED0A42 /* IncrementViewController.swift */; };
+		125A0D6C224891640019A37D /* UsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125A0D6B224891640019A37D /* UsersViewController.swift */; };
+		125A0D6E2248916D0019A37D /* UsersViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 125A0D6D2248916D0019A37D /* UsersViewController.storyboard */; };
 		126080401FB86FE2001B5DDA /* CollectionObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1260803F1FB86FE2001B5DDA /* CollectionObject.swift */; };
 		126080421FB991BD001B5DDA /* Collecor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 126080411FB991BD001B5DDA /* Collecor.swift */; };
 		1266EB2120215664005F5F41 /* CustomDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1266EB2020215664005F5F41 /* CustomDocument.swift */; };
@@ -67,6 +71,7 @@
 		12AF83571F8CE16900561159 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83131F8CAEEC00561159 /* Object.swift */; };
 		12AF83581F8CE16900561159 /* SubCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AF83161F8CAEED00561159 /* SubCollection.swift */; };
 		12AFC0222045912600E19B6D /* Relation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AFC0212045912600E19B6D /* Relation.swift */; };
+		12B70A5922438CA60011FDA1 /* IncrementViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 12B70A5822438CA60011FDA1 /* IncrementViewController.storyboard */; };
 		12BB91BD21C6267A00BD8166 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BB91BC21C6267A00BD8166 /* List.swift */; };
 		12BB91BF21C6457100BD8166 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BB91BE21C6457100BD8166 /* Order.swift */; };
 		12BB91C121C6457900BD8166 /* OrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12BB91C021C6457900BD8166 /* OrderItem.swift */; };
@@ -135,6 +140,9 @@
 		1249ABEE1FB45ED800E78EA6 /* DataSourceViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceViewCell.swift; sourceTree = "<group>"; };
 		124C323521B8043D001629C9 /* PackNestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PackNestTests.swift; sourceTree = "<group>"; };
 		124C323721B80450001629C9 /* PackReferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackReferenceTests.swift; sourceTree = "<group>"; };
+		124F65A4224329B400ED0A42 /* IncrementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncrementViewController.swift; sourceTree = "<group>"; };
+		125A0D6B224891640019A37D /* UsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersViewController.swift; sourceTree = "<group>"; };
+		125A0D6D2248916D0019A37D /* UsersViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UsersViewController.storyboard; sourceTree = "<group>"; };
 		1260803F1FB86FE2001B5DDA /* CollectionObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionObject.swift; sourceTree = "<group>"; };
 		126080411FB991BD001B5DDA /* Collecor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collecor.swift; sourceTree = "<group>"; };
 		12649F021F9F6567004C6130 /* Pring.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pring.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -171,6 +179,7 @@
 		12AF833C1F8CD2F400561159 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12AF83501F8CD4A400561159 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		12AFC0212045912600E19B6D /* Relation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relation.swift; sourceTree = "<group>"; };
+		12B70A5822438CA60011FDA1 /* IncrementViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = IncrementViewController.storyboard; sourceTree = "<group>"; };
 		12BB91BC21C6267A00BD8166 /* List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
 		12BB91BE21C6457100BD8166 /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
 		12BB91C021C6457900BD8166 /* OrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItem.swift; sourceTree = "<group>"; };
@@ -321,6 +330,10 @@
 			children = (
 				12AF83301F8CD2F400561159 /* AppDelegate.swift */,
 				12AF83321F8CD2F400561159 /* ViewController.swift */,
+				125A0D6B224891640019A37D /* UsersViewController.swift */,
+				125A0D6D2248916D0019A37D /* UsersViewController.storyboard */,
+				124F65A4224329B400ED0A42 /* IncrementViewController.swift */,
+				12B70A5822438CA60011FDA1 /* IncrementViewController.storyboard */,
 				1249ABEC1FB45DB400E78EA6 /* DataSourceViewController.swift */,
 				1281D2AA204E955A00F5A89A /* MediaDataSourceViewController.swift */,
 				1281D2AD204E9A9F00F5A89A /* MediaDataSourceViewCell.swift */,
@@ -409,7 +422,6 @@
 				12AF82F91F8CAEDE00561159 /* Sources */,
 				12AF82FA1F8CAEDE00561159 /* Frameworks */,
 				12AF82FB1F8CAEDE00561159 /* Resources */,
-				D4E5B543F08713C8C18613F0 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -491,6 +503,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1246EF202249C57200CCAB2A /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -510,6 +523,8 @@
 				12AF834F1F8CD48D00561159 /* Pring.png in Resources */,
 				12AF833B1F8CD2F400561159 /* LaunchScreen.storyboard in Resources */,
 				12BB91C421C6497700BD8166 /* GoogleService-Info.plist in Resources */,
+				12B70A5922438CA60011FDA1 /* IncrementViewController.storyboard in Resources */,
+				125A0D6E2248916D0019A37D /* UsersViewController.storyboard in Resources */,
 				12AF83381F8CD2F400561159 /* Assets.xcassets in Resources */,
 				12AF83361F8CD2F400561159 /* Main.storyboard in Resources */,
 			);
@@ -560,7 +575,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Sample/Pods-Sample-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Sample/Pods-Sample-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
@@ -583,43 +598,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Sample/Pods-Sample-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D4E5B543F08713C8C18613F0 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-PringTests/Pods-PringTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
-				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
-				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
-				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PringTests/Pods-PringTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Sample/Pods-Sample-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DF1B0A89B75EFB56D937D4CD /* [CP] Check Pods Manifest.lock */ = {
@@ -723,6 +702,7 @@
 				1288E2281FCE928400E72594 /* Photo.swift in Sources */,
 				12027CB21FF4BDA800912630 /* FileControlViewController.swift in Sources */,
 				1281D2AB204E955A00F5A89A /* MediaDataSourceViewController.swift in Sources */,
+				124F65A5224329B400ED0A42 /* IncrementViewController.swift in Sources */,
 				12BB91C921C68D4000BD8166 /* Batchable.swift in Sources */,
 				12AF83331F8CD2F400561159 /* ViewController.swift in Sources */,
 				12E6F5A71FCED42D00347F4C /* Group.swift in Sources */,
@@ -741,6 +721,7 @@
 				12BB91CD21C68D4000BD8166 /* AnySubCollection.swift in Sources */,
 				1281D2AE204E9A9F00F5A89A /* MediaDataSourceViewCell.swift in Sources */,
 				12BB91D021C68D4000BD8166 /* List.swift in Sources */,
+				125A0D6C224891640019A37D /* UsersViewController.swift in Sources */,
 				126080421FB991BD001B5DDA /* Collecor.swift in Sources */,
 				1249ABEF1FB45ED800E78EA6 /* DataSourceViewCell.swift in Sources */,
 				12BB91D321C68D4000BD8166 /* ReferenceCollection.swift in Sources */,
@@ -919,7 +900,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
@@ -943,7 +924,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = I;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
@@ -992,7 +973,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Pring;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1008,7 +989,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = inc.stamp.Pring;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

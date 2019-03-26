@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="mAI-tt-iui">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="CEk-E8-NjB">
+            <objects>
+                <navigationController id="mAI-tt-iui" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="yWh-UD-ycg">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="eRu-dh-VqZ" kind="relationship" relationship="rootViewController" id="KO0-qV-I2Z"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2X4-7W-Q7U" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-815" y="197"/>
+        </scene>
+        <!--Users View Controller-->
+        <scene sceneID="hm7-Xi-toX">
+            <objects>
+                <viewController id="eRu-dh-VqZ" customClass="UsersViewController" customModule="Sample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="H0X-f4-0vJ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Lpy-CU-xNk">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Lpy-CU-xNk" firstAttribute="leading" secondItem="cR5-aB-hug" secondAttribute="leading" id="Ayu-bT-Kuw"/>
+                            <constraint firstItem="Lpy-CU-xNk" firstAttribute="trailing" secondItem="cR5-aB-hug" secondAttribute="trailing" id="Csm-4W-ZGs"/>
+                            <constraint firstItem="Lpy-CU-xNk" firstAttribute="top" secondItem="H0X-f4-0vJ" secondAttribute="top" id="Z8M-2I-e1h"/>
+                            <constraint firstItem="Lpy-CU-xNk" firstAttribute="bottom" secondItem="cR5-aB-hug" secondAttribute="bottom" id="fOS-cU-xZ9"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="cR5-aB-hug"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="815-dL-2qo"/>
+                    <connections>
+                        <outlet property="tableView" destination="Lpy-CU-xNk" id="utZ-VG-APs"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YiZ-4W-wMp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-12" y="196.55172413793105"/>
+        </scene>
+    </scenes>
+</document>

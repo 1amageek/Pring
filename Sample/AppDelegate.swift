@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         NSSetUncaughtExceptionHandler { exception in
             debugPrint(exception.name)
             debugPrint(exception.reason ?? "")
@@ -24,31 +24,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         FirebaseApp.configure()
 
-//        let order: Order = Order()
-//        do {
-//            let orderItem: OrderItem = OrderItem()
-//            orderItem.name = "aaaa"
-//            orderItem.price = 39
-//            order.items.append(orderItem)
-//        }
-//        do {
-//            let orderItem: OrderItem = OrderItem()
-//            orderItem.name = "bbb"
-//            orderItem.price = 21
-//            order.items.append(orderItem)
-//        }
-//
-//        order.save()
-//        print(order.value)
+        
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        self.window?.rootViewController = UIStoryboard(name: "UsersViewController", bundle: nil).instantiateInitialViewController()
+        self.window?.makeKeyAndVisible()
 
-        Order.get("p1YHiBqk4tyT53gByb5O") { (order, error) in
-            print(order?.items.value)
-//            print(order?.items.startIndex)
-//            print(order?.items.endIndex)
-            order?.items.forEach({ (item) in
-                print(item)
-            })
-        }
+
+
         return true
     }
 

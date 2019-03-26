@@ -108,14 +108,14 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
     }
 
     /// Returns the Object of the specified indexes.
-    public func objects(at indexes: IndexSet) -> [Element] {
+    func objects(at indexes: IndexSet) -> [Element] {
         return indexes.filter { $0 < self.count }.map { self[$0] }
     }
 
     // MARK: -
 
     /// Save the new Object.
-    public func insert(_ newMember: Element) {
+    func insert(_ newMember: Element) {
         newMember.setReference(self.reference.document(newMember.id))
         if !_self.contains(newMember) {
             _self.append(newMember)
@@ -123,14 +123,14 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         _insertions.insert(newMember)
     }
 
-    public func insert(_ newMembers: [Element]) {
+    func insert(_ newMembers: [Element]) {
         newMembers.forEach { (newMemeber) in
             insert(newMemeber)
         }
     }
 
     /// Deletes the Object from the reference destination.
-    public func remove(_ member: Element) {
+    func remove(_ member: Element) {
         if let index: Int = _self.index(of: member) {
             _self.remove(at: index)
         }
@@ -210,7 +210,7 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
 
 public extension SubCollection {
 
-    public func get(_ id: String, block: @escaping (Element?, Error?) -> Void) {
+    func get(_ id: String, block: @escaping (Element?, Error?) -> Void) {
         self.reference.document(id).getDocument { (snapshot, error) in
             guard let snapshot: DocumentSnapshot = snapshot, snapshot.exists else {
                 block(nil, error)
@@ -224,7 +224,7 @@ public extension SubCollection {
         }
     }
 
-    public func listen(_ id: String, block: @escaping (Element?, Error?) -> Void) -> ListenerRegistration {
+    func listen(_ id: String, block: @escaping (Element?, Error?) -> Void) -> ListenerRegistration {
         return self.reference.document(id).addSnapshotListener(includeMetadataChanges: true) { (snapshot, error) in
             guard let snapshot: DocumentSnapshot = snapshot else {
                 block(nil, error)
@@ -238,7 +238,7 @@ public extension SubCollection {
         }
     }
 
-    public func listen(_ id: String, block: @escaping (Element?, Error?) -> Void) -> Disposer<Element> {
+    func listen(_ id: String, block: @escaping (Element?, Error?) -> Void) -> Disposer<Element> {
         return .init(.value(listen(id, block: block)))
     }
 }
@@ -270,7 +270,7 @@ extension SubCollection: Collection {
     }
 
     public func index(where predicate: (T) throws -> Bool) rethrows -> Int? {
-        return try _self.index(where: predicate)
+        return try _self.firstIndex(where: predicate)
     }
 
     public func index(after i: Int) -> Int {

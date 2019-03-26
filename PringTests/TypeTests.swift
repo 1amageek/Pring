@@ -27,8 +27,8 @@ fileprivate class Doc: Object {
     dynamic var string: String                      = "string"
     dynamic var file: File                          = File(data: TestDocument.image0().pngData()!, mimeType: .png)
     dynamic var files: [File]                       = []
-    dynamic var refItem: Reference<ReferenceItem>   = Reference()
-    dynamic var relationItem: Relation<ReferenceItem>   = Relation()
+    var refItem: Reference<ReferenceItem>   = Reference()
+    var relationItem: Relation<ReferenceItem>   = Relation()
     dynamic var obj: Obj?
 }
 
