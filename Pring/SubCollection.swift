@@ -108,14 +108,14 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
     }
 
     /// Returns the Object of the specified indexes.
-    func objects(at indexes: IndexSet) -> [Element] {
+    public func objects(at indexes: IndexSet) -> [Element] {
         return indexes.filter { $0 < self.count }.map { self[$0] }
     }
 
     // MARK: -
 
     /// Save the new Object.
-    func insert(_ newMember: Element) {
+    public func insert(_ newMember: Element) {
         newMember.setReference(self.reference.document(newMember.id))
         if !_self.contains(newMember) {
             _self.append(newMember)
@@ -123,14 +123,14 @@ open class SubCollection<T: Document>: AnySubCollection, ExpressibleByArrayLiter
         _insertions.insert(newMember)
     }
 
-    func insert(_ newMembers: [Element]) {
+    public func insert(_ newMembers: [Element]) {
         newMembers.forEach { (newMemeber) in
             insert(newMemeber)
         }
     }
 
     /// Deletes the Object from the reference destination.
-    func remove(_ member: Element) {
+    public func remove(_ member: Element) {
         if let index: Int = _self.index(of: member) {
             _self.remove(at: index)
         }
