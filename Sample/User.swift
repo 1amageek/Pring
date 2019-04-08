@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Pring
 
 @objcMembers
 class User: Object {

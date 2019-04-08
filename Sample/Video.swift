@@ -6,7 +6,7 @@
 //  Copyright © 2017年 Stamp Inc. All rights reserved.
 //
 
-import Pring
+import Foundation
 
 @objcMembers
 class Video: Object {

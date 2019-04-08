@@ -111,9 +111,16 @@ open class Object: NSObject, Document, HasParent {
     // MARK: - Initialize
 
     private func _init() {
-        allChildrenUpToRootObject.forEach { (child) in
+        for (index, child) in allChildrenUpToRootObject.enumerated() {
+            let key: String = child.label!
+            if (key == "_updatedAt" ||
+                key == "_createdAt" ||
+                key == "_hash"
+                ) {
+                continue
+            }
             DataType.verify(value: child.value)
-            switch DataType(key: child.label!, value: child.value) {
+            switch DataType(key: key, value: child.value) {
             case .file          (let key, _, let file):         file.setParent(self, forKey: key)
             case .collection    (let key, _, let collection):   collection.setParent(self, forKey: key)
             case .list          (let key, _, let list):         list.setParent(self, forKey: key)

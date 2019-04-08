@@ -6,7 +6,7 @@
 //  Copyright © 2018 Stamp Inc. All rights reserved.
 //
 
-import Pring
+import Foundation
 
 @objcMembers
 class Order: Object {

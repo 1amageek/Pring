@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Pring
+import Foundation
 
 @objcMembers
 class Item: Object {
