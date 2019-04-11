@@ -1,9 +1,11 @@
 
-I released new framework for Cloud Firestore.
 
-🧢 [Ballcap](https://github.com/1amageek/Ballcap-iOS) 🧢
+### ⚠️ Pring is deprecated <br>
 
+### Please use 🧢 [Ballcap](https://github.com/1amageek/Ballcap-iOS) 🧢<br>
+Ballcap is new Cloud Firestore framework
 
+---
 <div style="text-align: center; width: 100%">
 <img src="https://github.com/1amageek/Pring/blob/master/Pring.png" width="100%">
 
