@@ -357,6 +357,8 @@ public final class DataSource<T: Document>: ExpressibleByArrayLiteral {
                         }
                         group.leave()
                     }
+                @unknown default:
+                    fatalError()
                 }
             })
             group.notify(queue: DispatchQueue.main, execute: {
@@ -486,7 +488,7 @@ extension DataSource: Collection {
 
     public func index(where predicate: (T) throws -> Bool) rethrows -> Int? {
         if self.documents.isEmpty { return nil }
-        return try self.documents.index(where: predicate)
+        return try self.documents.firstIndex(where: predicate)
     }
 
     public func index(of element: T) -> Int? {
@@ -532,11 +534,11 @@ extension Array where Element: Document {
     }
 
     public func index(of key: String) -> Int? {
-        return self.keys.index(of: key)
+        return self.keys.firstIndex(of: key)
     }
 
     public func index(of document: Element) -> Int? {
-        return self.keys.index(of: document.id)
+        return self.keys.firstIndex(of: document.id)
     }
 
     public func sort(sortDescriptors: [NSSortDescriptor]) -> [Element] {

@@ -111,7 +111,7 @@ open class Object: NSObject, Document, HasParent {
     // MARK: - Initialize
 
     private func _init() {
-        for (index, child) in allChildrenUpToRootObject.enumerated() {
+        for (_, child) in allChildrenUpToRootObject.enumerated() {
             let key: String = child.label!
             if (key == "_updatedAt" ||
                 key == "_createdAt" ||
@@ -182,7 +182,7 @@ open class Object: NSObject, Document, HasParent {
                                    .withColonSeparatorInTime]
 
         self.createdAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
-        self.updatedAt = data[(\Object.createdAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
+        self.updatedAt = data[(\Object.updatedAt)._kvcKeyPathString!] as? Timestamp ?? Timestamp(date: Date())
 
         allChildrenUpToRootObject.forEach { (key, value) in
             if let key: String = key {
@@ -377,7 +377,7 @@ open class Object: NSObject, Document, HasParent {
                             self.update(key: key, value: FieldValue.delete())
                         }
 
-                        if let index: Int = self.garbages.index(of: currentFile) {
+                        if let index: Int = self.garbages.firstIndex(of: currentFile) {
                             self.garbages.remove(at: index)
                         }
 
@@ -404,7 +404,7 @@ open class Object: NSObject, Document, HasParent {
 
                         new.subtracting(old).forEach { file in
                             file.setParent(self, forKey: key)
-                            if let index: Int = self.garbages.index(of: file) {
+                            if let index: Int = self.garbages.firstIndex(of: file) {
                                 self.garbages.remove(at: index)
                             }
                         }
